@@ -21,8 +21,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // How NavBar was made
+        // https://stackoverflow.com/questions/41740632/how-to-change-activity-on-bottom-navigation-button-click
         navBar = (RadioGroup) findViewById(R.id.NavBar_Group);
-
         navBar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
