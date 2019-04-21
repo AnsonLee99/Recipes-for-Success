@@ -9,6 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Profile"></activity>
+        <activity android:name=".Social" />
+        <activity android:name=".Basket" />
+        <activity android:name=".Recipes" />
+        <activity android:name=".GroceryList" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">

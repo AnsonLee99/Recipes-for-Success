@@ -1,42 +1,65 @@
 package com.example.recipesforsuccess;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView mTextMessage;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
-                    return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
-                    return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
-                    return true;
-            }
-            return false;
-        }
-    };
+    private static final String TAG = "NAVBAR";
+    private RadioGroup navBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        mTextMessage = findViewById(R.id.message);
-        navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        navBar = (RadioGroup) findViewById(R.id.NavBar_Group);
+
+        navBar.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                Intent in;
+
+                switch(checkedId) {
+                    case R.id.grocery_tab_button:
+                        in = new Intent(getBaseContext(), GroceryList.class);
+                        startActivity(in);
+                        overridePendingTransition(0,0);
+                        break;
+                    case R.id.recipes_tab_button:
+                        in = new Intent(getBaseContext(), Recipes.class);
+                        startActivity(in);
+                        overridePendingTransition(0, 0);
+                        break;
+                    default:
+                        break;
+                    case R.id.basket_tab_button:
+                        in = new Intent(getBaseContext(), Basket.class);
+                        startActivity(in);
+                        overridePendingTransition(0, 0);
+                        break;
+                    case R.id.social_tab_button:
+                        in = new Intent(getBaseContext(), Social.class);
+                        startActivity(in);
+                        overridePendingTransition(0, 0);
+                        break;
+                    case R.id.profile_tab_button:
+                        in = new Intent(getBaseContext(), Profile.class);
+                        startActivity(in);
+                        overridePendingTransition(0, 0);
+                        break;
+
+                }
+            }
+        });
     }
 
 }

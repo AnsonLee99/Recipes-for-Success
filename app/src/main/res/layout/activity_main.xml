@@ -7,27 +7,105 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/title_home"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/main_display"
+        android:orientation="vertical"
+        android:layout_gravity="top"
+        >
+    </LinearLayout>
 
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:background="?android:attr/windowBackground"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:elevation="10dp"
+        android:id="@+id/bottonNavBar"
+        android:paddingTop="5dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:foregroundGravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/bottom_nav_menu" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <RadioGroup
+            android:id="@+id/NavBar_Group"
+            android:gravity="center"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <RadioButton
+                android:id="@+id/grocery_tab_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:checked="false"
+                android:drawableTop="@drawable/ic_notifications_black_24dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="@string/menu_shopping_list"
+                android:textSize="12sp"/>
+
+            <RadioButton
+                android:id="@+id/recipes_tab_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:checked="false"
+                android:drawableTop="@drawable/ic_dashboard_black_24dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="@string/menu_recipes"
+                android:textSize="12sp"/>
+
+            <RadioButton
+                android:id="@+id/basket_tab_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:checked="false"
+                android:drawableTop="@drawable/ic_home_black_24dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="@string/menu_basket"
+                android:textSize="12sp"/>
+
+            <RadioButton
+                android:id="@+id/social_tab_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:checked="false"
+                android:drawableTop="@drawable/ic_dashboard_black_24dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="@string/menu_social"
+                android:textSize="12sp"/>
+
+            <RadioButton
+                android:id="@+id/profile_tab_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:checked="false"
+                android:drawableTop="@drawable/ic_notifications_black_24dp"
+                android:gravity="center"
+                android:padding="2dp"
+                android:text="@string/menu_profile"
+                android:textSize="12sp"/>
+
+
+
+        </RadioGroup>
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
