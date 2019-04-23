@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-public class GroceryList extends MainActivity {
+public class GroceryList extends MainPage {
     LinearLayout mainDisplay;
 
     @Override
