@@ -50,7 +50,6 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
                         .setAction("No action", null).show();
                 break;
         }
-        //Snackbar.make(v, "Food Name", Snackbar.LENGTH_LONG);
     }
 
     private int lastPosition = -1;
@@ -91,6 +90,7 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
         viewHolder.txtDate.setText(fooditem.getDate());
         viewHolder.infoImage.setOnClickListener(this);
         viewHolder.infoImage.setTag(position);
+        viewHolder.foodImage.setImageResource(fooditem.getImageId());;
         // Return the completed view to render on screen
         //return convertView;
         return result;

@@ -32,26 +32,13 @@ public class Basket extends MainPage {
 
         ListView listView = (ListView) findViewById(R.id.basket_list_view);
 
-        /*
-        ArrayList<String> content = new ArrayList<String>();
-        content.add("food1");
-        content.add("food2");
-        content.add("food3");
-        content.add("food1");
-        content.add("food2");
-        content.add("food3");
-        content.add("food1");
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, content);
-        */
-
         ArrayList<FoodListViewItem> content = new ArrayList<FoodListViewItem>();
-        content.add(new FoodListViewItem("Marshmallow", "April 20", "notapicture"));
-        content.add(new FoodListViewItem("Pizza", "April 20", "notapicture"));
-        content.add(new FoodListViewItem("Korean BBQ", "April 20", "notapicture"));
-        content.add(new FoodListViewItem("Pho", "April 20", "notapicture"));
-        content.add(new FoodListViewItem("Silkworms", "April 20", "notapicture"));
-        content.add(new FoodListViewItem("Computer Chips", "April 20", "notapicture"));
+        content.add(new FoodListViewItem("Marshmallow", "April 20", R.drawable.ic_launcher_background));
+        content.add(new FoodListViewItem("Pizza", "April 20", R.drawable.ic_launcher_background));
+        content.add(new FoodListViewItem("Korean BBQ", "April 20", R.drawable.ic_launcher_background));
+        content.add(new FoodListViewItem("Pho", "April 20", R.drawable.ic_launcher_background));
+        content.add(new FoodListViewItem("Silkworms", "April 20", R.drawable.ic_launcher_background));
+        content.add(new FoodListViewItem("Computer Chips", "April 20", R.drawable.ic_launcher_background));
         FoodListViewAdapter adapter = new FoodListViewAdapter(content, getApplicationContext());
 
         listView.setAdapter(adapter);
