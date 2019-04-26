@@ -12,6 +12,7 @@
         <activity android:name=".Profile" android:exported="true"></activity>
         <activity android:name=".Social" android:exported="true"/>
         <activity android:name=".Basket" android:exported="true"/>
+        <activity android:name=".BasketEditing" android:exported="true"/>
         <activity android:name=".Recipes" android:exported="true"/>
         <activity android:name=".GroceryList" android:exported="true"/>
         <activity
