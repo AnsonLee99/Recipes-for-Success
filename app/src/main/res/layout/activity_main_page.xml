@@ -9,13 +9,12 @@
 
 
     <LinearLayout
+        android:id="@+id/main_display"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/main_display"
-        android:orientation="vertical"
         android:layout_gravity="top"
-        >
-    </LinearLayout>
+        android:background="#34FFC107"
+        android:orientation="vertical"></LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
