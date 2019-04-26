@@ -20,7 +20,8 @@
                     android:name="android.app.searchable"
                     android:resource="@xml/searchable"/>
                   <intent-filter>
-                    <action anroid:name="android.intent.action.SEARCH"/>
+                    <action android:name="android.intent.action.SEARCH"/>
+                  </intent-filter>
         </activity>
         <activity android:name=".GroceryList" android:exported="true"/>
         <activity
