@@ -67,7 +67,7 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
             convertView = inflater.inflate(R.layout.row_item, parent, false);
             viewHolder.txtName = (TextView) convertView.findViewById(R.id.food_name);
             viewHolder.txtDate = (TextView) convertView.findViewById(R.id.food_date);
-            viewHolder.image = (ImageView) convertView.findViewById(R.id.food_image);
+            //viewHolder.image = (ImageView) convertView.findViewById(R.id.food_image);
 
             result=convertView;
 
@@ -83,8 +83,8 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
 
         viewHolder.txtName.setText(fooditem.getName());
         viewHolder.txtDate.setText(fooditem.getDate());
-        viewHolder.image.setOnClickListener(this);
-        viewHolder.image.setTag(position);
+        //viewHolder.image.setOnClickListener(this);
+        //viewHolder.image.setTag(position);
         // Return the completed view to render on screen
         return convertView;
     }
