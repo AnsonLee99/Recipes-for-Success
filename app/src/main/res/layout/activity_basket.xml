@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#34FFC107"
     tools:context=".Basket">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/menu_basket"
-        tools:layout_editor_absoluteX="191dp"
-        tools:layout_editor_absoluteY="83dp" />
+    <ListView
+        android:id="@+id/basket_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="110dp"
+        tools:layout_editor_absoluteY="33dp" />
 </android.support.constraint.ConstraintLayout>
