@@ -23,6 +23,7 @@
                     <action android:name="android.intent.action.SEARCH"/>
                   </intent-filter>
         </activity>
+        <activity android:name=".BasketEditing" android:exported="true"/>
         <activity android:name=".GroceryList" android:exported="true"/>
         <activity
             android:name=".MainActivity"

@@ -1,8 +1,6 @@
 package com.example.recipesforsuccess;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -13,14 +11,14 @@ import com.example.recipesforsuccess.dataobjects.FoodListViewItem;
 
 import java.util.ArrayList;
 
-public class Basket extends MainPage {
+public class BasketEditing extends MainPage {
     LinearLayout mainDisplay;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mainDisplay = (LinearLayout) findViewById(R.id.main_display);
-        View groceryView = getLayoutInflater().inflate(R.layout.activity_basket, null);
+        View groceryView = getLayoutInflater().inflate(R.layout.activity_basket_editing, null);
         mainDisplay.addView(groceryView);
 
         // For displaying the currently selected tab
@@ -39,7 +37,7 @@ public class Basket extends MainPage {
         content.add(new FoodListViewItem("Pho", "April 20", R.drawable.ic_launcher_background));
         content.add(new FoodListViewItem("Silkworms", "April 20", R.drawable.ic_launcher_background));
         content.add(new FoodListViewItem("Computer Chips", "April 20", R.drawable.ic_launcher_background));
-        FoodListViewAdapter adapter = new FoodListViewAdapter(content, getApplicationContext(), false);
+        FoodListViewAdapter adapter = new FoodListViewAdapter(content, getApplicationContext(), true);
 
         listView.setAdapter(adapter);
 

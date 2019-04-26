@@ -18,6 +18,7 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
 
     private ArrayList<FoodListViewItem> dataSet;
     Context mContext;
+    boolean isEditing;
 
     // View lookup cache
     private static class ViewHolder {
@@ -27,11 +28,11 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
         ImageView infoImage;
     }
 
-    public FoodListViewAdapter(ArrayList<FoodListViewItem> data, Context context) {
+    public FoodListViewAdapter(ArrayList<FoodListViewItem> data, Context context, boolean isEditing) {
         super(context, R.layout.food_list_item, data);
         this.dataSet = data;
         this.mContext=context;
-
+        this.isEditing = isEditing;
     }
 
     @Override
@@ -67,7 +68,9 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
 
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.food_list_item, parent, false);
+            // choose to show editing or non-editing list items
+            int layoutType = isEditing ? R.layout.food_list_item_editing : R.layout.food_list_item;
+            convertView = inflater.inflate(layoutType, parent, false);
             viewHolder.txtName = (TextView) convertView.findViewById(R.id.food_name);
             viewHolder.txtDate = (TextView) convertView.findViewById(R.id.food_date);
             viewHolder.foodImage = (ImageView) convertView.findViewById(R.id.food_image);
