@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#34FFC107"
     tools:context=".Basket">
 
     <ListView
         android:id="@+id/basket_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="110dp"
-        tools:layout_editor_absoluteY="33dp" />
+        tools:layout_editor_absoluteY="48dp" />
+
 </android.support.constraint.ConstraintLayout>

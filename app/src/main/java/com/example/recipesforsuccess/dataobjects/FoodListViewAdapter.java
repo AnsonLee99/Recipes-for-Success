@@ -2,6 +2,7 @@ package com.example.recipesforsuccess.dataobjects;
 
 import android.content.Context;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,24 +18,27 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
 
     private ArrayList<FoodListViewItem> dataSet;
     Context mContext;
+    boolean isEditing;
 
     // View lookup cache
     private static class ViewHolder {
         TextView txtName;
         TextView txtDate;
-        TextView txtInfo;
-        ImageView image;
+        ImageView foodImage;
+        ImageView infoImage;
     }
 
-    public FoodListViewAdapter(ArrayList<FoodListViewItem> data, Context context) {
-        super(context, R.layout.row_item, data);
+    public FoodListViewAdapter(ArrayList<FoodListViewItem> data, Context context, boolean isEditing) {
+        super(context, R.layout.food_list_item, data);
         this.dataSet = data;
         this.mContext=context;
-
+        this.isEditing = isEditing;
     }
 
     @Override
     public void onClick(View v) {
+
+        Log.i("VIEW_INFO", v.toString());
 
         int position=(Integer) v.getTag();
         Object object= getItem(position);
@@ -42,7 +46,7 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
 
         switch (v.getId())
         {
-            case R.id.item_info:
+            case R.id.info_image:
                 Snackbar.make(v, "Food Name: " +fooditem.getName(), Snackbar.LENGTH_LONG)
                         .setAction("No action", null).show();
                 break;
@@ -64,10 +68,14 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
 
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            convertView = inflater.inflate(R.layout.row_item, parent, false);
+            // choose to show editing or non-editing list items
+            int layoutType = isEditing ? R.layout.food_list_item_editing : R.layout.food_list_item;
+            convertView = inflater.inflate(layoutType, parent, false);
             viewHolder.txtName = (TextView) convertView.findViewById(R.id.food_name);
             viewHolder.txtDate = (TextView) convertView.findViewById(R.id.food_date);
-            //viewHolder.image = (ImageView) convertView.findViewById(R.id.food_image);
+            viewHolder.foodImage = (ImageView) convertView.findViewById(R.id.food_image);
+            viewHolder.infoImage = (ImageView) convertView.findViewById(R.id.info_image);
+
 
             result=convertView;
 
@@ -83,9 +91,11 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
 
         viewHolder.txtName.setText(fooditem.getName());
         viewHolder.txtDate.setText(fooditem.getDate());
-        //viewHolder.image.setOnClickListener(this);
-        //viewHolder.image.setTag(position);
+        viewHolder.infoImage.setOnClickListener(this);
+        viewHolder.infoImage.setTag(position);
+        viewHolder.foodImage.setImageResource(fooditem.getImageId());;
         // Return the completed view to render on screen
-        return convertView;
+        //return convertView;
+        return result;
     }
 }
