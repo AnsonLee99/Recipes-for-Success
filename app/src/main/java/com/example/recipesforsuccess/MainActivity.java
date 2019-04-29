@@ -1,6 +1,7 @@
 package com.example.recipesforsuccess;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     //Sign in Button
     private Button loginButton;
     private Button createAccount;
+    private FirebaseUser user;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -58,6 +60,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        createAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, CreateAccount.class));
+            }
+        });
+
 
     }
 
@@ -65,7 +74,13 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         //mAuth.addAuthStateListener(mAuthListener);
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        user = mAuth.getCurrentUser();
+/*
+        if(user != null)
+        {
+            new Intent(MainActivity.this, Basket.class);
+        }
+  */
 
     }
 
@@ -96,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         else {
-                            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+                            //user = mAuth.getCurrentUser();
                             startActivity(new Intent(MainActivity.this, Basket.class));
                         }
 
