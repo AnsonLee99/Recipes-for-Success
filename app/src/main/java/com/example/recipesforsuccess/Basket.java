@@ -1,5 +1,6 @@
 package com.example.recipesforsuccess;
 import android.os.Debug;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -37,6 +39,9 @@ public class Basket extends MainPage {
     private AutoCompleteTextView bar;
     private ArrayAdapter<String> options;
     private JSONArray res;
+
+    private ArrayList<FoodListViewItem> basketContents;
+    FoodListViewAdapter basketAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,17 +103,58 @@ public class Basket extends MainPage {
 
         ListView listView = (ListView) findViewById(R.id.basket_list_view);
 
-        ArrayList<FoodListViewItem> content = new ArrayList<FoodListViewItem>();
-        content.add(new FoodListViewItem("Marshmallow", "April 20", R.drawable.ic_launcher_background));
-        content.add(new FoodListViewItem("Pizza", "April 20", R.drawable.ic_launcher_background));
-        content.add(new FoodListViewItem("Korean BBQ", "April 20", R.drawable.ic_launcher_background));
-        content.add(new FoodListViewItem("Pho", "April 20", R.drawable.ic_launcher_background));
-        content.add(new FoodListViewItem("Silkworms", "April 20", R.drawable.ic_launcher_background));
-        content.add(new FoodListViewItem("Computer Chips", "April 20", R.drawable.ic_launcher_background));
-        FoodListViewAdapter adapter = new FoodListViewAdapter(content, getApplicationContext(), false);
+        basketContents = new ArrayList<FoodListViewItem>();
+        basketContents.add(new FoodListViewItem("Marshmallow", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Pizza", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Korean BBQ", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Pho", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Silkworms", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Computer Chips", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Marshmallow", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Pizza", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Korean BBQ", "April 20", R.drawable.ic_launcher_background));
+        basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false);
 
-        listView.setAdapter(adapter);
+        listView.setAdapter(basketAdapter);
 
+        // DEBUG BUTTONS TO ADD OR DELETE ITEM FROM LISTVIEW
+        Button debug_add_item = (Button)findViewById(R.id.debug_add_item);
+        Button debug_delete_item = (Button)findViewById(R.id.debug_delete_item);
+
+        debug_add_item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addToBasket(new FoodListViewItem("NewFood", "Today", R.drawable.ic_launcher_background));
+            }
+        });
+
+        debug_delete_item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeFromBasket(0, v);
+
+            }
+        });
+
+    }
+
+    protected void removeFromBasket(int index, View v) {
+        if(basketContents.size() > index) {
+            basketContents.remove(index);
+            basketAdapter.notifyDataSetChanged();
+        } else {
+            Snackbar.make(v, "Basket is empty!", Snackbar.LENGTH_LONG).setAction("No action", null).show();
+        }
+    }
+
+    protected void removeFromBasket(FoodListViewItem item) {
+        basketContents.remove(item);
+        basketAdapter.notifyDataSetChanged();
+    }
+
+    protected void addToBasket(FoodListViewItem item) {
+        basketContents.add(item);
+        basketAdapter.notifyDataSetChanged();
     }
 
 
