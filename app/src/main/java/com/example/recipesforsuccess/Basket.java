@@ -117,6 +117,16 @@ public class Basket extends MainPage {
 
         listView.setAdapter(basketAdapter);
 
+        // Add To Basket Button
+        Button add_to_basket = (Button)findViewById(R.id.add_to_basket);
+        add_to_basket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addToBasket(new FoodListViewItem(bar.getText().toString(), "Time", R.drawable.ic_launcher_background), v);
+            }
+        });
+
+
         // DEBUG BUTTONS TO ADD OR DELETE ITEM FROM LISTVIEW
         Button debug_add_item = (Button)findViewById(R.id.debug_add_item);
         Button debug_delete_item = (Button)findViewById(R.id.debug_delete_item);
