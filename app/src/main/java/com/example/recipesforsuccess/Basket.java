@@ -124,14 +124,14 @@ public class Basket extends MainPage {
         debug_add_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addToBasket(new FoodListViewItem("NewFood", "Today", R.drawable.ic_launcher_background));
+                addToBasket(new FoodListViewItem("NewFood", "Today", R.drawable.ic_launcher_background), v);
             }
         });
 
         debug_delete_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeFromBasket(0, v);
+                removeFromBasket(basketContents.size() - 1, v);
 
             }
         });
@@ -140,6 +140,7 @@ public class Basket extends MainPage {
 
     protected void removeFromBasket(int index, View v) {
         if(basketContents.size() > index) {
+            Snackbar.make(v, "Removed: " + basketContents.get(index).getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
             basketContents.remove(index);
             basketAdapter.notifyDataSetChanged();
         } else {
@@ -152,7 +153,8 @@ public class Basket extends MainPage {
         basketAdapter.notifyDataSetChanged();
     }
 
-    protected void addToBasket(FoodListViewItem item) {
+    protected void addToBasket(FoodListViewItem item, View v) {
+        Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
         basketContents.add(item);
         basketAdapter.notifyDataSetChanged();
     }
