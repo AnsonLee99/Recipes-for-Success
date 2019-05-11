@@ -9,14 +9,16 @@
 
     <AutoCompleteTextView
         android:id="@+id/basket_searchBar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginTop="8dp"
 
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:completionThreshold="1"
         android:hint="Add Ingredients"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="87dp" />
+        app:layout_constraintEnd_toStartOf="@+id/add_to_basket"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/debug_add_item"
@@ -26,7 +28,7 @@
         android:layout_marginEnd="8dp"
         android:text="DEBUG: Add Item"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/basket_list_view" />
 
     <Button
         android:id="@+id/debug_delete_item"
@@ -49,5 +51,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/basket_searchBar" />
+
+    <Button
+        android:id="@+id/add_to_basket"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
