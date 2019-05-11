@@ -18,6 +18,9 @@ import android.widget.RadioGroup;
 import com.example.recipesforsuccess.dataobjects.FoodListViewAdapter;
 import com.example.recipesforsuccess.dataobjects.FoodListViewItem;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.reflect.TypeToken;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,6 +33,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -42,6 +47,8 @@ public class Basket extends MainPage {
 
     private ArrayList<FoodListViewItem> basketContents;
     FoodListViewAdapter basketAdapter;
+
+    private FirebaseFirestore db =FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,13 +147,13 @@ public class Basket extends MainPage {
 
     protected void removeFromBasket(int index, View v) {
         if(basketContents.size() > index) {
-            Snackbar.make(v, "Removed: " + basketContents.get(index).getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
-            basketContents.remove(index);
-            basketAdapter.notifyDataSetChanged();
-        } else {
-            Snackbar.make(v, "Basket is empty!", Snackbar.LENGTH_LONG).setAction("No action", null).show();
-        }
+        Snackbar.make(v, "Removed: " + basketContents.get(index).getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
+        basketContents.remove(index);
+        basketAdapter.notifyDataSetChanged();
+    } else {
+        Snackbar.make(v, "Basket is empty!", Snackbar.LENGTH_LONG).setAction("No action", null).show();
     }
+}
 
     protected void removeFromBasket(FoodListViewItem item) {
         basketContents.remove(item);
@@ -157,6 +164,15 @@ public class Basket extends MainPage {
         Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
         basketContents.add(item);
         basketAdapter.notifyDataSetChanged();
+    }
+
+    protected boolean pushToFirebase(JSONObject data) {
+
+        HashMap<String, Object> map = new Gson().fromJson(data.toString(), new TypeToken<HashMap<String, Object>>() {}.getType());
+
+
+
+        return false;
     }
 
 
