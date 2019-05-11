@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser user;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private static String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +114,10 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         else {
-                            //user = mAuth.getCurrentUser();
+                            user = mAuth.getCurrentUser();
+                            userId = user.getUid();
+
+                            Log.d("test", "ORIGINAL: " + userId);
                             startActivity(new Intent(MainActivity.this, Basket.class));
                         }
 
@@ -119,6 +125,10 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
 
+        }
+
+        public String getUserId() {
+            return this.userId;
         }
 
     }

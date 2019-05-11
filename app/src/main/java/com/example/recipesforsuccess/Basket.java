@@ -1,5 +1,6 @@
 package com.example.recipesforsuccess;
 import android.os.Debug;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,7 +19,12 @@ import android.widget.RadioGroup;
 import com.example.recipesforsuccess.dataobjects.FoodListViewAdapter;
 import com.example.recipesforsuccess.dataobjects.FoodListViewItem;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.common.reflect.TypeToken;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 
@@ -33,13 +39,16 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class Basket extends MainPage {
+    private String ID =  this.getUserId();
     LinearLayout mainDisplay;
     private AutoCompleteTextView bar;
     private ArrayAdapter<String> options;
@@ -130,6 +139,9 @@ public class Basket extends MainPage {
             @Override
             public void onClick(View v) {
                 addToBasket(new FoodListViewItem(bar.getText().toString(), "Time", R.drawable.ic_launcher_background), v);
+
+                // REPLACE "new JSONObject()" with the JSON object from the selected "res" array
+                pushToFirebase(new JSONObject());
             }
         });
 
@@ -176,13 +188,37 @@ public class Basket extends MainPage {
         basketAdapter.notifyDataSetChanged();
     }
 
-    protected boolean pushToFirebase(JSONObject data) {
+    protected void pushToFirebase(JSONObject data) {
+        HashMap<String, Object> ingredient = new HashMap<>();
+        try {
+            ingredient.put("name:", data.get("name").toString());
+            ingredient.put("flag:", false);
+            ingredient.put("Date Added:", Calendar.getInstance().getTime());
+        }
+        catch (Exception e) {
+            Log.d("test", "JSON PARSING ERROR: " + e);
+        }
 
-        HashMap<String, Object> map = new Gson().fromJson(data.toString(), new TypeToken<HashMap<String, Object>>() {}.getType());
+        db.collection("INGREDIENTS").add(ID+ "_" +ingredient.get("name"))
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d("test", "FIREBASE UPLOAD SUCCESS :)))))))" + documentReference.getPath());
 
+                        db.collection("USERS").document(ID).update("Ingredients",
+                                FieldValue.arrayUnion(documentReference.getPath()));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("test", "FIREBASE UPLOAD FAILED :(((((" + e);
+                    }
+                });
+    }
 
+    protected void deleteFromFirebase(String itemToDelete) {
 
-        return false;
     }
 
 
