@@ -141,7 +141,14 @@ public class Basket extends MainPage {
                 addToBasket(new FoodListViewItem(bar.getText().toString(), "Time", R.drawable.ic_launcher_background), v);
 
                 // REPLACE "new JSONObject()" with the JSON object from the selected "res" array
-                pushToFirebase(new JSONObject());
+                HashMap<String, Object> newIngredient = new HashMap<>();
+
+                newIngredient.put("flag", false);
+                newIngredient.put("name", bar.getText().toString());
+                newIngredient.put("time added", Calendar.getInstance().getTime());
+
+                Log.d("test", "value before: " + newIngredient.get("name"));
+                pushToFirebase(newIngredient);
             }
         });
 
@@ -188,37 +195,42 @@ public class Basket extends MainPage {
         basketAdapter.notifyDataSetChanged();
     }
 
-    protected void pushToFirebase(JSONObject data) {
-        HashMap<String, Object> ingredient = new HashMap<>();
-        try {
-            ingredient.put("name:", data.get("name").toString());
-            ingredient.put("flag:", false);
-            ingredient.put("Date Added:", Calendar.getInstance().getTime());
-        }
-        catch (Exception e) {
-            Log.d("test", "JSON PARSING ERROR: " + e);
-        }
-
-        db.collection("INGREDIENTS").add(ID+ "_" +ingredient.get("name"))
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+    protected void pushToFirebase(HashMap<String, Object> ingredient) {
+        final String docName = ingredient.get("name") + "_" + ID;
+        db.collection("INGREDIENTS").document(docName).set(ingredient)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("test", "FIREBASE UPLOAD SUCCESS :)))))))" + documentReference.getPath());
-
-                        db.collection("USERS").document(ID).update("Ingredients",
-                                FieldValue.arrayUnion(documentReference.getPath()));
+                    public void onSuccess(Void aVoid) {
+                        db.collection("USERS").document(ID).update("Basket",
+                                FieldValue.arrayUnion(docName));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("test", "FIREBASE UPLOAD FAILED :(((((" + e);
+                        Log.d("test", "UPLOADING FAILED");
                     }
                 });
     }
 
+    // itemToDelete is the name of hte item to delete
     protected void deleteFromFirebase(String itemToDelete) {
 
+        final String docName = itemToDelete + "_" + ID;
+        db.collection("INGREDIENTS").document(docName).delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        db.collection("USERS").document(ID).update("Basket",
+                                FieldValue.arrayRemove(docName));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("test", "DELETING FAILED");
+                    }
+                });
     }
 
 
