@@ -11,8 +11,8 @@
         android:id="@+id/newEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="98dp"
-        android:layout_marginTop="131dp"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="200dp"
         android:ems="10"
         android:hint="Email"
         android:inputType="textEmailAddress"
@@ -23,8 +23,8 @@
         android:id="@+id/newPass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="98dp"
-        android:layout_marginTop="206dp"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="252dp"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
@@ -35,9 +35,33 @@
         android:id="@+id/create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="160dp"
-        android:layout_marginTop="320dp"
+        android:layout_marginStart="148dp"
+        android:layout_marginTop="296dp"
         android:text="Create"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/FirstName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="96dp"
+        android:layout_marginBottom="576dp"
+        android:ems="10"
+        android:hint="First Name"
+        android:inputType="textEmailAddress"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/LastName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="96dp"
+        android:layout_marginBottom="528dp"
+        android:ems="10"
+        android:hint="Last Name"
+        android:inputType="textEmailAddress"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>
