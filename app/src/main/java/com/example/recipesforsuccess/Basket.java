@@ -1,5 +1,7 @@
 package com.example.recipesforsuccess;
 import android.os.Debug;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -8,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -16,6 +19,14 @@ import android.widget.RadioGroup;
 import com.example.recipesforsuccess.dataobjects.FoodListViewAdapter;
 import com.example.recipesforsuccess.dataobjects.FoodListViewItem;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.common.reflect.TypeToken;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,15 +39,25 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class Basket extends MainPage {
+    private String ID =  this.getUserId();
     LinearLayout mainDisplay;
     private AutoCompleteTextView bar;
     private ArrayAdapter<String> options;
     private JSONArray res;
+
+    private ArrayList<FoodListViewItem> basketContents;
+    FoodListViewAdapter basketAdapter;
+
+    private FirebaseFirestore db =FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,17 +119,118 @@ public class Basket extends MainPage {
 
         ListView listView = (ListView) findViewById(R.id.basket_list_view);
 
-        ArrayList<FoodListViewItem> content = new ArrayList<FoodListViewItem>();
-        content.add(new FoodListViewItem("Marshmallow", "April 20", R.drawable.ic_launcher_background));
-        content.add(new FoodListViewItem("Pizza", "April 20", R.drawable.ic_launcher_background));
-        content.add(new FoodListViewItem("Korean BBQ", "April 20", R.drawable.ic_launcher_background));
-        content.add(new FoodListViewItem("Pho", "April 20", R.drawable.ic_launcher_background));
-        content.add(new FoodListViewItem("Silkworms", "April 20", R.drawable.ic_launcher_background));
-        content.add(new FoodListViewItem("Computer Chips", "April 20", R.drawable.ic_launcher_background));
-        FoodListViewAdapter adapter = new FoodListViewAdapter(content, getApplicationContext(), false);
+        basketContents = new ArrayList<FoodListViewItem>();
+        basketContents.add(new FoodListViewItem("Marshmallow", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Pizza", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Korean BBQ", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Pho", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Silkworms", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Computer Chips", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Marshmallow", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Pizza", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Korean BBQ", "April 20", R.drawable.ic_launcher_background));
+        basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false);
 
-        listView.setAdapter(adapter);
+        listView.setAdapter(basketAdapter);
 
+        // Add To Basket Button
+        Button add_to_basket = (Button)findViewById(R.id.add_to_basket);
+        add_to_basket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addToBasket(new FoodListViewItem(bar.getText().toString(), "Time", R.drawable.ic_launcher_background), v);
+
+                // REPLACE "new JSONObject()" with the JSON object from the selected "res" array
+                HashMap<String, Object> newIngredient = new HashMap<>();
+
+                newIngredient.put("flag", false);
+                newIngredient.put("name", bar.getText().toString());
+                newIngredient.put("time added", Calendar.getInstance().getTime());
+
+                Log.d("test", "value before: " + newIngredient.get("name"));
+                pushToFirebase(newIngredient);
+            }
+        });
+
+
+        // DEBUG BUTTONS TO ADD OR DELETE ITEM FROM LISTVIEW
+        Button debug_add_item = (Button)findViewById(R.id.debug_add_item);
+        Button debug_delete_item = (Button)findViewById(R.id.debug_delete_item);
+
+        debug_add_item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addToBasket(new FoodListViewItem("NewFood", "Today", R.drawable.ic_launcher_background), v);
+            }
+        });
+
+        debug_delete_item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeFromBasket(basketContents.size() - 1, v);
+
+            }
+        });
+
+    }
+
+    protected void removeFromBasket(int index, View v) {
+        if(basketContents.size() > index) {
+        Snackbar.make(v, "Removed: " + basketContents.get(index).getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
+        basketContents.remove(index);
+        basketAdapter.notifyDataSetChanged();
+    } else {
+        Snackbar.make(v, "Basket is empty!", Snackbar.LENGTH_LONG).setAction("No action", null).show();
+    }
+}
+
+    protected void removeFromBasket(FoodListViewItem item) {
+        basketContents.remove(item);
+        basketAdapter.notifyDataSetChanged();
+    }
+
+    protected void addToBasket(FoodListViewItem item, View v) {
+        Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
+        basketContents.add(item);
+        basketAdapter.notifyDataSetChanged();
+    }
+
+    protected void pushToFirebase(HashMap<String, Object> ingredient) {
+        final String docName = ingredient.get("name") + "_" + ID;
+        db.collection("INGREDIENTS").document(docName).set(ingredient)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        db.collection("USERS").document(ID).update("Basket",
+                                FieldValue.arrayUnion(docName));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("test", "UPLOADING FAILED");
+                    }
+                });
+    }
+
+    // itemToDelete is the name of hte item to delete
+    protected void deleteFromFirebase(String itemToDelete) {
+
+        final String docName = itemToDelete + "_" + ID;
+        db.collection("INGREDIENTS").document(docName).delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        db.collection("USERS").document(ID).update("Basket",
+                                FieldValue.arrayRemove(docName));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("test", "DELETING FAILED");
+                    }
+                });
     }
 
 
