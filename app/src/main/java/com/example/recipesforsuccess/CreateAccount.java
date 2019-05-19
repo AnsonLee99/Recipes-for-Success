@@ -41,7 +41,7 @@ public class CreateAccount extends MainActivity {
     private EditText createEmail;
     private EditText createPassword;
     private Button createButton;
-    private FirebaseAuth nAuth;
+    private FirebaseAuth nAuth = this.passAuth();
     private FirebaseAuth.AuthStateListener nAuthListener;
     private FirebaseUser user;
     private String ID;
@@ -57,7 +57,7 @@ public class CreateAccount extends MainActivity {
         createEmail = (EditText) findViewById(R.id.newEmail);
         createPassword = (EditText) findViewById(R.id.newPass);
         createButton = (Button) findViewById(R.id.create);
-        nAuth = FirebaseAuth.getInstance();
+        //nAuth = FirebaseAuth.getInstance();
 
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override

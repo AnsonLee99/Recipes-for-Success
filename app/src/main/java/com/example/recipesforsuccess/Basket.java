@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.common.reflect.TypeToken;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -48,16 +49,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class Basket extends MainPage {
-    private String ID =  this.getUserId();
     LinearLayout mainDisplay;
     private AutoCompleteTextView bar;
     private ArrayAdapter<String> options;
     private JSONArray res;
+    private FirebaseAuth auth = this.passAuth();
+    private String ID =  auth.getUid();
 
     private ArrayList<FoodListViewItem> basketContents;
     FoodListViewAdapter basketAdapter;
 
-    private FirebaseFirestore db =FirebaseFirestore.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
