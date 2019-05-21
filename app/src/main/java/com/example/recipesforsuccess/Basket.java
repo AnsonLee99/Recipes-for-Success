@@ -215,7 +215,7 @@ public class Basket extends MainPage {
                 });
     }
 
-    // itemToDelete is the name of hte item to delete
+    // itemToDelete is the name of the item to delete
     protected void deleteFromFirebase(String itemToDelete) {
 
         final String docName = itemToDelete + "_" + ID;
