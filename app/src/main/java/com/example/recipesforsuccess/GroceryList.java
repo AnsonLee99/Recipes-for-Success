@@ -15,24 +15,17 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.example.recipesforsuccess.dataobjects.FoodListViewAdapter;
-import com.example.recipesforsuccess.dataobjects.FoodListViewItem;
+import com.example.recipesforsuccess.dataobjects.GroceryListViewAdapter;
+import com.example.recipesforsuccess.dataobjects.GroceryListViewItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
 
@@ -51,8 +44,8 @@ public class GroceryList extends MainPage {
     private FirebaseAuth auth = this.passAuth();
     private String ID =  auth.getUid();
 
-    private ArrayList<FoodListViewItem> groceryContents;
-    FoodListViewAdapter groceryAdapter;
+    private ArrayList<GroceryListViewItem> groceryContents;
+    GroceryListViewAdapter groceryAdapter;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -111,21 +104,16 @@ public class GroceryList extends MainPage {
             }
         });
 
-        ListView listView = (ListView) findViewById(R.id.shopping_list_view);
-
-        // Get the contents of the grocery list from the database
-        groceryContents = new ArrayList<FoodListViewItem>();
-        groceryContents.addAll(getShoppingList());
-        groceryAdapter = new FoodListViewAdapter(groceryContents, getApplicationContext(), false);
-
-        listView.setAdapter(groceryAdapter);
+        // Use fetchShoppingList to retrieve the items in the shopping list
+        // and display them on the screen as a listView
+        fetchShoppingList();
 
         // Add To Grocery Button
         Button add_to_grocery = (Button)findViewById(R.id.add_to_shopping_list);
         add_to_grocery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addToGrocery(new FoodListViewItem(bar.getText().toString(), "Time", R.drawable.ic_launcher_background), v);
+                addToGrocery(new GroceryListViewItem(bar.getText().toString()), v);
 
                 // REPLACE "new JSONObject()" with the JSON object from the selected "res" array
                 HashMap<String, Object> newIngredient = new HashMap<>();
@@ -151,43 +139,38 @@ public class GroceryList extends MainPage {
         }
     }
 
-    protected void removeFromGrocery(FoodListViewItem item) {
+    protected void removeFromGrocery(GroceryListViewItem item) {
         groceryContents.remove(item);
         groceryAdapter.notifyDataSetChanged();
     }
 
-    protected void addToGrocery(FoodListViewItem item, View v) {
+    protected void addToGrocery(GroceryListViewItem item, View v) {
         Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
         groceryContents.add(item);
         groceryAdapter.notifyDataSetChanged();
     }
 
-    protected ArrayList<FoodListViewItem> getShoppingList() {
-        final ArrayList<FoodListViewItem> shoppingList = new ArrayList<FoodListViewItem>();
-
+    protected void fetchShoppingList() {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        db.collection("USERS").document(ID).collection("Shopping List")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                shoppingList.add(new FoodListViewItem(document.getData().toString(), "", R.drawable.ic_launcher_background));
-                            }
-                        } else {
-                            // Do stuff if this fails
-                            shoppingList.add(new FoodListViewItem("Error, oops", "", R.drawable.ic_launcher_background));
-                        }
-                    }
-                });
+        db.collection("USERS").document(ID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot document = task.getResult();
+                ArrayList<String> items = (ArrayList<String>) document.get("Shopping List");
+                ArrayList<GroceryListViewItem> shoppingList = new ArrayList<GroceryListViewItem>();
+                for (String item : items) {
+                    // Remove the user ID from the string
+                    item = item.substring(0, item.indexOf("_"));
+                    shoppingList.add(new GroceryListViewItem(item));
+                }
 
+                // Update this activity's list-view to match items
+                ListView listView = (ListView) findViewById(R.id.shopping_list_view);
+                groceryAdapter = new GroceryListViewAdapter(shoppingList, getApplicationContext(), false);
+                listView.setAdapter(groceryAdapter);
+            }
+        });
 
-
-        //shoppingList.add(new FoodListViewItem("Marshmallow", "April 20", R.drawable.ic_launcher_background));
-        //shoppingList.add(new FoodListViewItem("Pizza", "April 20", R.drawable.ic_launcher_background));
-        //shoppingList.add(new FoodListViewItem("Korean BBQ", "April 20", R.drawable.ic_launcher_background));
-        return shoppingList;
     }
 
     protected void pushToFirebase(HashMap<String, Object> ingredient) {
