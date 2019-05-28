@@ -26,8 +26,10 @@ public class ViewRecipeInstructions extends AppCompatActivity {
 
         Intent intent = getIntent();
         String recipeName = intent.getStringExtra("recipeName");
-        System.out.println("recipe name is: " + recipeName);
-        instructions.setText(intent.getStringExtra("instructions"));
+
+        String instructionString = intent.getStringExtra("instructions");
+        instructions.setText(instructionString);
+        System.out.println("instructions is: " + instructionString);
         instructions.setMovementMethod(new ScrollingMovementMethod());
         recipeText.setText(recipeName);
         Picasso.with(getApplicationContext()).load(intent.getStringExtra("imgURL")).into(imgView);

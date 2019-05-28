@@ -11,10 +11,14 @@ import android.app.SearchManager;
 import android.widget.SearchView;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.TextView;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 
 import com.squareup.picasso.Picasso;
@@ -29,6 +33,9 @@ public class Recipes extends MainPage {
     String USER_QUERY = "";
     String SPOONACULAR_API_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search?query=";
     String dataParsed = "";
+    String SPOONACULAR_IMAGE_URI = "https://spoonacular.com/recipeImages/";
+    int id = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +104,7 @@ public class Recipes extends MainPage {
     // Background thread used to retrieve data from API
     class RecipeSearch extends AsyncTask<Void, Void, String>{
 
+
         private Exception exception;
 
         // Step used to set up retrieving data from API
@@ -107,18 +115,18 @@ public class Recipes extends MainPage {
         // Retrieves API data using user query
         protected String doInBackground(Void... urls) {
             try {
-                URL url = new URL(EDAMAM_API_URL + USER_QUERY + EDAMAM_API_ID + EDAMAM_API_KEY);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                //URL url = new URL(EDAMAM_API_URL + USER_QUERY + EDAMAM_API_ID + EDAMAM_API_KEY);
+                //HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 // Using the code below with spoonacular needs threading i think
-                /*URL url = new URL(SPOONACULAR_API_URL + USER_QUERY);
+                URL url = new URL(SPOONACULAR_API_URL + USER_QUERY);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setRequestProperty("X-RapidAPI-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
                 urlConnection.setRequestProperty("X-RapidAPI-Key", "94cfccb0c9msh2df1f90eef1052fp15b07bjsna54028f8b980");
-                System.out.println("response code: " + urlConnection.getResponseCode());*/
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                     StringBuilder stringBuilder = new StringBuilder();
+                    //System.out.println("getInputStream is: " + bufferedReader.readLine());
                     String line;
                     while ((line = bufferedReader.readLine()) != null) {
                         stringBuilder.append(line).append("\n");
@@ -141,6 +149,9 @@ public class Recipes extends MainPage {
             }
 
             try{
+                /*System.out.println("the response is: " + response);
+                TextView txt = (TextView) findViewById(R.id.recipe_text);
+                txt.setText(response);*/
                 // Remove all current photos on new search
                 LinearLayout photos = (LinearLayout) findViewById(R.id.popular_recipes);
                 if( photos.getChildCount() > 0){
@@ -148,67 +159,55 @@ public class Recipes extends MainPage {
                 }
                 int numToRetrieve = 5;
                 JSONObject jsonObject = new JSONObject(response);
-                JSONArray jsonArray = jsonObject.getJSONArray("hits");
+
+                //JSONArray jsonArray = jsonObject.getJSONArray("hits"); // hits is for Edamam
+                JSONArray jsonArray = jsonObject.getJSONArray("results");
                     for(int xx = 0; xx < numToRetrieve; xx++) {
                         dataParsed = "";
-                        JSONObject hit1 = jsonArray.getJSONObject(xx);
-                        String imgURL = hit1.getJSONObject("recipe").getString("image");
+                        JSONObject hit = jsonArray.getJSONObject(xx);
+                        String imgURL = SPOONACULAR_IMAGE_URI + hit.getString("image");
                         //System.out.println("data parsed is: " + dataParsed);
-                        photos.addView(insertIMG(imgURL, hit1));
+                        System.out.println("img url is: " + imgURL);
+                        photos.addView(insertIMG(imgURL, hit));
                     }
 
             }catch(JSONException e){}
         }
-        View insertIMG(final String imgURL, final JSONObject hit1){
+        View insertIMG(final String imgURL, final JSONObject hit){
 
             LinearLayout layout = new LinearLayout(getApplicationContext());
             layout.setLayoutParams(new LinearLayout.LayoutParams(350, 500));
             ImageButton recipeIMG = new ImageButton(getApplicationContext());
             recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(300, 300));
 
-            //try{
-                //JSONObject recipe = hit1.getJSONObject("recipe");
+            recipeIMG.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), ViewRecipeInstructions.class);
+                    String imgURL = "";
+                    String recipeName = "";
+                    try {
+                        //JSONObject recipe = hit1.getJSONObject("results");
+                        imgURL = SPOONACULAR_IMAGE_URI + hit.getString("image");
+                        recipeName = hit.getString("title");
 
-                recipeIMG.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getApplicationContext(), ViewRecipeInstructions.class);
-                        String imgURL = "";
-                        String recipeName = "";
-                        try {
-                            JSONObject recipe = hit1.getJSONObject("recipe");
-                            imgURL = recipe.getString("image");
-                            recipeName = recipe.getString("label");
+                        int servings = hit.getInt("servings");
+                        dataParsed = "This recipe yields " + servings + " servings\n";
 
-                            int servings = recipe.getInt("yield");
-                            dataParsed = "This recipe yields " + servings + " servings\n";
+                        //String url_str = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/" + hit.getInt("id") + "/information";
+                        id = hit.getInt("id");
+                        new RecipeInstructions().execute();
 
-                            JSONArray healthLabels = recipe.getJSONArray("healthLabels");
-                            JSONArray dietLabels = recipe.getJSONArray("dietLabels");
-                            for (int ii = 0; ii < healthLabels.length(); ii++) {
-                                dataParsed += healthLabels.getString(ii) + "\n";
-                            }
-                            for (int jj = 0; jj < dietLabels.length(); jj++) {
-                                dataParsed += dietLabels.getString(jj) + "\n";
-                            }
+                     } catch (Exception e) {
 
-                            JSONArray ingredients = recipe.getJSONArray("ingredientLines");
-                            dataParsed += "\nIngredients:\n";
-                            for (int kk = 0; kk < ingredients.length(); kk++) {
-                                dataParsed += ingredients.getString(kk) + "\n";
-                            }
-                        }catch(JSONException e){
-
-                        }
-                        intent.putExtra("instructions", dataParsed);
-                        intent.putExtra("imgURL", imgURL);
-                        intent.putExtra("recipeName", recipeName);
-                        startActivity(intent);
-                    }
-                });
-
-            //}catch(JSONException e){}
-
+                        System.out.println("exception is: " + e);
+                         intent.putExtra("instructions", dataParsed);
+                         intent.putExtra("imgURL", imgURL);
+                         intent.putExtra("recipeName", recipeName);
+                         startActivity(intent);
+                     }
+                 }
+            });
             Picasso.with(getApplicationContext()).load(imgURL).into(recipeIMG);
             layout.addView(recipeIMG);
             return layout;
@@ -216,4 +215,44 @@ public class Recipes extends MainPage {
 
     }
 
+    class RecipeInstructions extends AsyncTask<Void, Void, String> {
+
+        protected String doInBackground(Void... voids) {
+            return null;
+        }
+
+        protected void onPostExecute(String response) {
+            try {
+                String url_str = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/" + id + "/information";
+                System.out.println("url is : " + url_str);
+                URL url = new URL(url_str);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                System.out.println("response code inside recipeinstruction is; " + urlConnection.getResponseCode());
+                urlConnection.setRequestMethod("GET");
+                urlConnection.setRequestProperty("X-RapidAPI-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
+                urlConnection.setRequestProperty("X-RapidAPI-Key", "94cfccb0c9msh2df1f90eef1052fp15b07bjsna54028f8b980");
+
+
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                StringBuilder stringBuilder = new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(line).append("\n");
+                }
+                bufferedReader.close();
+                JSONObject jsonObject = new JSONObject(stringBuilder.toString());
+                JSONArray analyzedInstructions = jsonObject.getJSONArray("analyzedInstructions");
+                JSONArray instructionSteps = analyzedInstructions.getJSONObject(0).getJSONArray("steps");
+                for (int i = 0; i < instructionSteps.length(); i++) {
+                    String step = instructionSteps.getJSONObject(i).getString("step");
+                    dataParsed += step + "\n";
+                    System.out.println("dataParsed is now : " + dataParsed);
+                }
+                urlConnection.disconnect();
+            } catch (Exception e) {
+                System.out.println("exception caught is : " + e);
+            }
+
+        }
+    }
 }
