@@ -23,7 +23,7 @@
         android:id="@+id/bottonNavBar"
         android:paddingTop="5dp"
         android:orientation="horizontal"
-        android:background="#FFFFC107"
+        android:background="#FFF0A22C"
         android:layout_alignParentBottom="true"
         android:foregroundGravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -35,7 +35,7 @@
             android:gravity="center"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:background="#FFFFC107"
+            android:background="#FFF0A22C"
             android:orientation="horizontal"
             android:baselineAligned="false">
 
@@ -44,70 +44,75 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:alpha="1.0"
                 android:button="@null"
                 android:checked="false"
                 android:drawableTop="@drawable/ic_notifications_black_24dp"
                 android:gravity="center"
-                android:alpha="1.0"
                 android:padding="2dp"
                 android:text="@string/menu_shopping_list"
-                android:textSize="12sp"/>
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
 
             <RadioButton
                 android:id="@+id/recipes_tab_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:alpha="1.0"
                 android:button="@null"
                 android:checked="false"
                 android:drawableTop="@drawable/ic_dashboard_black_24dp"
                 android:gravity="center"
-                android:alpha="1.0"
                 android:padding="2dp"
                 android:text="@string/menu_recipes"
-                android:textSize="12sp"/>
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
 
             <RadioButton
                 android:id="@+id/basket_tab_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:alpha="1.0"
                 android:button="@null"
                 android:checked="false"
                 android:drawableTop="@drawable/ic_home_black_24dp"
                 android:gravity="center"
-                android:alpha="1.0"
                 android:padding="2dp"
                 android:text="@string/menu_basket"
-                android:textSize="12sp"/>
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
 
             <RadioButton
                 android:id="@+id/social_tab_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:alpha="1.0"
                 android:button="@null"
                 android:checked="false"
                 android:drawableTop="@drawable/ic_dashboard_black_24dp"
                 android:gravity="center"
-                android:alpha="1.0"
                 android:padding="2dp"
                 android:text="@string/menu_social"
-                android:textSize="12sp"/>
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
 
             <RadioButton
                 android:id="@+id/profile_tab_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:alpha="1.0"
                 android:button="@null"
                 android:checked="false"
                 android:drawableTop="@drawable/ic_notifications_black_24dp"
                 android:gravity="center"
-                android:alpha="1.0"
                 android:padding="2dp"
                 android:text="@string/menu_profile"
-                android:textSize="12sp"/>
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
 
 
 
