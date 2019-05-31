@@ -7,54 +7,19 @@
     tools:context=".Recipes">
 
     <TextView
-        android:id="@+id/recipe_text"
-        android:layout_width="337dp"
-        android:layout_height="460dp"
+        android:id="@+id/textView2"
+        android:layout_width="381dp"
+        android:layout_height="197dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:scrollbars="vertical"
-        android:text="@string/menu_recipes"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.368" />
-
-    <ImageView
-        android:id="@+id/recipe_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/recipe_text"
+        android:layout_marginBottom="8dp"
+        android:text="\n\nWOAH KENNY"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="@+id/ScrollView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@color/common_google_signin_btn_text_dark_default" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <HorizontalScrollView
-        android:layout_width="0dp"
-        android:layout_height="190dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="308dp"
-        android:scrollbars="none"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/recipe_img"
-        app:layout_constraintVertical_bias="1.0">
-
-        <LinearLayout
-            android:id="@+id/popular_recipes"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-
-        </LinearLayout>
-
-    </HorizontalScrollView>
 
 </android.support.constraint.ConstraintLayout>
