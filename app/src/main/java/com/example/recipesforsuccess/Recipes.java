@@ -13,6 +13,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.TextView;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.io.InputStreamReader;
@@ -21,9 +22,11 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import com.fasterxml.jackson.core.util.BufferRecycler;
 import com.squareup.picasso.Picasso;
 
 import org.json.*;
+
 
 public class Recipes extends MainPage {
     LinearLayout mainDisplay;
@@ -167,7 +170,7 @@ public class Recipes extends MainPage {
                         JSONObject hit = jsonArray.getJSONObject(xx);
                         String imgURL = SPOONACULAR_IMAGE_URI + hit.getString("image");
                         //System.out.println("data parsed is: " + dataParsed);
-                        System.out.println("img url is: " + imgURL);
+                       // System.out.println("img url is: " + imgURL);
                         photos.addView(insertIMG(imgURL, hit));
                     }
 
@@ -194,17 +197,42 @@ public class Recipes extends MainPage {
                         int servings = hit.getInt("servings");
                         dataParsed = "This recipe yields " + servings + " servings\n";
 
-                        //String url_str = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/" + hit.getInt("id") + "/information";
                         id = hit.getInt("id");
-                        new RecipeInstructions().execute();
+                        System.out.println("ID FOR RECIPE" + id);
+
+                        String instructions = new RecipeInstructions().execute().get();
+
+                        JSONObject recipeSearch = new JSONObject(instructions);
+                        JSONArray analyzedInstructions = recipeSearch.getJSONArray("analyzedInstructions");
+                        JSONObject instructionsArray = analyzedInstructions.getJSONObject(0);
+                        JSONArray stepsArray = instructionsArray.getJSONArray("steps");
+
+                        for(int ii = 0; ii < stepsArray.length(); ii++){
+                            JSONObject step = stepsArray.getJSONObject(ii);
+                            int number = step.getInt("number");
+                            String stepInfo = step.getString("step");
+                            dataParsed = dataParsed + number + ".\t" + stepInfo + "\n";
+                        }
+
+                        System.out.println("HERE IS INSTRUCTIONS_CALL");
+                        System.out.println("INSTRUCTIONS HERE " + instructions);
+
+                        intent.putExtra("instructions", dataParsed);
+                        intent.putExtra("imgURL", imgURL);
+                        intent.putExtra("recipeName", recipeName);
+                        System.out.println("HELLO ABOUT TO START");
+                        startActivity(intent);
+                        System.out.println("STARTED");
+
 
                      } catch (Exception e) {
 
-                        System.out.println("exception is: " + e);
-                         intent.putExtra("instructions", dataParsed);
+                         System.out.println("exception is: " + e);
+                         //intent.putExtra("instructions", dataParsed);
                          intent.putExtra("imgURL", imgURL);
                          intent.putExtra("recipeName", recipeName);
                          startActivity(intent);
+                         System.out.println("AFTER STARTING NEW INTENT ACTIVITY");
                      }
                  }
             });
@@ -216,42 +244,40 @@ public class Recipes extends MainPage {
     }
 
     class RecipeInstructions extends AsyncTask<Void, Void, String> {
+        String instructions_call = "";
 
+        @Override
         protected String doInBackground(Void... voids) {
-            return null;
-        }
-
-        protected void onPostExecute(String response) {
-            try {
+            try{
                 String url_str = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/" + id + "/information";
                 System.out.println("url is : " + url_str);
                 URL url = new URL(url_str);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                System.out.println("response code inside recipeinstruction is; " + urlConnection.getResponseCode());
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setRequestProperty("X-RapidAPI-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
-                urlConnection.setRequestProperty("X-RapidAPI-Key", "94cfccb0c9msh2df1f90eef1052fp15b07bjsna54028f8b980");
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("GET");
+                httpURLConnection.setRequestProperty("X-RapidAPI-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
+                httpURLConnection.setRequestProperty("X-RapidAPI-Key", "94cfccb0c9msh2df1f90eef1052fp15b07bjsna54028f8b980");
 
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                String line = "";
+                while(line != null){
+                    line = bufferedReader.readLine();
+                    instructions_call = instructions_call + line;
+                }
 
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                StringBuilder stringBuilder = new StringBuilder();
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    stringBuilder.append(line).append("\n");
-                }
-                bufferedReader.close();
-                JSONObject jsonObject = new JSONObject(stringBuilder.toString());
-                JSONArray analyzedInstructions = jsonObject.getJSONArray("analyzedInstructions");
-                JSONArray instructionSteps = analyzedInstructions.getJSONObject(0).getJSONArray("steps");
-                for (int i = 0; i < instructionSteps.length(); i++) {
-                    String step = instructionSteps.getJSONObject(i).getString("step");
-                    dataParsed += step + "\n";
-                    System.out.println("dataParsed is now : " + dataParsed);
-                }
-                urlConnection.disconnect();
-            } catch (Exception e) {
-                System.out.println("exception caught is : " + e);
+                return instructions_call;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String aVoid) {
+            super.onPostExecute(aVoid);
 
         }
     }
