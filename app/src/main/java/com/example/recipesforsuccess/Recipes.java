@@ -1,6 +1,7 @@
 package com.example.recipesforsuccess;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -99,6 +100,7 @@ public class Recipes extends MainPage {
             //setContentView(R.layout.activity_search_results);
             USER_QUERY = intent.getStringExtra(SearchManager.QUERY);
             new RecipeSearch().execute();
+            setContentView(R.layout.activity_recipe_search);
         }
 
     }
@@ -169,19 +171,24 @@ public class Recipes extends MainPage {
                         dataParsed = "";
                         JSONObject hit = jsonArray.getJSONObject(xx);
                         String imgURL = SPOONACULAR_IMAGE_URI + hit.getString("image");
+                        String foodName = hit.getString("title");
+                        String prepTime = hit.getString("readyInMinutes");
                         //System.out.println("data parsed is: " + dataParsed);
                        // System.out.println("img url is: " + imgURL);
-                        photos.addView(insertIMG(imgURL, hit));
+                        photos.addView(insertIMG(imgURL, foodName, prepTime, hit));
                     }
 
             }catch(JSONException e){}
         }
-        View insertIMG(final String imgURL, final JSONObject hit){
+        View insertIMG(final String imgURL, final String foodName, final String prepTime, final JSONObject hit){
 
             LinearLayout layout = new LinearLayout(getApplicationContext());
-            layout.setLayoutParams(new LinearLayout.LayoutParams(350, 500));
+            layout.setLayoutParams(new LinearLayout.LayoutParams(1000, 500));
             ImageButton recipeIMG = new ImageButton(getApplicationContext());
             recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(300, 300));
+            TextView recipeName = new TextView(getApplicationContext());
+            recipeName.setLayoutParams(new LinearLayout.LayoutParams(700, 300));
+            recipeName.setPadding(75,50,0,0);
 
             recipeIMG.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -236,8 +243,67 @@ public class Recipes extends MainPage {
                      }
                  }
             });
+
+            recipeName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), ViewRecipeInstructions.class);
+                    String imgURL = "";
+                    String recipeName = "";
+                    try {
+                        //JSONObject recipe = hit1.getJSONObject("results");
+                        imgURL = SPOONACULAR_IMAGE_URI + hit.getString("image");
+                        recipeName = hit.getString("title");
+
+                        int servings = hit.getInt("servings");
+                        dataParsed = "This recipe yields " + servings + " servings\n";
+
+                        id = hit.getInt("id");
+                        System.out.println("ID FOR RECIPE" + id);
+
+                        String instructions = new RecipeInstructions().execute().get();
+
+                        JSONObject recipeSearch = new JSONObject(instructions);
+                        JSONArray analyzedInstructions = recipeSearch.getJSONArray("analyzedInstructions");
+                        JSONObject instructionsArray = analyzedInstructions.getJSONObject(0);
+                        JSONArray stepsArray = instructionsArray.getJSONArray("steps");
+
+                        for(int ii = 0; ii < stepsArray.length(); ii++){
+                            JSONObject step = stepsArray.getJSONObject(ii);
+                            int number = step.getInt("number");
+                            String stepInfo = step.getString("step");
+                            dataParsed = dataParsed + number + ".\t" + stepInfo + "\n";
+                        }
+
+                        System.out.println("HERE IS INSTRUCTIONS_CALL");
+                        System.out.println("INSTRUCTIONS HERE " + instructions);
+
+                        intent.putExtra("instructions", dataParsed);
+                        intent.putExtra("imgURL", imgURL);
+                        intent.putExtra("recipeName", recipeName);
+                        System.out.println("HELLO ABOUT TO START");
+                        startActivity(intent);
+                        System.out.println("STARTED");
+
+
+                    } catch (Exception e) {
+
+                        System.out.println("exception is: " + e);
+                        //intent.putExtra("instructions", dataParsed);
+                        intent.putExtra("imgURL", imgURL);
+                        intent.putExtra("recipeName", recipeName);
+                        startActivity(intent);
+                        System.out.println("AFTER STARTING NEW INTENT ACTIVITY");
+                    }
+                }
+            });
+
             Picasso.with(getApplicationContext()).load(imgURL).into(recipeIMG);
+            recipeName.append(foodName);
+            recipeName.append("\n\t\tPrep Time: " + prepTime + " min");
+            layout.setPadding(0,100,0,0);
             layout.addView(recipeIMG);
+            layout.addView(recipeName);
             return layout;
         }
 
