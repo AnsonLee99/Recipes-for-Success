@@ -6,11 +6,39 @@
     android:layout_height="match_parent"
     tools:context=".GroceryList">
 
-    <TextView
-        android:id="@+id/textView"
+    <AutoCompleteTextView
+        android:id="@+id/grocery_searchBar"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:completionThreshold="1"
+        android:hint="Add Ingredients"
+        app:layout_constraintEnd_toStartOf="@+id/add_to_shopping_list"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ListView
+        android:id="@+id/shopping_list_view"
+        android:layout_width="373dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:paddingBottom="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/grocery_searchBar" />
+
+    <Button
+        android:id="@+id/add_to_shopping_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/menu_shopping_list"
-        tools:layout_editor_absoluteX="242dp"
-        tools:layout_editor_absoluteY="58dp" />
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>

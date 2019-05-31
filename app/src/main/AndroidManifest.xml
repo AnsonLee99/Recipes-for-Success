@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.recipesforsuccess">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -11,10 +12,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".Profile" android:exported="true"></activity>
         <activity android:name=".Social" android:exported="true"/>
-        <activity android:name=".Basket" android:exported="true"/>
+        <activity android:name=".Basket" android:exported="true"
+                  android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".Recipes" 
                   android:label="Recipes"
                   android:launchMode="singleTop"
@@ -27,12 +30,14 @@
                   </intent-filter>
         </activity>
         <activity android:name=".BasketEditing" android:exported="true"/>
-        <activity android:name=".GroceryList" android:exported="true"/>
+        <activity android:name=".GroceryList" android:exported="true"
+                  android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".CreateAccount" android:exported="true"/>
         <activity android:name=".dataobjects.NutritionalInfo"></activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
