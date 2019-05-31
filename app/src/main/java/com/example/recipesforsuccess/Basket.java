@@ -1,4 +1,5 @@
 package com.example.recipesforsuccess;
+import android.content.Intent;
 import android.os.Debug;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -15,9 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.example.recipesforsuccess.dataobjects.FoodListViewAdapter;
 import com.example.recipesforsuccess.dataobjects.FoodListViewItem;
+import com.example.recipesforsuccess.dataobjects.NutritionalInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -44,6 +47,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -121,16 +125,24 @@ public class Basket extends MainPage {
 
         ListView listView = (ListView) findViewById(R.id.basket_list_view);
 
+        Callable<Void> callback =  new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                showPopup();
+                return null;
+            }
+        };
+
         basketContents = new ArrayList<FoodListViewItem>();
-        basketContents.add(new FoodListViewItem("Marshmallow", "April 20", R.drawable.ic_launcher_background));
-        basketContents.add(new FoodListViewItem("Pizza", "April 20", R.drawable.ic_launcher_background));
-        basketContents.add(new FoodListViewItem("Korean BBQ", "April 20", R.drawable.ic_launcher_background));
-        basketContents.add(new FoodListViewItem("Pho", "April 20", R.drawable.ic_launcher_background));
-        basketContents.add(new FoodListViewItem("Silkworms", "April 20", R.drawable.ic_launcher_background));
-        basketContents.add(new FoodListViewItem("Computer Chips", "April 20", R.drawable.ic_launcher_background));
-        basketContents.add(new FoodListViewItem("Marshmallow", "April 20", R.drawable.ic_launcher_background));
-        basketContents.add(new FoodListViewItem("Pizza", "April 20", R.drawable.ic_launcher_background));
-        basketContents.add(new FoodListViewItem("Korean BBQ", "April 20", R.drawable.ic_launcher_background));
+        basketContents.add(new FoodListViewItem("Marshmallow", "April 20", R.drawable.ic_launcher_background, callback));
+        basketContents.add(new FoodListViewItem("Pizza", "April 20", R.drawable.ic_launcher_background, callback));
+        basketContents.add(new FoodListViewItem("Korean BBQ", "April 20", R.drawable.ic_launcher_background, callback));
+        basketContents.add(new FoodListViewItem("Pho", "April 20", R.drawable.ic_launcher_background, callback));
+        basketContents.add(new FoodListViewItem("Silkworms", "April 20", R.drawable.ic_launcher_background, callback));
+        basketContents.add(new FoodListViewItem("Computer Chips", "April 20", R.drawable.ic_launcher_background, callback));
+        basketContents.add(new FoodListViewItem("Marshmallow", "April 20", R.drawable.ic_launcher_background, callback));
+        basketContents.add(new FoodListViewItem("Pizza", "April 20", R.drawable.ic_launcher_background, callback));
+        basketContents.add(new FoodListViewItem("Korean BBQ", "April 20", R.drawable.ic_launcher_background, callback));
         basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false);
 
         listView.setAdapter(basketAdapter);
@@ -140,7 +152,7 @@ public class Basket extends MainPage {
         add_to_basket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addToBasket(new FoodListViewItem(bar.getText().toString(), "Time", R.drawable.ic_launcher_background), v);
+                //addToBasket(new FoodListViewItem(bar.getText().toString(), "Time", R.drawable.ic_launcher_background), v);
 
                 // REPLACE "new JSONObject()" with the JSON object from the selected "res" array
                 HashMap<String, Object> newIngredient = new HashMap<>();
@@ -162,7 +174,7 @@ public class Basket extends MainPage {
         debug_add_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addToBasket(new FoodListViewItem("NewFood", "Today", R.drawable.ic_launcher_background), v);
+                //addToBasket(new FoodListViewItem("NewFood", "Today", R.drawable.ic_launcher_background), v);
             }
         });
 
@@ -170,7 +182,6 @@ public class Basket extends MainPage {
             @Override
             public void onClick(View v) {
                 removeFromBasket(basketContents.size() - 1, v);
-
             }
         });
 
@@ -233,6 +244,14 @@ public class Basket extends MainPage {
                         Log.d("test", "DELETING FAILED");
                     }
                 });
+    }
+
+    private void showPopup() {
+
+        https://stackoverflow.com/questions/5265913/how-to-use-putextra-and-getextra-for-string-data
+        startActivity(new Intent(Basket.this, NutritionalInfo.class));
+//        TextView title = (TextView) findViewById(R.id.nutritional_info_title);
+//        title.setText("TESTING TITLE");
     }
 
 

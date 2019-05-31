@@ -3,6 +3,7 @@
     package="com.example.recipesforsuccess">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:allowBackup="true"
@@ -28,6 +29,7 @@
         <activity android:name=".BasketEditing" android:exported="true"/>
         <activity android:name=".GroceryList" android:exported="true"/>
         <activity android:name=".CreateAccount" android:exported="true"/>
+        <activity android:name=".dataobjects.NutritionalInfo"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">

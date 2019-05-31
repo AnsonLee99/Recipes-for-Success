@@ -1,5 +1,7 @@
 package com.example.recipesforsuccess.dataobjects;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -28,7 +30,7 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
         ImageView infoImage;
     }
 
-    public FoodListViewAdapter(ArrayList<FoodListViewItem> data, Context context, boolean isEditing) {
+    public FoodListViewAdapter(ArrayList<FoodListViewItem> data, Context context, boolean isEditing ) {
         super(context, R.layout.food_list_item, data);
         this.dataSet = data;
         this.mContext=context;
@@ -49,6 +51,8 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
             case R.id.info_image:
                 Snackbar.make(v, "Food Name: " +fooditem.getName(), Snackbar.LENGTH_LONG)
                         .setAction("No action", null).show();
+                fooditem.popUp(this.mContext);
+
                 break;
         }
     }
@@ -75,7 +79,6 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
             viewHolder.txtDate = (TextView) convertView.findViewById(R.id.food_date);
             viewHolder.foodImage = (ImageView) convertView.findViewById(R.id.food_image);
             viewHolder.infoImage = (ImageView) convertView.findViewById(R.id.info_image);
-
 
             result=convertView;
 
