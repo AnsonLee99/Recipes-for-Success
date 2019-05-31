@@ -54,11 +54,6 @@ public class MainPage extends MainActivity {
                         startActivity(in);
                         overridePendingTransition(0, 0);
                         break;
-                    case R.id.social_tab_button:
-                        in = new Intent(getBaseContext(), Social.class);
-                        startActivity(in);
-                        overridePendingTransition(0, 0);
-                        break;
                     case R.id.profile_tab_button:
                         in = new Intent(getBaseContext(), Profile.class);
                         startActivity(in);
