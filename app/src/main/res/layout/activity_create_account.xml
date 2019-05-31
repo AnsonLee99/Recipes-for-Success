@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FF9800"
+    android:background="#34FFC107"
     tools:context=".CreateAccount">
 
     <EditText
@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="96dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="300dp"
         android:ems="10"
         android:hint="Email"
         android:inputType="textEmailAddress"
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="96dp"
-        android:layout_marginTop="252dp"
+        android:layout_marginTop="360dp"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
@@ -35,9 +35,11 @@
         android:id="@+id/create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
-        android:layout_marginTop="296dp"
+        android:layout_marginStart="160dp"
+        android:layout_marginTop="416dp"
+        android:background="@android:color/holo_orange_dark"
         android:text="Create"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -46,7 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="96dp"
-        android:layout_marginBottom="576dp"
+        android:layout_marginBottom="500dp"
         android:ems="10"
         android:hint="First Name"
         android:inputType="textEmailAddress"
@@ -58,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="96dp"
-        android:layout_marginBottom="528dp"
+        android:layout_marginBottom="448dp"
         android:ems="10"
         android:hint="Last Name"
         android:inputType="textEmailAddress"

@@ -1,18 +1,19 @@
 package com.example.recipesforsuccess;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
 
-    private List<String> Basket;
+    private ArrayList<String> Basket = new ArrayList<String>();
     private String firstName;
     private String lastName;
-    private List<String> PersonalRecipes;
+    private ArrayList<String> PersonalRecipes = new ArrayList<String>();
     private String profilePic;
 
     public User() {}
 
-    public User(List<String> Basket, String firstName, String lastName, List<String> PersonalRecipes, String profilePic)
+    public User(ArrayList<String> Basket, String firstName, String lastName, ArrayList<String> PersonalRecipes, String profilePic)
     {
         this.Basket = Basket;
         this.firstName = firstName;
