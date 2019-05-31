@@ -14,7 +14,6 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".Profile" android:exported="true"></activity>
-        <activity android:name=".Social" android:exported="true"/>
         <activity android:name=".Basket" android:exported="true"
                   android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".Recipes" 
