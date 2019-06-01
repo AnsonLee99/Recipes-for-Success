@@ -205,7 +205,12 @@ public class Basket extends MainPage {
                 for (String item : items) {
                     // Remove the user ID from the string
                     item = item.substring(0, item.indexOf("_"));
-                    foodList.add(new FoodListViewItem(item, "", 0));
+                    // Capitalize the first letter
+                    if (item.length() < 2) continue;
+                    item  = item.substring(0, 1).toUpperCase() + item.substring(1);
+
+                    // Add string to the foodList
+                    foodList.add(new FoodListViewItem(item, "4/20/1420", 0));
                 }
 
                 // Update this activity's list-view to match items
