@@ -104,7 +104,7 @@ public class GroceryList extends MainPage {
             }
         });
 
-        // Use fetchShoppingList to retrieve the items in the shopping list
+        // Use fetchFoodList to retrieve the items in the shopping list
         // and display them on the screen as a listView
         fetchShoppingList();
 
