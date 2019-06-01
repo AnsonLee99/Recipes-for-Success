@@ -45,6 +45,7 @@
         android:background="@android:color/holo_orange_dark"
         android:text="@string/common_signin_button_text"
         android:textColor="@android:color/white"
+        android:textColorLink="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
