@@ -3,6 +3,7 @@ package com.example.recipesforsuccess;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -100,7 +101,11 @@ public class Recipes extends MainPage {
             //setContentView(R.layout.activity_search_results);
             USER_QUERY = intent.getStringExtra(SearchManager.QUERY);
             new RecipeSearch().execute();
-            setContentView(R.layout.activity_recipe_search);
+            mainDisplay.removeAllViews();
+            mainDisplay = (LinearLayout) findViewById(R.id.main_display);
+            View recipeSearchView = getLayoutInflater().inflate(R.layout.activity_recipe_search, null);
+            mainDisplay.addView(recipeSearchView);
+            //setContentView(R.layout.activity_recipe_search);
         }
 
     }
@@ -162,7 +167,7 @@ public class Recipes extends MainPage {
                 if( photos.getChildCount() > 0){
                     photos.removeAllViews();
                 }
-                int numToRetrieve = 5;
+                int numToRetrieve = 10;
                 JSONObject jsonObject = new JSONObject(response);
 
                 //JSONArray jsonArray = jsonObject.getJSONArray("hits"); // hits is for Edamam
@@ -299,8 +304,9 @@ public class Recipes extends MainPage {
             });
 
             Picasso.with(getApplicationContext()).load(imgURL).into(recipeIMG);
-            recipeName.append(foodName);
-            recipeName.append("\n\t\tPrep Time: " + prepTime + " min");
+            String boldedFoodName = "<b>" + foodName + "</b>";
+            recipeName.setText(Html.fromHtml(boldedFoodName));
+            recipeName.append("\nPrep Time: " + prepTime + " min");
             layout.setPadding(0,100,0,0);
             layout.addView(recipeIMG);
             layout.addView(recipeName);
