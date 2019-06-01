@@ -10,6 +10,7 @@ import com.example.recipesforsuccess.dataobjects.FoodListViewAdapter;
 import com.example.recipesforsuccess.dataobjects.FoodListViewItem;
 
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 public class BasketEditing extends MainPage {
     LinearLayout mainDisplay;
@@ -37,9 +38,16 @@ public class BasketEditing extends MainPage {
 //        content.add(new FoodListViewItem("Pho", "April 20", R.drawable.ic_launcher_background));
 //        content.add(new FoodListViewItem("Silkworms", "April 20", R.drawable.ic_launcher_background));
 //        content.add(new FoodListViewItem("Computer Chips", "April 20", R.drawable.ic_launcher_background));
-        FoodListViewAdapter adapter = new FoodListViewAdapter(content, getApplicationContext(), true);
-
-        listView.setAdapter(adapter);
+//        FoodListViewAdapter adapter = new FoodListViewAdapter(content, getApplicationContext(), true,
+//                new Callable<Void>() {
+//                    @Override
+//                    public Void call() throws Exception {
+//                        showPop()
+//                        return null;
+//                    }
+//                });
+//
+//        listView.setAdapter(adapter);
 
     }
 

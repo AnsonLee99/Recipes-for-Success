@@ -1,18 +1,25 @@
 package com.example.recipesforsuccess;
+import android.app.ActionBar;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.example.recipesforsuccess.dataobjects.FoodListViewAdapter;
 import com.example.recipesforsuccess.dataobjects.FoodListViewItem;
@@ -27,10 +34,12 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -45,6 +54,8 @@ public class Basket extends MainPage {
 
     private ArrayList<FoodListViewItem> basketContents;
     FoodListViewAdapter basketAdapter;
+
+    private PopupWindow window;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -110,7 +121,14 @@ public class Basket extends MainPage {
         fetchFoodList();
         ListView listView = (ListView) findViewById(R.id.basket_list_view);
         basketContents = new ArrayList<FoodListViewItem>();
-        basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false);
+        basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
+                new Callable<Void>() {
+                    @Override
+                    public Void call() throws Exception {
+                        showPopup("INGREDIENT NAME");
+                        return null;
+                    }
+                });
 
         listView.setAdapter(basketAdapter);
 
@@ -142,6 +160,8 @@ public class Basket extends MainPage {
             @Override
             public void onClick(View v) {
                 addToBasket(new FoodListViewItem("NewFood", "Today", R.drawable.ic_launcher_background), v);
+                Log.d("test", "showing popup");
+                showPopup("hi");
             }
         });
 
@@ -215,11 +235,17 @@ public class Basket extends MainPage {
 
                 // Update this activity's list-view to match items
                 ListView listView = (ListView) findViewById(R.id.basket_list_view);
-                basketAdapter = new FoodListViewAdapter(foodList, getApplicationContext(), false);
+                basketAdapter = new FoodListViewAdapter(foodList, getApplicationContext(), false,
+                        new Callable<Void>() {
+                            @Override
+                            public Void call() throws Exception {
+                                showPopup("INGREDIENT NAMEEE");
+                                return null;
+                            }
+                        });
                 listView.setAdapter(basketAdapter);
             }
         });
-
     }
 
     // itemToDelete is the name of the item to delete
@@ -242,8 +268,32 @@ public class Basket extends MainPage {
                 });
     }
 
+    // Shows popup with nutritional info
+    private void showPopup(String ingredient) {
+        try {
+            LayoutInflater inflater = (LayoutInflater) Basket.this.
+                    getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View layout = inflater.inflate(R.layout.nutritioanl_info_popup, (ViewGroup) findViewById(R.id.nutritional_popup) );
 
+            window = new PopupWindow(layout, 500, 700, true);
 
+            window.showAtLocation(layout, Gravity.CENTER, 0, 0);
 
-    // TODO
+            Button close = (Button) layout.findViewById(R.id.popup_close);
+            close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    window.dismiss();
+                }
+            });
+
+            TextView title = (TextView) layout.findViewById(R.id.nutritional_info_title);
+            title.setText(ingredient);
+
+            
+        } catch(Exception e) {
+            Log.d("TEST", "ERROR OCCURED WITH POPUP");
+            e.printStackTrace();
+        }
+    }
 }

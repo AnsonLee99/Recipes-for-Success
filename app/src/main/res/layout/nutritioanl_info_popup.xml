@@ -1,12 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/nutritional_popup"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00FF8181">
+    android:background="#FFFFFF">
 
     <TextView
         android:id="@+id/nutritional_info_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:layout_marginTop="7dp"
         android:text="POPUP WINDOW" />
-</RelativeLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:id="@+id/nutritional_nesting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:id="@+id/nutritional_labels"
+            android:layout_width="165dp"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF">
+
+            <TextView
+                android:id="@+id/nut_serving_size"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:textSize="19sp"
+                android:layout_marginLeft="7dp"
+                android:text="Serving Size:" />
+
+            <TextView
+                android:id="@+id/nut_calories"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="19sp"
+                android:layout_marginLeft="7dp"
+                android:text="Calories:" />
+
+            <TextView
+                android:id="@+id/nut_sat_fat"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="19sp"
+                android:layout_marginLeft="7dp"
+                android:text="Saturated Fat:" />
+
+            <TextView
+                android:id="@+id/nut_trans_fat"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="19sp"
+                android:layout_marginLeft="7dp"
+                android:text="Trans Fat:" />
+
+            <TextView
+                android:id="@+id/nut_cholesterol"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="19sp"
+                android:layout_marginLeft="7dp"
+                android:text="Cholesterol: " />
+
+            <TextView
+                android:id="@+id/nut_sodium"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="19sp"
+                android:layout_marginLeft="7dp"
+                android:text="Sodium" />
+
+            <TextView
+                android:id="@+id/nut_protein"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="19sp"
+                android:layout_marginLeft="7dp"
+                android:text="Protein:" />
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:id="@+id/nutritional_values"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF">
+
+            <TextView
+                android:id="@+id/nut_serving_size_v"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:textSize="19sp"
+                android:layout_marginLeft="5dp"
+                android:text="15g" />
+
+            <TextView
+                android:id="@+id/nut_calories_v"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="19sp"
+                android:layout_marginLeft="5dp"
+                android:text="400 cal" />
+
+            <TextView
+                android:id="@+id/nut_sat_fat_v"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="19sp"
+                android:layout_marginLeft="5dp"
+                android:text="6g" />
+
+            <TextView
+                android:id="@+id/nut_trans_fat_v"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="19sp"
+                android:layout_marginLeft="5dp"
+                android:text="2g" />
+
+            <TextView
+                android:id="@+id/nut_cholesterol_v"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="19sp"
+                android:layout_marginLeft="5dp"
+                android:text="14mg" />
+
+            <TextView
+                android:id="@+id/nut_sodium_v"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="19sp"
+                android:layout_marginLeft="5dp"
+                android:text="50mg" />
+
+            <TextView
+                android:id="@+id/nut_protein_v"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="19sp"
+                android:layout_marginLeft="5dp"
+                android:text="4g" />
+
+        </LinearLayout>
+    </LinearLayout>
+    <Button
+        android:id="@+id/popup_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="close" />
+</LinearLayout>
