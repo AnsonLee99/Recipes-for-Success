@@ -85,21 +85,6 @@
                 android:textSize="12sp" />
 
             <RadioButton
-                android:id="@+id/social_tab_button"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:alpha="1.0"
-                android:button="@null"
-                android:checked="false"
-                android:drawableTop="@drawable/ic_dashboard_black_24dp"
-                android:gravity="center"
-                android:padding="2dp"
-                android:text="@string/menu_social"
-                android:textColor="@android:color/white"
-                android:textSize="12sp" />
-
-            <RadioButton
                 android:id="@+id/profile_tab_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
