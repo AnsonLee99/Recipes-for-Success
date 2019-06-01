@@ -1,9 +1,6 @@
 package com.example.recipesforsuccess;
-import android.content.Intent;
-import android.os.Debug;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,38 +13,24 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import com.example.recipesforsuccess.dataobjects.FoodListViewAdapter;
 import com.example.recipesforsuccess.dataobjects.FoodListViewItem;
-import com.example.recipesforsuccess.dataobjects.NutritionalInfo;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.common.reflect.TypeToken;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -70,8 +53,8 @@ public class Basket extends MainPage {
         super.onCreate(savedInstanceState);
 
         mainDisplay = (LinearLayout) findViewById(R.id.main_display);
-        View groceryView = getLayoutInflater().inflate(R.layout.activity_basket, null);
-        mainDisplay.addView(groceryView);
+        View basketView = getLayoutInflater().inflate(R.layout.activity_basket, null);
+        mainDisplay.addView(basketView);
 
         // For displaying the currently selected tab
         // I can't fuckin figure it out
@@ -123,26 +106,10 @@ public class Basket extends MainPage {
             }
         });
 
+        // Use fetchFoodList to get ingredients from database and add them to listview
+        fetchFoodList();
         ListView listView = (ListView) findViewById(R.id.basket_list_view);
-
-        Callable<Void> callback =  new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                showPopup();
-                return null;
-            }
-        };
-
         basketContents = new ArrayList<FoodListViewItem>();
-        basketContents.add(new FoodListViewItem("Marshmallow", "April 20", R.drawable.ic_launcher_background, callback));
-        basketContents.add(new FoodListViewItem("Pizza", "April 20", R.drawable.ic_launcher_background, callback));
-        basketContents.add(new FoodListViewItem("Korean BBQ", "April 20", R.drawable.ic_launcher_background, callback));
-        basketContents.add(new FoodListViewItem("Pho", "April 20", R.drawable.ic_launcher_background, callback));
-        basketContents.add(new FoodListViewItem("Silkworms", "April 20", R.drawable.ic_launcher_background, callback));
-        basketContents.add(new FoodListViewItem("Computer Chips", "April 20", R.drawable.ic_launcher_background, callback));
-        basketContents.add(new FoodListViewItem("Marshmallow", "April 20", R.drawable.ic_launcher_background, callback));
-        basketContents.add(new FoodListViewItem("Pizza", "April 20", R.drawable.ic_launcher_background, callback));
-        basketContents.add(new FoodListViewItem("Korean BBQ", "April 20", R.drawable.ic_launcher_background, callback));
         basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false);
 
         listView.setAdapter(basketAdapter);
@@ -152,7 +119,7 @@ public class Basket extends MainPage {
         add_to_basket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //addToBasket(new FoodListViewItem(bar.getText().toString(), "Time", R.drawable.ic_launcher_background), v);
+                addToBasket(new FoodListViewItem(bar.getText().toString(), "Time", R.drawable.ic_launcher_background), v);
 
                 // REPLACE "new JSONObject()" with the JSON object from the selected "res" array
                 HashMap<String, Object> newIngredient = new HashMap<>();
@@ -174,7 +141,7 @@ public class Basket extends MainPage {
         debug_add_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //addToBasket(new FoodListViewItem("NewFood", "Today", R.drawable.ic_launcher_background), v);
+                addToBasket(new FoodListViewItem("NewFood", "Today", R.drawable.ic_launcher_background), v);
             }
         });
 
@@ -182,6 +149,7 @@ public class Basket extends MainPage {
             @Override
             public void onClick(View v) {
                 removeFromBasket(basketContents.size() - 1, v);
+
             }
         });
 
@@ -189,13 +157,13 @@ public class Basket extends MainPage {
 
     protected void removeFromBasket(int index, View v) {
         if(basketContents.size() > index) {
-        Snackbar.make(v, "Removed: " + basketContents.get(index).getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
-        basketContents.remove(index);
-        basketAdapter.notifyDataSetChanged();
-    } else {
-        Snackbar.make(v, "Basket is empty!", Snackbar.LENGTH_LONG).setAction("No action", null).show();
+            Snackbar.make(v, "Removed: " + basketContents.get(index).getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
+            basketContents.remove(index);
+            basketAdapter.notifyDataSetChanged();
+        } else {
+            Snackbar.make(v, "Basket is empty!", Snackbar.LENGTH_LONG).setAction("No action", null).show();
+        }
     }
-}
 
     protected void removeFromBasket(FoodListViewItem item) {
         basketContents.remove(item);
@@ -226,6 +194,34 @@ public class Basket extends MainPage {
                 });
     }
 
+    protected void fetchFoodList() {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        db.collection("USERS").document(ID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot document = task.getResult();
+                ArrayList<String> items = (ArrayList<String>) document.get("Basket");
+                ArrayList<FoodListViewItem> foodList = new ArrayList<FoodListViewItem>();
+                for (String item : items) {
+                    // Remove the user ID from the string
+                    item = item.substring(0, item.indexOf("_"));
+                    // Capitalize the first letter
+                    if (item.length() < 2) continue;
+                    item  = item.substring(0, 1).toUpperCase() + item.substring(1);
+
+                    // Add string to the foodList
+                    foodList.add(new FoodListViewItem(item, "4/20/1420", 0));
+                }
+
+                // Update this activity's list-view to match items
+                ListView listView = (ListView) findViewById(R.id.basket_list_view);
+                basketAdapter = new FoodListViewAdapter(foodList, getApplicationContext(), false);
+                listView.setAdapter(basketAdapter);
+            }
+        });
+
+    }
+
     // itemToDelete is the name of the item to delete
     protected void deleteFromFirebase(String itemToDelete) {
 
@@ -244,14 +240,6 @@ public class Basket extends MainPage {
                         Log.d("test", "DELETING FAILED");
                     }
                 });
-    }
-
-    private void showPopup() {
-
-        https://stackoverflow.com/questions/5265913/how-to-use-putextra-and-getextra-for-string-data
-        startActivity(new Intent(Basket.this, NutritionalInfo.class));
-//        TextView title = (TextView) findViewById(R.id.nutritional_info_title);
-//        title.setText("TESTING TITLE");
     }
 
 

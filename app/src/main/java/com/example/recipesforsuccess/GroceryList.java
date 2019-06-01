@@ -104,7 +104,7 @@ public class GroceryList extends MainPage {
             }
         });
 
-        // Use fetchShoppingList to retrieve the items in the shopping list
+        // Use fetchFoodList to retrieve the items in the shopping list
         // and display them on the screen as a listView
         fetchShoppingList();
 
@@ -161,6 +161,11 @@ public class GroceryList extends MainPage {
                 for (String item : items) {
                     // Remove the user ID from the string
                     item = item.substring(0, item.indexOf("_"));
+                    // Capitalize the first letter
+                    if (item.length() < 2) continue;
+                    item  = item.substring(0, 1).toUpperCase() + item.substring(1);
+
+                    // Add string to the foodList
                     shoppingList.add(new GroceryListViewItem(item));
                 }
 
