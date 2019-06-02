@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreateRecipe">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginStart="168dp"
+                android:layout_marginTop="24dp"
+                app:srcCompat="@drawable/ic_notifications_black_24dp" />
+
+            <Button
+                android:id="@+id/choosePicture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="136dp"
+                android:layout_marginTop="20dp"
+                android:text="Choose Picture" />
+
+            <EditText
+                android:id="@+id/createName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="96dp"
+                android:layout_marginTop="5dp"
+                android:ems="10"
+                android:hint="Recipe Name"
+                android:inputType="textEmailAddress" />
+
+            <EditText
+                android:id="@+id/createTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="96dp"
+                android:layout_marginTop="0dp"
+                android:ems="10"
+                android:hint="Prep Time"
+                android:inputType="textPersonName" />
+
+            <ListView
+                android:id="@+id/list"
+                android:layout_width="395dp"
+                android:layout_height="250dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp" />
+
+            <EditText
+                android:id="@+id/ingredientEditor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="96dp"
+                android:layout_marginTop="5dp"
+                android:ems="10"
+                android:hint="Type Ingredients Here"
+                android:inputType="textPersonName" />
+
+            <Button
+                android:id="@+id/submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="115dp"
+                android:layout_marginTop="5dp"
+                android:text="Submit Ingredients" />
+
+            <ListView
+                android:id="@+id/stepList"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="30dp" />
+
+            <EditText
+                android:id="@+id/createSteps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="96dp"
+                android:layout_marginTop="0dp"
+                android:ems="10"
+                android:hint="Submit Steps"
+                android:inputType="textPersonName" />
+
+            <Button
+                android:id="@+id/submitStep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="140dp"
+                android:layout_marginTop="0dp"
+                android:text="Submit Step" />
+
+
+            <Button
+                android:id="@+id/createRecipe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="138dp"
+                android:layout_marginTop="10dp"
+                android:text="Create Recipe" />
+
+            <TextView
+                android:id="@+id/invisible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="96dp"
+                android:layout_marginTop="80dp"
+                />
+
+        </LinearLayout>
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>
