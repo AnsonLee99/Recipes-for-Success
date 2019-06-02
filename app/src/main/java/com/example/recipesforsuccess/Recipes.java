@@ -114,32 +114,32 @@ public class Recipes extends MainPage {
             }
         });
 
-        Button getBasket = findViewById(R.id.getBasket);
-        getBasket.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AutoCompleteTextView userInput = (AutoCompleteTextView) findViewById(R.id.user);
-                String user = userInput.getText().toString();
-                System.out.println("user is: " + user);
-                DocumentReference userDoc = db.document(("USERS/" + user));
-                userDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        userBasket = (List<String>) documentSnapshot.get("basket");
-                        for(int i = 0; i < userBasket.size(); i++){
-                            System.out.println("item in basket is: " + userBasket.get(i));
-                        }
-                        new GetRecipeByIngredients().execute();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println("failed to get items");
-                    }
-                });
-
-            }
-        });
+//        Button getBasket = findViewById(R.id.getBasket);
+//        getBasket.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                AutoCompleteTextView userInput = (AutoCompleteTextView) findViewById(R.id.user);
+//                String user = userInput.getText().toString();
+//                System.out.println("user is: " + user);
+//                DocumentReference userDoc = db.document(("USERS/" + user));
+//                userDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                        userBasket = (List<String>) documentSnapshot.get("basket");
+//                        for(int i = 0; i < userBasket.size(); i++){
+//                            System.out.println("item in basket is: " + userBasket.get(i));
+//                        }
+//                        new GetRecipeByIngredients().execute();
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        System.out.println("failed to get items");
+//                    }
+//                });
+//
+//            }
+//        });
 
         DocumentReference userDoc = db.document(("USERS/TestUser"));
         userDoc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -259,13 +259,11 @@ public class Recipes extends MainPage {
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                     StringBuilder stringBuilder = new StringBuilder();
-                    //System.out.println("getInputStream is: " + bufferedReader.readLine());
                     String line;
                     while ((line = bufferedReader.readLine()) != null) {
                         stringBuilder.append(line).append("\n");
                     }
                     bufferedReader.close();
-                    //System.out.println("returning reponse of: " + stringBuilder.toString());
                     return stringBuilder.toString();
                 } finally {
                     urlConnection.disconnect();
@@ -393,7 +391,7 @@ public class Recipes extends MainPage {
                 TextView txt = (TextView) findViewById(R.id.recipe_text);
                 txt.setText(response);*/
                 // Remove all current photos on new search
-                LinearLayout photos = (LinearLayout) findViewById(R.id.popular_recipes);
+                LinearLayout photos = (LinearLayout) findViewById(R.id.searched_recipes);
                 if( photos.getChildCount() > 0){
                     photos.removeAllViews();
                 }

@@ -10,57 +10,131 @@
         android:id="@+id/filters"
         android:layout_width="49dp"
         android:layout_height="53dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="2dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/filter" />
-
-    <HorizontalScrollView
-        android:id="@+id/horizontalScrollView"
-        android:layout_width="355dp"
-        android:layout_height="315dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user"
-        app:layout_constraintVertical_bias="0.34">
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/filter" />
 
-        <LinearLayout
-            android:id="@+id/recommended_recipes"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"></LinearLayout>
+    <TextView
+        android:id="@+id/my_recipes"
+        android:layout_width="340dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:paddingLeft="0dp"
+        android:text="My Recipes"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/filters"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    </HorizontalScrollView>
-
-    <Button
-        android:id="@+id/getBasket"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="643dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="getBasket"
+        android:orientation="vertical"
+        android:paddingLeft="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/filters"
-        app:layout_constraintVertical_bias="0.103" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/filters">
 
-    <AutoCompleteTextView
-        android:id="@+id/user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="132dp"
-        android:layout_marginEnd="24dp"
-        android:completionHint="user"
-        android:text="AutoCompleteTextView"
-        app:layout_constraintEnd_toStartOf="@+id/getBasket"
-        app:layout_constraintTop_toTopOf="parent" />
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView2"
+            android:layout_width="381dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:scrollbarSize="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:orientation="horizontal"
+                android:paddingLeft="0dp">
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="TextView" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/basket_recipes_title"
+            android:layout_width="286dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:scrollbarSize="0dp"
+            android:text="From My Basket"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <HorizontalScrollView
+            android:id="@+id/basket_recipes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:scrollbarSize="0dp">>
+
+            <LinearLayout
+                android:id="@+id/recommended_recipes"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"></LinearLayout>
+
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/saved_recipes_title"
+            android:layout_width="353dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Saved Recipes"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
+            android:layout_width="385dp"
+            android:layout_height="125dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:scrollbarSize="0dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="0dp">
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="188dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="TextView" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
