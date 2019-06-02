@@ -244,6 +244,11 @@ public class Recipes extends MainPage {
                         String imgURL = SPOONACULAR_IMAGE_URI + hit.getString("image");
                         String foodName = hit.getString("title");
                         String prepTime = hit.getString("readyInMinutes");
+
+                        //parsing ingredients
+
+
+
                         //System.out.println("data parsed is: " + dataParsed);
                        // System.out.println("img url is: " + imgURL);
                         photos.addView(insertIMG(imgURL, foodName, prepTime, hit));
@@ -267,6 +272,8 @@ public class Recipes extends MainPage {
                     Intent intent = new Intent(getApplicationContext(), ViewRecipeInstructions.class);
                     String imgURL = "";
                     String recipeName = "";
+                    String ingredientList = "";
+
                     try {
                         //JSONObject recipe = hit1.getJSONObject("results");
                         imgURL = SPOONACULAR_IMAGE_URI + hit.getString("image");
@@ -280,10 +287,21 @@ public class Recipes extends MainPage {
 
                         String instructions = new RecipeInstructions().execute().get();
 
+
                         JSONObject recipeSearch = new JSONObject(instructions);
                         JSONArray analyzedInstructions = recipeSearch.getJSONArray("analyzedInstructions");
                         JSONObject instructionsArray = analyzedInstructions.getJSONObject(0);
                         JSONArray stepsArray = instructionsArray.getJSONArray("steps");
+
+
+                        //getting ingredients list
+                        JSONArray extendedIngredients = recipeSearch.getJSONArray("extendedIngredients");
+
+                        for (int ii = 0; ii < extendedIngredients.length(); ii++){
+                            JSONObject ingredient = extendedIngredients.getJSONObject(ii);
+                            String original = ingredient.getString("original");
+                            ingredientList = ingredientList + (ii + 1) + ".   " + "" + original + "\n" + "" + "\n";
+                        };
 
                         for(int ii = 0; ii < stepsArray.length(); ii++){
                             JSONObject step = stepsArray.getJSONObject(ii);
@@ -296,6 +314,7 @@ public class Recipes extends MainPage {
                         System.out.println("HERE IS INSTRUCTIONS_CALL");
                         System.out.println("INSTRUCTIONS HERE " + instructions);
 
+                        intent.putExtra("ingredients", ingredientList);
                         intent.putExtra("instructions", dataParsed);
                         intent.putExtra("imgURL", imgURL);
                         intent.putExtra("recipeName", recipeName);
@@ -322,6 +341,7 @@ public class Recipes extends MainPage {
                     Intent intent = new Intent(getApplicationContext(), ViewRecipeInstructions.class);
                     String imgURL = "";
                     String recipeName = "";
+                    String ingredientList = "";
                     try {
                         //JSONObject recipe = hit1.getJSONObject("results");
                         imgURL = SPOONACULAR_IMAGE_URI + hit.getString("image");
@@ -340,6 +360,15 @@ public class Recipes extends MainPage {
                         JSONObject instructionsArray = analyzedInstructions.getJSONObject(0);
                         JSONArray stepsArray = instructionsArray.getJSONArray("steps");
 
+                        //getting ingredients list
+                        JSONArray extendedIngredients = recipeSearch.getJSONArray("extendedIngredients");
+
+                        for (int ii = 0; ii < extendedIngredients.length(); ii++){
+                            JSONObject ingredient = extendedIngredients.getJSONObject(ii);
+                            String original = ingredient.getString("original");
+                            ingredientList = ingredientList + (ii + 1) + ".   " + "" + original + "\n" + "" + "\n";
+                        };
+
                         for(int ii = 0; ii < stepsArray.length(); ii++){
                             JSONObject step = stepsArray.getJSONObject(ii);
                             int number = step.getInt("number");
@@ -352,6 +381,7 @@ public class Recipes extends MainPage {
                         System.out.println("INSTRUCTIONS HERE " + instructions);
 
                         intent.putExtra("instructions", dataParsed);
+                        intent.putExtra("ingredients", ingredientList);
                         intent.putExtra("imgURL", imgURL);
                         intent.putExtra("recipeName", recipeName);
                         System.out.println("HELLO ABOUT TO START");

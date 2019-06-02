@@ -26,16 +26,11 @@
                 android:layout_height="372dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                tools:srcCompat="@tools:sample/avatars" />
+                tools:srcCompat="@tools:sample/avatars" /><![CDATA[
 
-            <ImageButton
-                android:id="@+id/fav_button"
-                android:layout_width="36dp"
-                android:layout_height="42dp"
-                android:layout_gravity="right"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                tools:srcCompat="@tools:sample/avatars" />
+            />
+
+            ]]>
 
             <TextView
                 android:id="@+id/recipe_title"
@@ -46,6 +41,55 @@
                 android:id="@+id/indent_space"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/ingredientsTitle"
+                    android:layout_width="355dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-black"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="-20dp"
+                    android:text="Ingredients"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/fav_button"
+                    android:layout_width="36dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="right"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    app:srcCompat="@drawable/plain_star" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/ingredients_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/indent_space2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/instructionsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-black"
+                android:paddingLeft="20dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="-20dp"
+                android:text="Instructions"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/instructions_text"
