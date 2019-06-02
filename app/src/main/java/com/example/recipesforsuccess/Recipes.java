@@ -86,7 +86,7 @@ public class Recipes extends MainPage {
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
 
-        Button filtersButton = (Button) findViewById(R.id.filters);
+        ImageButton filtersButton = (ImageButton) findViewById(R.id.filters);
 
         filtersButton.setOnClickListener(new View.OnClickListener() {
             @Override
