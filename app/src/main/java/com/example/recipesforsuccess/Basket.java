@@ -194,6 +194,9 @@ public class Basket extends MainPage {
         Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
         basketContents.add(item);
         basketAdapter.notifyDataSetChanged();
+
+        ListView listView = (ListView) findViewById(R.id.basket_list_view);
+        listView.setAdapter(basketAdapter);
     }
 
     protected void pushToFirebase(HashMap<String, Object> ingredient) {
@@ -202,7 +205,7 @@ public class Basket extends MainPage {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        db.collection("USERS").document(ID).update("Basket",
+                        db.collection("USERS").document(ID).update("basket",
                                 FieldValue.arrayUnion(docName));
                     }
                 })
@@ -220,7 +223,7 @@ public class Basket extends MainPage {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
-                ArrayList<String> items = (ArrayList<String>) document.get("Basket");
+                ArrayList<String> items = (ArrayList<String>) document.get("basket");
                 ArrayList<FoodListViewItem> foodList = new ArrayList<FoodListViewItem>();
                 for (String item : items) {
                     // Remove the user ID from the string
@@ -256,7 +259,7 @@ public class Basket extends MainPage {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        db.collection("USERS").document(ID).update("Basket",
+                        db.collection("USERS").document(ID).update("basket",
                                 FieldValue.arrayRemove(docName));
                     }
                 })
