@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">Recipes for Success</string>
-    <string name="menu_shopping_list">Grocery List</string>
-    <string name="menu_recipes">Recipes</string>
-    <string name="menu_basket">My Basket</string>
-    <string name="menu_social">Social</string>
-    <string name="menu_profile">Profile</string>
-    <string name="search_hint">Search for a recipe</string>
-</resources>
