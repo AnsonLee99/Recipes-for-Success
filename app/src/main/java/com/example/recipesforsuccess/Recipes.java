@@ -218,7 +218,7 @@ public class Recipes extends MainPage {
         @Override
         protected String doInBackground(Void... voids) {
             String base_url = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients?";
-            String numSearch = "number=10";
+            String numSearch = "number=5";
             String maxUsed = "&ranking=1&ignorePantry=false"; // Maximize used ingredients
             String minMissing = "&ranking=2&ignorePantry=false"; // Minimize missing ingredient
             String ingredients = "&ingredients=";
@@ -287,7 +287,7 @@ public class Recipes extends MainPage {
                 if( photos.getChildCount() > 0){
                     photos.removeAllViews();
                 }
-                int numToRetrieve = 10;
+                int numToRetrieve = 5;
                 System.out.println("GETTING JSONOBJECT");
                 //JSONObject jsonObject = new JSONObject(response);
                 //System.out.println("jsonObject is: "+ jsonObject);
@@ -299,21 +299,21 @@ public class Recipes extends MainPage {
                     JSONObject hit = jsonArray.getJSONObject(xx);
                     id = hit.getInt("id");
 
-                    String recipeInformation = new RecipeInstructions().execute().get();
-                    JSONObject recipe = new JSONObject(recipeInformation);
-                    String prepTime = recipe.getString("readyInMinutes");
-
+                    //String recipeInformation = new RecipeInstructions().execute().get();
+                    //JSONObject recipe = new JSONObject(recipeInformation);
+                    //String prepTime = recipe.getString("readyInMinutes");
+                    String prepTime = "";
                     String imgURL = hit.getString("image");
                     String foodName = hit.getString("title");
-                    photos.addView(insertIMG(imgURL, foodName, prepTime, hit, 1, recipeInformation));
+                    photos.addView(insertIMG(imgURL, foodName, prepTime, hit, 1, ""/*recipeInformation*/));
                 }
 
             }catch(JSONException e){
                 System.out.println("caught exception " + e);
-            } catch (InterruptedException e) {
+            /*} catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
-                e.printStackTrace();
+                e.printStackTrace();*/
             }
         }
     }
@@ -397,7 +397,7 @@ public class Recipes extends MainPage {
                 if( photos.getChildCount() > 0){
                     photos.removeAllViews();
                 }
-                int numToRetrieve = 10;
+                int numToRetrieve = 5;
                 JSONObject jsonObject = new JSONObject(response);
 
                 //JSONArray jsonArray = jsonObject.getJSONArray("hits"); // hits is for Edamam
@@ -494,7 +494,8 @@ public class Recipes extends MainPage {
                     if( task == 0 ) {
                         recipeInfo = new RecipeInstructions().execute().get();
                     }else{
-                        recipeInfo = instructions;
+                        //recipeInfo = instructions; //with prep time
+                        recipeInfo = new RecipeInstructions().execute().get(); // without preptime
                     }
 
 
@@ -566,7 +567,7 @@ public class Recipes extends MainPage {
                     if( task == 0 ) {
                         recipeInfo = new RecipeInstructions().execute().get();
                     }else{
-                        recipeInfo = instructions;
+                        recipeInfo = new RecipeInstructions().execute().get();
                     }
 
                     JSONObject recipeSearch = new JSONObject(recipeInfo);
@@ -576,7 +577,7 @@ public class Recipes extends MainPage {
 
                     //getting ingredients list
                     JSONArray extendedIngredients = recipeSearch.getJSONArray("extendedIngredients");
-
+                    System.out.println("ingredients is: " + extendedIngredients.toString());
                     for (int ii = 0; ii < extendedIngredients.length(); ii++){
                         JSONObject ingredient = extendedIngredients.getJSONObject(ii);
                         String original = ingredient.getString("original");
