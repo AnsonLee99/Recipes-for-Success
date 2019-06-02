@@ -90,6 +90,22 @@ public class ViewRecipeInstructions extends AppCompatActivity {
         ingredients.setTextColor(Color.BLACK);
         ingredients.setText(ingredientString);
 
+        //Equipment title
+        TextView equipmentTitle = (TextView) findViewById(R.id.equipmentTitle);
+        equipmentTitle.setTextColor(Color.BLACK);
+
+        //equipment
+        String equipmentString = intent.getStringExtra("equipment");
+        TextView equipment = findViewById(R.id.equipment_text);
+        equipment.setBackgroundColor(Color.WHITE);
+        equipment.setPadding(40, 75, 40, 50);
+        equipment.setTextColor(Color.BLACK);
+        equipment.setText(equipmentString);
+
+        // Line after ingredients lsit
+        TextView indentSpace3 = findViewById(R.id.indent_space3);
+        indentSpace3.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, 50));
+        indentSpace3.setBackground(getDrawable(R.drawable.recipe_instruction_border_1));
 
         // Line after ingredients lsit
         TextView indentSpace2 = findViewById(R.id.indent_space2);
