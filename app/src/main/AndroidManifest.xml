@@ -32,6 +32,8 @@
         <activity android:name=".GroceryList" android:exported="true"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".CreateAccount" android:exported="true"/>
+        <activity android:name=".PersonalRecipes" android:exported="true"/>
+        <activity android:name=".CreateRecipe" android:exported="true"/>
         <activity android:name=".dataobjects.NutritionalInfo"></activity>
         <activity
             android:name=".MainActivity"
