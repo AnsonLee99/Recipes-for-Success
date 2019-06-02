@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,6 +26,7 @@ import java.io.BufferedReader;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.core.util.BufferRecycler;
 import com.squareup.picasso.Picasso;
@@ -41,6 +43,15 @@ public class Recipes extends MainPage {
     String SPOONACULAR_API_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search?query=";
     String dataParsed = "";
     String SPOONACULAR_IMAGE_URI = "https://spoonacular.com/recipeImages/";
+
+    int SECOND_ACTIVITY_REQUEST_CODE = 0;
+
+    ArrayList<String> intolerances = new ArrayList();
+    ArrayList<String> diets = new ArrayList();
+
+    ArrayList<String> categories = new ArrayList();
+
+
     int id = 0;
 
     @Override
@@ -74,7 +85,39 @@ public class Recipes extends MainPage {
                 (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+
+        Button filtersButton = (Button) findViewById(R.id.filters);
+
+        filtersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openActivity2();
+                Intent intent = getIntent();
+                System.out.println("HERE IS THE EGGS: " + intent.getStringExtra("egg"));
+            }
+        });
+
         return true;
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Check that it is the SecondActivity with an OK result
+        if (requestCode == SECOND_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // Get String data from Intent
+                intolerances = data.getStringArrayListExtra("intolerances");
+                diets = data.getStringArrayListExtra("diet");
+                categories = data.getStringArrayListExtra("type");
+
+            }
+        }
+    }
+
+    public void openActivity2(){
+        Intent intent = new Intent(this, Filters.class);
+        startActivityForResult(intent,SECOND_ACTIVITY_REQUEST_CODE);
     }
 
  /*   @Override
@@ -126,19 +169,31 @@ public class Recipes extends MainPage {
 
         // Retrieves API data using user query
         protected String doInBackground(Void... urls) {
+
             try {
-                //URL url = new URL(EDAMAM_API_URL + USER_QUERY + EDAMAM_API_ID + EDAMAM_API_KEY);
-                //HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                // Using the code below with spoonacular needs threading i think
-                URL url = new URL(SPOONACULAR_API_URL + USER_QUERY);
+                String urlString = SPOONACULAR_API_URL + USER_QUERY;
+
+                if (!intolerances.isEmpty()){
+                    urlString = appendOptionToURL(intolerances, urlString, "intolerances");
+                }
+                if (!diets.isEmpty()){
+                    urlString = appendOptionToURL(diets, urlString, "diet");
+                }
+                if (!categories.isEmpty()){
+                    urlString = appendOptionToURL(categories, urlString, "type");
+                }
+                String test2 = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search?query=pie&intolerances=egg%2Ctree+nut&diet=vegetarian";
+                URL url = new URL(urlString);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setRequestProperty("X-RapidAPI-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
                 urlConnection.setRequestProperty("X-RapidAPI-Key", "94cfccb0c9msh2df1f90eef1052fp15b07bjsna54028f8b980");
+
+                System.out.println("URL STRING AFTER FILTERS: " + url.toString());
+
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                     StringBuilder stringBuilder = new StringBuilder();
-                    //System.out.println("getInputStream is: " + bufferedReader.readLine());
                     String line;
                     while ((line = bufferedReader.readLine()) != null) {
                         stringBuilder.append(line).append("\n");
@@ -152,6 +207,15 @@ public class Recipes extends MainPage {
                 return null;
             }
 
+        }
+
+        public String appendOptionToURL(ArrayList<String> options, String urlString, String parameter){
+            urlString = urlString +  "&" + parameter + "=" + options.get(0);
+            for(int i = 1; i < options.size(); i++){
+                urlString = urlString + "%2C" + options.get(i);
+            }
+            System.out.println("urlSTRING" + urlString);
+            return urlString;
         }
 
         // Get result from API and return result back to main UI thread

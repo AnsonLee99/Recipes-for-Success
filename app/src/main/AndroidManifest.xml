@@ -44,6 +44,11 @@
             android:name=".CreateAccount"
             android:exported="true" />
         <activity
+            android:name=".Filters"
+            android:exported="true"
+            android:label="Filters"
+            />
+        <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
             <intent-filter>
