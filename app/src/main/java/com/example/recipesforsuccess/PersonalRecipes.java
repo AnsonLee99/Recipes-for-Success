@@ -30,7 +30,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -47,6 +49,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import javax.annotation.Nullable;
+
 public class PersonalRecipes extends MainPage {
 
     LinearLayout mainDisplay;
@@ -57,7 +61,7 @@ public class PersonalRecipes extends MainPage {
     private CollectionReference recipeRef = db.collection("RECIPES");
     private DocumentReference currentUser = db.collection("USERS").document(userID);
     ListView list;
-    private ArrayList<Recipe> recipes;
+    private ArrayList<Recipe> recipes = new ArrayList<Recipe>();
     RecipeAdapter adapter;
     Context context;
 
@@ -69,42 +73,37 @@ public class PersonalRecipes extends MainPage {
         mainDisplay = (LinearLayout) findViewById(R.id.main_display);
         View createRecipeView = getLayoutInflater().inflate(R.layout.activity_tester, null);
         mainDisplay.addView(createRecipeView);
+        adapter = new RecipeAdapter(context, recipes);
+        list = (ListView) findViewById(R.id.test_list);
+        list.setAdapter(adapter);
 
-        currentUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        currentUser.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful())
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if(documentSnapshot.exists())
                 {
-                    DocumentSnapshot snap = task.getResult();
-                    ArrayList<String> IDs = (ArrayList<String>)snap.get("personalRecipes");
-                    recipeRef.document(IDs.get(0)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            int x = 0;
-                            if(task.isSuccessful())
-                            {
-                                DocumentSnapshot snap = task.getResult();
-                                if(snap.exists()) {
-                                    Log.d("PersonalRecipes.class", "Snap exists!");
-                                    List<String> ingredients = (ArrayList<String>)snap.get("ingredients");
-                                    String name = (String)snap.get("name");
-                                    Log.d("PersonalRecipes.class", name);
-                                    String prep_time = (String)snap.get("prepTime");
-                                    Log.d("PersonalRecipes.class", prep_time);
-                                    List<String> steps = (ArrayList<String>)snap.get("steps");
-                                    String recipePic = (String)snap.get("recipePic");
-                                    Log.d("PersonalRecipes.class", recipePic);
+                    ArrayList<String> recipeIDs = (ArrayList<String>) documentSnapshot.get("personalRecipes");
+                    for(String ID : recipeIDs)
+                    {
+                        recipeRef.document(ID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                            @Override
+                            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+
+                                if(documentSnapshot.exists())
+                                {
+                                    Recipe currRecipe = documentSnapshot.toObject(Recipe.class);
+                                    recipes.add(currRecipe);
+                                    adapter.notifyDataSetChanged();
 
                                 }
-                                //recipes.add(currRecipe);
-
-                                list = (ListView) findViewById(R.id.test_list);
-                                RecipeAdapter adapter = new RecipeAdapter(context, recipes);
-                                list.setAdapter(adapter);
-
                             }
-                        }
-                    });
+                        });
+                    }
+                    /*
+                    list = (ListView) findViewById(R.id.test_list);
+                    adapter = new RecipeAdapter(context, recipes);
+                    list.setAdapter(adapter);
+                    */
                 }
             }
         });

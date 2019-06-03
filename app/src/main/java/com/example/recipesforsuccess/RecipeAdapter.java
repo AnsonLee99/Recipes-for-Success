@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
@@ -37,12 +39,18 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 
 import java.util.List;
 
 public class RecipeAdapter extends ArrayAdapter<Recipe> {
+
+    Context context;
+
 
     public RecipeAdapter(Context context, List<Recipe> object)
     {
@@ -63,8 +71,20 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
 
         name.setText(recipe.getName());
         time.setText(recipe.getPrepTime());
+        try {
+            URL url = new URL(recipe.getRecipePic());
+            Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            image.setImageBitmap(bmp);
+        }
+        catch(MalformedURLException e){
+            Log.d("PersonalRecipes.class", "Didn't work");
+        }
+        catch(IOException e)
+        {
+            Log.d("PersonalRecipes.class", "exception");
+        }
         //image.
-        //Picasso.load(recipe.getRecipePic()).into(image);
+        //Picasso.with(context).load(recipe.getRecipePic()).into(image);
 
 
 
