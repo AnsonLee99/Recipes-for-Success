@@ -321,6 +321,9 @@ public class Basket extends MainPage {
             TextView title = (TextView) layout.findViewById(R.id.nutritional_info_title);
             title.setText(ingredient);
 
+            PopulatePopup updatePopup = new PopulatePopup(ingredient);
+            updatePopup.execute("https://api.nal.usda.gov/ndb/list");
+            //updatePopup.execute("Browser: https://api.nal.usda.gov/ndb/search/?format=json&q=butter&sort=n&max=25&offset=0&api_key=DEMO_KEY ");
             
         } catch(Exception e) {
             Log.d("TEST", "ERROR OCCURED WITH POPUP");
