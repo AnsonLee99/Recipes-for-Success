@@ -142,7 +142,6 @@ public class Basket extends MainPage {
         add_to_basket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 // REPLACE "new JSONObject()" with the JSON object from the selected "res" array
                 HashMap<String, Object> newIngredient = new HashMap<>();
 
@@ -155,12 +154,17 @@ public class Basket extends MainPage {
 
                 // capitalize first letter of item name
                 String ingredientName = newIngredient.get("name").toString();
-                ingredientName = (ingredientName.length() < 2) ? ingredientName : (ingredientName.substring(0, 1).toUpperCase() + ingredientName .substring(1));
+                ingredientName = (ingredientName.length() < 2) ? ingredientName :
+                        (ingredientName.substring(0, 1).toUpperCase() + ingredientName .substring(1));
 
-                addToBasket(new FoodListViewItem(newIngredient.get("name").toString(), newIngredient.get("time added").toString(), currImgURL), v);
+                // capitalize first letter of item name
+                String itemname = (bar.getText().toString().length() < 2) ? bar.getText().toString() :
+                        (bar.getText().toString().substring(0, 1).toUpperCase() + bar.getText().toString().substring(1));
+                Date date = new Date();
+
+                addToBasket(new FoodListViewItem(itemname, dateToString(date), currImgURL), v);
 
                 pushToFirebase(newIngredient);
-                showPopup(bar.getText().toString());
             }
         });
 
@@ -275,10 +279,7 @@ public class Basket extends MainPage {
 
                             Date date = new Date(Long.parseLong(itemseconds) * 1000l);
 
-                            Log.d("TIME", itemdate);
-
                             // Add string to the foodList
-
                             String img = foodItemDocument.get("imgURL").toString();
 
                             basketContents.add(new FoodListViewItem(itemname, dateToString(date), img));
