@@ -2,6 +2,7 @@ package com.example.recipesforsuccess;
 import android.content.Intent;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.os.Bundle;
@@ -53,6 +54,11 @@ public class Basket extends MainPage {
     private FirebaseAuth auth = this.passAuth();
     private String ID =  auth.getUid();
 
+    private long delay = 300; // Wait .5 sec after user stops typing to update
+    long lastTextUpdate = 0;
+    Handler handler = new Handler();
+    private Editable str;
+
     private ArrayList<String> imgURL = new ArrayList<>();
     private ArrayList<String> prevImgURL;
     private String currImgURL;
@@ -87,6 +93,39 @@ public class Basket extends MainPage {
         //bar.setDropDownHeight(6);
         options.notifyDataSetChanged();
 
+
+        final Runnable input_finish_checker = new Runnable() {
+            public void run() {
+                if (System.currentTimeMillis() > (lastTextUpdate + delay - 500)) {
+                    Log.d("test", "NEW ENTRY: " + str.toString());
+
+                    ExecutorService service = Executors.newSingleThreadExecutor();
+                    CustomCallable call = new CustomCallable(str.toString());
+                    Future<JSONArray> f = service.submit(call);
+
+                    options.clear();
+                    ArrayList<String> currOptions = new ArrayList<>();
+
+                    prevImgURL = imgURL;
+                    imgURL = new ArrayList<>();
+
+                    try {
+                        res = f.get();
+                        for ( int i = 0; i < res.length(); i ++ ) {
+                            currOptions.add(res.getJSONObject(i).get("name").toString());
+                            imgURL.add(res.getJSONObject(i).get("image").toString());
+                        }
+                    } catch(Exception e) {
+                        Log.d("test", "EXCEPTION WITH RETRIEVING ARRAYLIST: " + e);
+                    }
+                    service.shutdown();
+
+                    options.addAll(currOptions);
+                    options.notifyDataSetChanged();
+                }
+            }
+        };
+
         bar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -95,35 +134,16 @@ public class Basket extends MainPage {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d("test", "NEW ENTRY: " + s.toString());
-
-                ExecutorService service = Executors.newSingleThreadExecutor();
-                CustomCallable call = new CustomCallable(s.toString());
-                Future<JSONArray> f = service.submit(call);
-
-                options.clear();
-                ArrayList<String> currOptions = new ArrayList<>();
-
-                prevImgURL = imgURL;
-                imgURL = new ArrayList<>();
-
-                try {
-                    res = f.get();
-                    for ( int i = 0; i < res.length(); i ++ ) {
-                        currOptions.add(res.getJSONObject(i).get("name").toString());
-                        imgURL.add(res.getJSONObject(i).get("image").toString());
-                    }
-                } catch(Exception e) {
-                    Log.d("test", "EXCEPTION WITH RETRIEVING ARRAYLIST: " + e);
-                }
-                service.shutdown();
-
-                options.addAll(currOptions);
+                handler.removeCallbacks(input_finish_checker);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                options.notifyDataSetChanged();
+                if(s.length() >0) {
+                    lastTextUpdate = System.currentTimeMillis();
+                    handler.postDelayed(input_finish_checker, delay);
+                    str = s;
+                }
             }
         });
 
@@ -223,8 +243,8 @@ public class Basket extends MainPage {
                 // Update this activity's list-view to match items
                 ListView listView = (ListView) findViewById(R.id.basket_list_view);
                 basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
-                       new PopulatePopup(), new BasketDeleter()
-                 );
+                        new PopulatePopup(), new BasketDeleter()
+                );
 
                 listView.setAdapter(basketAdapter);
 
@@ -325,7 +345,7 @@ public class Basket extends MainPage {
             PopulatePopup updatePopup = new PopulatePopup(ingredient);
             updatePopup.execute("https://api.nal.usda.gov/ndb/list");
             //updatePopup.execute("Browser: https://api.nal.usda.gov/ndb/search/?format=json&q=butter&sort=n&max=25&offset=0&api_key=DEMO_KEY ");
-            
+
         } catch(Exception e) {
             Log.d("TEST", "ERROR OCCURED WITH POPUP");
             e.printStackTrace();
