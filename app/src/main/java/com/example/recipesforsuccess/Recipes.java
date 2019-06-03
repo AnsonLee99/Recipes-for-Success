@@ -74,7 +74,7 @@ public class Recipes extends MainPage {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     List<String> userBasket;
-    List<String> userRecipes;
+    List<String> recipeIDs;;
     FloatingActionButton createRecipeButton;
 
     private CollectionReference recipeRef = db.collection("RECIPES");
@@ -86,7 +86,6 @@ public class Recipes extends MainPage {
     private ArrayList<Recipe> recipes = new ArrayList<Recipe>();
     RecipeAdapter adapter;
     Context context;
-
 
     int id = 0;
     int tracker = 0;
@@ -116,37 +115,15 @@ public class Recipes extends MainPage {
         adapter = new RecipeAdapter(context, recipes);
         Jeremy = (LinearLayout)findViewById(R.id.Jeremy);
 
+
         currentUser.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                 if(documentSnapshot.exists())
                 {
-                    ArrayList<String> recipeIDs = (ArrayList<String>) documentSnapshot.get("personalRecipes");
-                    for(String ID : recipeIDs)
-                    {
-                        recipeRef.document(ID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                            @Override
-                            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-
-                                if(documentSnapshot.exists())
-                                {
-                                    Recipe currRecipe = documentSnapshot.toObject(Recipe.class);
-                                    //recipes.add(currRecipe);
-                                    //adapter.notifyDataSetChanged();
-                                    //Jeremy.addView(adapter.getView(tracker, null, null));
-                                    System.out.println("addiginv view, calling insertPersonalIMG");
-                                    Jeremy.addView(insertPersonalIMG(currRecipe));
-                                    //tracker++;
-
-                                }
-                            }
-                        });
-                    }
-                    /*
-                    list = (ListView) findViewById(R.id.test_list);
-                    adapter = new RecipeAdapter(context, recipes);
-                    list.setAdapter(adapter);
-                    */
+                    recipeIDs = (List<String>) documentSnapshot.get("personalRecipes");
+                    System.out.println("recipeIDS: " + recipeIDs.toString());
+                    new GetPersonalRecipes().execute();
                 }
             }
         });
@@ -177,33 +154,6 @@ public class Recipes extends MainPage {
                 Intent intent = getIntent();
             }
         });
-
-//        Button getBasket = findViewById(R.id.getBasket);
-//        getBasket.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                AutoCompleteTextView userInput = (AutoCompleteTextView) findViewById(R.id.user);
-//                String user = userInput.getText().toString();
-//                System.out.println("user is: " + user);
-//                DocumentReference userDoc = db.document(("USERS/" + user));
-//                userDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//                    @Override
-//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                        userBasket = (List<String>) documentSnapshot.get("basket");
-//                        for(int i = 0; i < userBasket.size(); i++){
-//                            System.out.println("item in basket is: " + userBasket.get(i));
-//                        }
-//                        new GetRecipeByIngredients().execute();
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        System.out.println("failed to get items");
-//                    }
-//                });
-//
-//            }
-//        });
 
         DocumentReference userDoc = db.document(("USERS/TestUser"));
         userDoc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -277,6 +227,34 @@ public class Recipes extends MainPage {
 
     }
     // TODO
+
+    class GetPersonalRecipes extends AsyncTask<Void, Void, String>{
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            for(int i = 0; i < recipeIDs.size(); i++)
+            {
+                String ID = recipeIDs.get(i);
+                System.out.println("id is:" + ID);
+                //private DocumentReference currentUser = db.collection("USERS").document(userID);
+                DocumentReference recRef = db.document("RECIPES/" + ID);
+                recRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                        System.out.println("checking if snapsnot exists");
+                        if(documentSnapshot.exists())
+                        {
+                            System.out.println("snapshot exists");
+                            Recipe currRecipe = documentSnapshot.toObject(Recipe.class);
+                            Jeremy.addView(insertPersonalIMG(currRecipe));
+                        }
+                        System.out.println("snapshot dne");
+                    }
+                });
+            }
+            return "";
+        }
+    }
 
     class GetRecipeByIngredients extends AsyncTask<Void, Void, String>{
 

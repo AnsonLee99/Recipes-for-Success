@@ -7,7 +7,7 @@ public class Recipe {
 
     private List<String> ingredients = new ArrayList<String>();
     private String name;
-    private String prep_time;
+    private String prepTime;
     private List<String> steps = new ArrayList<String>();
     private String recipePic;
     private List<String> equipment = new ArrayList<String>();
@@ -15,12 +15,12 @@ public class Recipe {
     public Recipe() {
     }
 
-    public Recipe(List<String> ingredients, String name, String prep_time, List<String> steps, String recipePic,
+    public Recipe(List<String> ingredients, String name, String prepTime, List<String> steps, String recipePic,
                   List<String> equipment)
     {
         this.ingredients = ingredients;
         this.name = name;
-        this.prep_time = prep_time;
+        this.prepTime = prepTime;
         this.steps = steps;
         this.recipePic = recipePic;
         this.equipment = equipment;
@@ -38,8 +38,10 @@ public class Recipe {
 
     public String getPrepTime()
     {
-        return this.prep_time;
+        return this.prepTime;
     }
+
+    //public void setPrepTime(String prep_time){ this.prep_time = prep_time; }
 
     public List<String> getSteps()
     {
