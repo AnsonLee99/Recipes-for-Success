@@ -228,13 +228,24 @@ public class Basket extends MainPage {
 
                 listView.setAdapter(basketAdapter);
 
+                if(items.size() <= 0) {
+                    return;
+                }
+
                 for (String item : items) {
                     // get date of food item
                     db.collection("INGREDIENTS").document(item).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             DocumentSnapshot foodItemDocument = task.getResult();
 
-                            String itemname = foodItemDocument.get("name").toString();
+                            Object itemobj = foodItemDocument.get("name");
+                            String itemname;
+                            if(itemobj != null) {
+                                itemname = itemobj.toString();
+                            } else {
+                                return;
+                            }
+
                             // capitalize first letter of item name
                             itemname = (itemname.length() < 2) ? itemname : (itemname.substring(0, 1).toUpperCase() + itemname.substring(1));
 
@@ -277,12 +288,13 @@ public class Basket extends MainPage {
                     public void onSuccess(Void aVoid) {
                         db.collection("USERS").document(ID).update("basket",
                                 FieldValue.arrayRemove(docName));
+                        Log.d("delete", "DELETING SUCCESS");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("test", "DELETING FAILED");
+                        Log.d("delete", "DELETING FAILED");
                     }
                 });
     }
