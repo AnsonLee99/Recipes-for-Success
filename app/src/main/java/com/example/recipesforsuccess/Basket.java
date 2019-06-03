@@ -134,6 +134,11 @@ public class Basket extends MainPage {
                 newIngredient.put("time added", Calendar.getInstance().getTime());
 
                 Log.d("test", "value before: " + newIngredient.get("name"));
+                // capitalize first letter of item name
+
+                String ingredientName = newIngredient.get("name").toString();
+                ingredientName = (ingredientName.length() < 2) ? ingredientName : (ingredientName.substring(0, 1).toUpperCase() + ingredientName .substring(1));
+
                 addToBasket(new FoodListViewItem(newIngredient.get("name").toString(), newIngredient.get("time added").toString(), R.drawable.ic_launcher_background), v);
                 pushToFirebase(newIngredient);
                 showPopup(bar.getText().toString());
@@ -182,6 +187,7 @@ public class Basket extends MainPage {
 
     public void addToBasket(FoodListViewItem item, View v) {
         Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
+        // capitalize first letter of item name
         basketContents.add(item);
         basketAdapter.notifyDataSetChanged();
     }
