@@ -281,7 +281,7 @@ public class Basket extends MainPage {
 
         Log.d("delete", "deleting item " + itemToDelete);
 
-        final String docName = itemToDelete + "_" + ID;
+        final String docName = itemToDelete.toLowerCase() + "_" + ID;
         db.collection("INGREDIENTS").document(docName).delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
