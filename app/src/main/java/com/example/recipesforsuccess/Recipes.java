@@ -309,10 +309,10 @@ public class Recipes extends MainPage {
 
             }catch(JSONException e){
                 System.out.println("caught exception " + e);
-            /*} catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
-                e.printStackTrace();*/
+                e.printStackTrace();
             }
         }
     }
