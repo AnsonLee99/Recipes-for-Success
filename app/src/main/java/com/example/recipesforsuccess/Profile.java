@@ -78,7 +78,9 @@ public class Profile extends MainPage {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reAuthenticate();
+                startActivity(new Intent(Profile.this, PersonalRecipes.class));
+
+                //reAuthenticate();
             }
         });
 

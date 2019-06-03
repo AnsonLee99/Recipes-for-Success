@@ -62,10 +62,20 @@
             android:scrollbarSize="0dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/Jeremy"
+                android:layout_width="353dp"
                 android:layout_height="180dp"
                 android:orientation="horizontal"
-                android:paddingLeft="0dp" />
+                android:paddingLeft="0dp">
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="TextView" />
+
+            </LinearLayout>
         </HorizontalScrollView>
 
         <TextView
@@ -104,5 +114,14 @@
         </HorizontalScrollView>
 
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/createRecipeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:srcCompat="@android:drawable/ic_input_add"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="16dp" />
 
 </android.support.constraint.ConstraintLayout>

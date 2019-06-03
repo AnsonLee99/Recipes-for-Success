@@ -5,25 +5,28 @@ import java.util.List;
 
 public class Recipe {
 
-    private ArrayList<String> ingredients = new ArrayList<String>();
+    private List<String> ingredients = new ArrayList<String>();
     private String name;
-    private String prep_time;
-    private ArrayList<String> steps = new ArrayList<String>();
+    private String prepTime;
+    private List<String> steps = new ArrayList<String>();
     private String recipePic;
+    private List<String> equipment = new ArrayList<String>();
 
     public Recipe() {
     }
 
-    public Recipe(ArrayList<String> ingredients, String name, String prep_time, ArrayList<String> steps, String recipePic)
+    public Recipe(List<String> ingredients, String name, String prepTime, List<String> steps, String recipePic,
+                  List<String> equipment)
     {
         this.ingredients = ingredients;
         this.name = name;
-        this.prep_time = prep_time;
+        this.prepTime = prepTime;
         this.steps = steps;
         this.recipePic = recipePic;
+        this.equipment = equipment;
     }
 
-    public ArrayList<String> getIngredients()
+    public List<String> getIngredients()
     {
         return this.ingredients;
     }
@@ -35,10 +38,12 @@ public class Recipe {
 
     public String getPrepTime()
     {
-        return this.prep_time;
+        return this.prepTime;
     }
 
-    public ArrayList<String> getSteps()
+    //public void setPrepTime(String prep_time){ this.prep_time = prep_time; }
+
+    public List<String> getSteps()
     {
         return this.steps;
     }
@@ -48,5 +53,5 @@ public class Recipe {
         return this.recipePic;
     }
 
-
+    public List<String> getEquipment() { return this.equipment; }
 }

@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -15,6 +17,7 @@ import android.widget.LinearLayout;
 import android.view.MenuInflater;
 import android.view.Menu;
 import android.app.SearchManager;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -39,6 +42,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -86,8 +90,21 @@ public class Recipes extends MainPage {
     String userID = user.getUid();
 
     List<String> userBasket;
+    List<String> recipeIDs;;
+    FloatingActionButton createRecipeButton;
+
+    private CollectionReference recipeRef = db.collection("RECIPES");
+    private FirebaseAuth currAuth = this.passAuth();
+    private FirebaseUser user = currAuth.getCurrentUser();
+    private String userID = user.getUid();
+    private DocumentReference currentUser = db.collection("USERS").document(userID);
+    LinearLayout Jeremy;
+    private ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+    RecipeAdapter adapter;
+    Context context;
 
     int id = 0;
+    int tracker = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,14 +113,52 @@ public class Recipes extends MainPage {
         mainDisplay = (LinearLayout) findViewById(R.id.main_display);
         View groceryView = getLayoutInflater().inflate(R.layout.activity_recipes, null);
         mainDisplay.addView(groceryView);
-
+        context = this;
         // For displaying the currently selected tab
         // I can't fuckin figure it out
         //RadioGroup rg = (RadioGroup) findViewById(R.id.NavBar_Group);
         //RadioButton curr = (RadioButton)findViewById(R.id.recipes_tab_button);
         //curr.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.<CLICKED VERSION OF ICON>);
         //curr.setTextColor(Color.parseColor("3F51B5"));
+        createRecipeButton = (FloatingActionButton) findViewById(R.id.createRecipeButton);
+        createRecipeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Recipes.this, CreateRecipe.class));
+            }
+        });
 
+        adapter = new RecipeAdapter(context, recipes);
+        Jeremy = (LinearLayout)findViewById(R.id.Jeremy);
+
+
+        currentUser.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if(documentSnapshot.exists())
+                {
+                    recipeIDs = (List<String>) documentSnapshot.get("personalRecipes");
+                    System.out.println("recipeIDS: " + recipeIDs.toString());
+                    new GetPersonalRecipes().execute();
+                }
+            }
+        });
+
+        DocumentReference userDoc = db.document(("USERS/" + userID));
+        userDoc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if( documentSnapshot.exists() ){
+                    userBasket = (List<String>) documentSnapshot.get("basket");
+                    for(int i = 0; i < userBasket.size(); i++){
+                        System.out.println("item in basket is: " + userBasket.get(i));
+                    }
+                    new GetRecipeByIngredients().execute();
+                }
+            }
+        });
+        return true;
+      
         handleIntent(getIntent());
 
     }
@@ -130,48 +185,6 @@ public class Recipes extends MainPage {
                 Intent intent = getIntent();
             }
         });
-
-//        Button getBasket = findViewById(R.id.getBasket);
-//        getBasket.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                AutoCompleteTextView userInput = (AutoCompleteTextView) findViewById(R.id.user);
-//                String user = userInput.getText().toString();
-//                System.out.println("user is: " + user);
-//                DocumentReference userDoc = db.document(("USERS/" + user));
-//                userDoc.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//                    @Override
-//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                        userBasket = (List<String>) documentSnapshot.get("basket");
-//                        for(int i = 0; i < userBasket.size(); i++){
-//                            System.out.println("item in basket is: " + userBasket.get(i));
-//                        }
-//                        new GetRecipeByIngredients().execute();
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        System.out.println("failed to get items");
-//                    }
-//                });
-//
-//            }
-//        });
-
-        DocumentReference userDoc = db.document(("USERS/" + userID));
-        userDoc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if( documentSnapshot.exists() ){
-                    userBasket = (List<String>) documentSnapshot.get("basket");
-                    for(int i = 0; i < userBasket.size(); i++){
-                        System.out.println("item in basket is: " + userBasket.get(i));
-                    }
-                    new GetRecipeByIngredients().execute();
-                }
-            }
-        });
-        return true;
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -230,6 +243,34 @@ public class Recipes extends MainPage {
 
     }
     // TODO
+
+    class GetPersonalRecipes extends AsyncTask<Void, Void, String>{
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            for(int i = 0; i < recipeIDs.size(); i++)
+            {
+                String ID = recipeIDs.get(i);
+                System.out.println("id is:" + ID);
+                //private DocumentReference currentUser = db.collection("USERS").document(userID);
+                DocumentReference recRef = db.document("RECIPES/" + ID);
+                recRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                        System.out.println("checking if snapsnot exists");
+                        if(documentSnapshot.exists())
+                        {
+                            System.out.println("snapshot exists");
+                            Recipe currRecipe = documentSnapshot.toObject(Recipe.class);
+                            Jeremy.addView(insertPersonalIMG(currRecipe));
+                        }
+                        System.out.println("snapshot dne");
+                    }
+                });
+            }
+            return "";
+        }
+    }
 
     class GetRecipeByIngredients extends AsyncTask<Void, Void, String>{
 
@@ -753,6 +794,115 @@ public class Recipes extends MainPage {
         if(task == 0) {
             recipeName.append("\nPrep Time: " + prepTime + " min");
         }
+        recipeName.setTextColor(Color.BLACK);
+        layout.setPadding(0,100,0,0);
+        layout.addView(recipeIMG);
+        layout.addView(recipeName);
+        return layout;
+    }
+
+    View insertPersonalIMG(final Recipe myRecipe){
+
+        LinearLayout layout = new LinearLayout(getApplicationContext());
+        layout.setLayoutParams(new LinearLayout.LayoutParams(1000, 500));
+        ImageButton recipeIMG = new ImageButton(getApplicationContext());
+        recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(300, 300));
+        TextView recipeName = new TextView(getApplicationContext());
+        recipeName.setLayoutParams(new LinearLayout.LayoutParams(700, 300));
+        recipeName.setPadding(75,50,0,0);
+
+        recipeIMG.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ViewRecipeInstructions.class);
+                String finalImgURL = myRecipe.getRecipePic();
+                String recipeName = myRecipe.getName();
+                List<String> ingredientList = myRecipe.getIngredients();
+                List<String> steps = myRecipe.getSteps();
+                List<String> equipment = myRecipe.getEquipment();
+
+
+                String equipmentList = "";
+                for(int i = 0; i < equipment.size(); i++)
+                {
+                    equipmentList = equipmentList + (i+1) + ".  " + "" + equipment.get(i) + "\n" + "" + "\n";
+
+                }
+
+                String ingredients = "";
+                for(int i = 0; i < ingredientList.size(); i++){
+                    ingredients = ingredients + (i+1) + ".  " + "" + ingredientList.get(i) + "\n" + "" + "\n";
+                }
+
+                String dataParsed = "";
+                for(int i = 0; i < steps.size(); i++){
+                    dataParsed = dataParsed + (i+1) + ".  " + "" + steps.get(i) + "\n" + "" + "\n";
+                }
+
+                //JSONObject recipe = hit1.getJSONObject("results");
+                intent.putExtra("ingredients", ingredients);
+                intent.putExtra("equipment", equipmentList);
+                intent.putExtra("instructions", dataParsed);
+                intent.putExtra("imgURL", finalImgURL);
+                intent.putExtra("recipeName", recipeName);
+                System.out.println("HELLO ABOUT TO START");
+
+                //System.out.println("EQUIPMENT HERE: " + equipmentList);
+
+                startActivity(intent);
+
+            }
+        });
+
+        recipeName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ViewRecipeInstructions.class);
+                String finalImgURL = myRecipe.getRecipePic();
+                String recipeName = myRecipe.getName();
+                List<String> ingredientList = myRecipe.getIngredients();
+                List<String> steps = myRecipe.getSteps();
+                List<String> equipment = myRecipe.getEquipment();
+
+
+                String equipmentList = "";
+                for(int i = 0; i < equipment.size(); i++) {
+                    equipmentList = equipmentList + (i + 1) + ".  " + "" + equipment.get(i) + "\n" + "" + "\n";
+                }
+
+                String ingredients = "";
+                for(int i = 0; i < ingredientList.size(); i++){
+                    ingredients = ingredients + (i+1) + ".  " + "" + ingredientList.get(i) + "\n" + "" + "\n";
+                }
+
+                String dataParsed = "";
+                for(int i = 0; i < steps.size(); i++){
+                    dataParsed = dataParsed + (i+1) + ".  " + "" + steps.get(i) + "\n" + "" + "\n";
+                }
+
+                //JSONObject recipe = hit1.getJSONObject("results");
+                intent.putExtra("ingredients", ingredients);
+                intent.putExtra("equipment", equipmentList);
+                intent.putExtra("instructions", dataParsed);
+                intent.putExtra("imgURL", finalImgURL);
+                intent.putExtra("recipeName", recipeName);
+                System.out.println("HELLO ABOUT TO START");
+
+                //System.out.println("EQUIPMENT HERE: " + equipmentList);
+
+                startActivity(intent);
+
+            }
+        });
+        String imgURL = myRecipe.getRecipePic();
+        String foodName = myRecipe.getName();
+        String prepTime = myRecipe.getPrepTime();
+        Picasso.with(getApplicationContext()).load(imgURL).into(recipeIMG);
+        recipeIMG.setScaleType(ImageView.ScaleType.FIT_XY);
+        recipeIMG.setPadding(0,0,0,0);
+        String boldedFoodName = "<b>" + foodName + "</b>";
+        recipeName.setText(Html.fromHtml(boldedFoodName));
+        recipeName.append("\nPrep Time: " + prepTime + " min");
         recipeName.setTextColor(Color.BLACK);
         layout.setPadding(0,100,0,0);
         layout.addView(recipeIMG);
