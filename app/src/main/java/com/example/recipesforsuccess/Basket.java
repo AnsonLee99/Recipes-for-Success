@@ -39,6 +39,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -237,32 +238,30 @@ public class Basket extends MainPage {
                             itemname = (itemname.length() < 2) ? itemname : (itemname.substring(0, 1).toUpperCase() + itemname.substring(1));
 
                             String itemdate = foodItemDocument.get("time added").toString();
+                            String[] itemdates = itemdate.split(",");
+                            String itemseconds = itemdates[0].replace("Timestamp(seconds=", "");
+                            String itemnano = itemdates[1].replace(" nanoseconds=", "").replace(")", "");
+
+                            Date date = new Date(Long.parseLong(itemseconds) * 1000l);
+
+                            Log.d("TIME", itemdate);
 
                             // Add string to the foodList
-                            basketContents.add(new FoodListViewItem(itemname, dateToString(itemdate), 0));
+                            basketContents.add(new FoodListViewItem(itemname, dateToString(date), 0));
                             basketAdapter.notifyDataSetChanged();
                         }
                     });
-
                 }
-
 
                 basketAdapter.notifyDataSetChanged();
             }
         });
     }
 
-    private String dateToString(String longdate) {
-        if(true) {
-            return longdate;
-        }
+    private String dateToString(Date date) {
 
-        String[] splitDate = longdate.split(" ");
-        if(longdate == null || longdate.length() == 0) {
-            System.err.println("Date string is null");
-            return null;
-        }
-        return splitDate[0] + splitDate[1] + splitDate[2];
+        String[] splitDate = date.toString().split(" ");
+        return "Added: " + splitDate[1] + " " + splitDate[2];
     }
 
     // itemToDelete is the name of the item to delete
