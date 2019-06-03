@@ -67,14 +67,6 @@ public class Basket extends MainPage {
         View basketView = getLayoutInflater().inflate(R.layout.activity_basket, null);
         mainDisplay.addView(basketView);
 
-        // For displaying the currently selected tab
-        // I can't fuckin figure it out
-        RadioGroup rg = (RadioGroup) findViewById(R.id.NavBar_Group);
-        RadioButton curr = (RadioButton)findViewById(R.id.recipes_tab_button);
-        //curr.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.<CLICKED VERSION OF ICON>);
-        //curr.setTextColor(Color.parseColor("3F51B5"));
-
-
         // Auto-complete searchbar
         bar = (AutoCompleteTextView) findViewById(R.id.basket_searchBar);
         options = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
@@ -119,18 +111,15 @@ public class Basket extends MainPage {
 
         // Use fetchFoodList to get ingredients from database and add them to listview
         fetchFoodList();
-        ListView listView = (ListView) findViewById(R.id.basket_list_view);
-        basketContents = new ArrayList<FoodListViewItem>();
-        basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
-                new Callable<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        showPopup("INGREDIENT NAME");
-                        return null;
-                    }
-                });
+//        basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
+//                new Callable<Void>() {
+//                    @Override
+//                    public Void call() throws Exception {
+//                        showPopup("INGREDIENT NAME");
+//                        return null;
+//                    }
+//                });
 
-        listView.setAdapter(basketAdapter);
 
         // Add To Basket Button
         Button add_to_basket = (Button)findViewById(R.id.add_to_basket);
@@ -195,8 +184,8 @@ public class Basket extends MainPage {
         basketContents.add(item);
         basketAdapter.notifyDataSetChanged();
 
-        ListView listView = (ListView) findViewById(R.id.basket_list_view);
-        listView.setAdapter(basketAdapter);
+        //ListView listView = (ListView) findViewById(R.id.basket_list_view);
+        //listView.setAdapter(basketAdapter);
     }
 
     protected void pushToFirebase(HashMap<String, Object> ingredient) {
@@ -224,7 +213,7 @@ public class Basket extends MainPage {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
                 ArrayList<String> items = (ArrayList<String>) document.get("basket");
-                ArrayList<FoodListViewItem> foodList = new ArrayList<FoodListViewItem>();
+                basketContents = new ArrayList<FoodListViewItem>();
                 for (String item : items) {
                     // Remove the user ID from the string
                     item = item.substring(0, item.indexOf("_"));
@@ -233,12 +222,12 @@ public class Basket extends MainPage {
                     item  = item.substring(0, 1).toUpperCase() + item.substring(1);
 
                     // Add string to the foodList
-                    foodList.add(new FoodListViewItem(item, "4/20/1420", 0));
+                    basketContents.add(new FoodListViewItem(item, "4/20/1420", 0));
                 }
 
                 // Update this activity's list-view to match items
                 ListView listView = (ListView) findViewById(R.id.basket_list_view);
-                basketAdapter = new FoodListViewAdapter(foodList, getApplicationContext(), false,
+                basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
                         new Callable<Void>() {
                             @Override
                             public Void call() throws Exception {
