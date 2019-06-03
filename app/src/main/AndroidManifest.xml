@@ -4,6 +4,7 @@
     package="com.example.recipesforsuccess">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:allowBackup="true"
@@ -37,6 +38,9 @@
         <activity android:name=".GroceryList" android:exported="true"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity android:name=".CreateAccount" android:exported="true"/>
+        <activity android:name=".PersonalRecipes" android:exported="true"/>
+        <activity android:name=".CreateRecipe" android:exported="true"/>
+        <activity android:name=".dataobjects.NutritionalInfo"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

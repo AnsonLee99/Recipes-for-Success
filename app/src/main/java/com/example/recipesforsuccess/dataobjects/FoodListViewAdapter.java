@@ -13,12 +13,16 @@ import android.widget.TextView;
 import com.example.recipesforsuccess.R;
 
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implements View.OnClickListener{
 
     private ArrayList<FoodListViewItem> dataSet;
     Context mContext;
     boolean isEditing;
+    Callable<Void> showPopup;
 
     // View lookup cache
     private static class ViewHolder {
@@ -28,11 +32,13 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
         ImageView infoImage;
     }
 
-    public FoodListViewAdapter(ArrayList<FoodListViewItem> data, Context context, boolean isEditing) {
+    public FoodListViewAdapter(ArrayList<FoodListViewItem> data, Context context, boolean isEditing,
+                               Callable<Void> showPopup) {
         super(context, R.layout.food_list_item, data);
         this.dataSet = data;
         this.mContext=context;
         this.isEditing = isEditing;
+        this.showPopup = showPopup;
     }
 
     @Override
@@ -49,6 +55,17 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
             case R.id.info_image:
                 Snackbar.make(v, "Food Name: " +fooditem.getName(), Snackbar.LENGTH_LONG)
                         .setAction("No action", null).show();
+
+//                FutureTask<Void> fTask = new FutureTask<Void>(showPopup);
+//                Thread t = new Thread(fTask);
+//                t.start();
+
+                try {
+                    showPopup.call();
+                } catch(Exception e) {
+                    Log.d("TEST", "ISSUE WITH POPUP FROM FOODLISTVIEWADAPTER");
+                }
+
                 break;
         }
     }
