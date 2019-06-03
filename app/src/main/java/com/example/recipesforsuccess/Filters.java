@@ -35,6 +35,7 @@ public class Filters extends AppCompatActivity {
                 intent.putExtra("intolerances", intolerances);
                 intent.putExtra("diet", diet);
                 intent.putExtra("type", type);
+                intent.putExtra("cuisine", cuisine);
                 setResult(RESULT_OK, intent);
 
                 finish();
@@ -259,6 +260,56 @@ public class Filters extends AppCompatActivity {
                 else {
                     type.remove("bread");
                     System.out.println("Removing bread option");
+                }
+                break;
+            case R.id.american:
+                if (checked) {
+                    cuisine.add("american");
+                    System.out.println("Adding american option");
+                }
+                else {
+                    cuisine.remove("american");
+                    System.out.println("american american option");
+                }
+                break;
+            case R.id.italian:
+                if (checked) {
+                    cuisine.add("italian");
+                    System.out.println("Adding italian option");
+                }
+                else {
+                    cuisine.remove("italian");
+                    System.out.println("american italian option");
+                }
+                break;
+            case R.id.mexican:
+                if (checked) {
+                    cuisine.add("mexican");
+                    System.out.println("Adding mexican option");
+                }
+                else {
+                    cuisine.remove("mexican");
+                    System.out.println("american mexican option");
+                }
+                break;
+            case R.id.indian:
+                if (checked) {
+                    cuisine.add("indian");
+                    System.out.println("Adding indian option");
+                }
+                else {
+                    cuisine.remove("indian");
+                    System.out.println("adding indian option");
+                }
+                break;
+            case R.id.chinese:
+                if (checked) {
+                    cuisine.add("chinese");
+                    System.out.println("Adding chinese option");
+                }
+                else {
+                    cuisine.remove("chinese");
+                    System.out.println("american chinese option");
                 }
                 break;
 
