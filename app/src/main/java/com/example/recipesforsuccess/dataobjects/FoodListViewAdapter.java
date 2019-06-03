@@ -132,7 +132,7 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
         viewHolder.infoImage.setTag(position);
         viewHolder.deleteImage.setOnClickListener(this);
         viewHolder.deleteImage.setTag(position);
-        viewHolder.foodImage.setImageResource(fooditem.getImageId());;
+//        viewHolder.foodImage.setImageResource(fooditem.getImageId());
         // Return the completed view to render on screen
         //return convertView;
         return result;
