@@ -1,6 +1,8 @@
 package com.example.recipesforsuccess;
 import android.content.Intent;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -17,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -37,6 +40,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -53,6 +57,7 @@ public class Basket extends MainPage {
     private JSONArray res;
     private FirebaseAuth auth = this.passAuth();
     private String ID =  auth.getUid();
+    private Context context;
 
     private long delay = 300; // Wait .5 sec after user stops typing to update
     long lastTextUpdate = 0;
@@ -75,6 +80,7 @@ public class Basket extends MainPage {
 
         basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
                 new PopulatePopup(), new BasketDeleter());
+        context = this;
 
         // Check if a current user is logged in
         if (auth.getCurrentUser() == null) {
@@ -185,7 +191,7 @@ public class Basket extends MainPage {
                         (bar.getText().toString().substring(0, 1).toUpperCase() + bar.getText().toString().substring(1));
                 Date date = new Date();
 
-                addToBasket(new FoodListViewItem(itemname, dateToString(date), imgURL.get(idx)), v);
+                addToBasket(new FoodListViewItem(itemname, dateToString(date), imgURL.get(idx), context, basketAdapter));
             }
         });
     }
@@ -206,11 +212,11 @@ public class Basket extends MainPage {
         deleteFromFirebase(item.getName());
     }
 
-    public void addToBasket(FoodListViewItem item, View v) {
-        Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
+    public void addToBasket(FoodListViewItem item) {
+        //Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
         // capitalize first letter of item name
         basketContents.add(item);
-        //basketAdapter.notifyDataSetChanged();
+        basketAdapter.notifyDataSetChanged();
     }
 
     protected void pushToFirebase(HashMap<String, Object> ingredient) {
@@ -280,7 +286,7 @@ public class Basket extends MainPage {
                                 img = "";
                             }
 
-                            basketContents.add(new FoodListViewItem(itemname, dateToString(date), img));
+                            addToBasket(new FoodListViewItem(itemname, dateToString(date), img, context, basketAdapter));
                             basketAdapter.notifyDataSetChanged();
                         }
                     });
@@ -351,6 +357,7 @@ public class Basket extends MainPage {
             e.printStackTrace();
         }
     }
+
 
     public class BasketDeleter implements Callable<Void> {
         FoodListViewItem item;
@@ -439,13 +446,11 @@ public class Basket extends MainPage {
             } catch (Exception e) {
                 Log.d("test", "ERROR WITH QUERYING FOR NDBNO ID: " + e );
             }
-
-
-
-
             return null;
         }
 
     }
+
+
 
 }

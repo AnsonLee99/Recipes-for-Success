@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context=".MainPage">
+    android:layout_height="match_parent"
+    tools:context=".MainPage"
+    android:paddingBottom="15dp"
+    android:layout_marginBottom="15dp">
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:paddingBottom="20dp"
         tools:context=".Basket">
 
         <AutoCompleteTextView

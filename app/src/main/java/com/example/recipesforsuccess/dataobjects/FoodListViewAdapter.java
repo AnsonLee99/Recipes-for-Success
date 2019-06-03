@@ -25,10 +25,10 @@ import java.util.concurrent.FutureTask;
 public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implements View.OnClickListener{
 
     private ArrayList<FoodListViewItem> dataSet;
-    Context mContext;
-    boolean isEditing;
-    Basket.PopulatePopup showPopup;
-    Basket.BasketDeleter basketDeleter;
+    private Context mContext;
+    private boolean isEditing;
+    private Basket.PopulatePopup showPopup;
+    private Basket.BasketDeleter basketDeleter;
 
     // View lookup cache
     private static class ViewHolder {
@@ -47,6 +47,10 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
         this.isEditing = isEditing;
         this.showPopup = showPopup;
         this.basketDeleter= basketDeleter;
+    }
+
+    public void refreshView() {
+        notifyDataSetChanged();
     }
 
     @Override
@@ -130,7 +134,6 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
         }
 
         lastPosition = position;
-
         viewHolder.txtName.setText(fooditem.getName());
         viewHolder.txtDate.setText(fooditem.getDate());
         //viewHolder.infoImage.setOnClickListener(this);
@@ -139,34 +142,10 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
         viewHolder.deleteImage.setTag(position);
         //viewHolder.foodImage.setImageResource(fooditem.getImageId());
 
-        new DownloadImageTask((ImageView) viewHolder.foodImage)
-                .execute("https://spoonacular.com/cdn/ingredients_250x250/"+fooditem.getImageId());
+        viewHolder.foodImage.setImageBitmap(fooditem.getImage());
 
         return result;
     }
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
 
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
-    }
 }
