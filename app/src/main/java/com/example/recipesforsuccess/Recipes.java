@@ -36,6 +36,8 @@ import java.util.concurrent.ExecutionException;
 import com.fasterxml.jackson.core.util.BufferRecycler;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -79,6 +81,10 @@ public class Recipes extends MainPage {
     ArrayList<String> cuisine = new ArrayList();
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseAuth currAuth = this.passAuth();
+    private final FirebaseUser user = currAuth.getCurrentUser();
+    String userID = user.getUid();
+
     List<String> userBasket;
 
     int id = 0;
@@ -152,7 +158,7 @@ public class Recipes extends MainPage {
 //            }
 //        });
 
-        DocumentReference userDoc = db.document(("USERS/TestUser"));
+        DocumentReference userDoc = db.document(("USERS/" + userID));
         userDoc.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
@@ -248,7 +254,7 @@ public class Recipes extends MainPage {
                         }
                     }
                 }else{
-                    finalIng = userBasket.get(ingInd);
+                    finalIng = userBasket.get(ingInd).split("_")[0];
                 }
                 System.out.println("final ingredient is: " + finalIng);
                 //System.out.println("basket item as array: " + Arrays.toString(ingArray));
