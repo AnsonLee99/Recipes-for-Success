@@ -90,7 +90,7 @@
                 android:layout_marginStart="96dp"
                 android:layout_marginTop="0dp"
                 android:ems="10"
-                android:hint="Submit Steps"
+                android:hint="Type Steps Here"
                 android:inputType="textPersonName" />
 
             <Button
@@ -101,6 +101,31 @@
                 android:layout_marginTop="0dp"
                 android:text="Submit Step" />
 
+
+            <ListView
+                android:id="@+id/equipmentList"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="30dp" />
+
+            <EditText
+                android:id="@+id/createEquipment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="96dp"
+                android:layout_marginTop="0dp"
+                android:ems="10"
+                android:hint="Type Equipment Here"
+                android:inputType="textPersonName" />
+
+            <Button
+                android:id="@+id/submitEquipment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="140dp"
+                android:layout_marginTop="0dp"
+                android:text="Submit Equipment" />
 
             <Button
                 android:id="@+id/createRecipe"

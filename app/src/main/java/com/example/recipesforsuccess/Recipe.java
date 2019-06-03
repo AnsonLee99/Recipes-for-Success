@@ -10,17 +10,20 @@ public class Recipe {
     private String prep_time;
     private List<String> steps = new ArrayList<String>();
     private String recipePic;
+    private List<String> equipment = new ArrayList<String>();
 
     public Recipe() {
     }
 
-    public Recipe(List<String> ingredients, String name, String prep_time, List<String> steps, String recipePic)
+    public Recipe(List<String> ingredients, String name, String prep_time, List<String> steps, String recipePic,
+                  List<String> equipment)
     {
         this.ingredients = ingredients;
         this.name = name;
         this.prep_time = prep_time;
         this.steps = steps;
         this.recipePic = recipePic;
+        this.equipment = equipment;
     }
 
     public List<String> getIngredients()
@@ -48,5 +51,5 @@ public class Recipe {
         return this.recipePic;
     }
 
-
+    public List<String> getEquipment() { return this.equipment; }
 }

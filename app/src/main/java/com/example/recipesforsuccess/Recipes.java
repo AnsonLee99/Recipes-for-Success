@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
@@ -74,6 +75,7 @@ public class Recipes extends MainPage {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     List<String> userBasket;
     List<String> userRecipes;
+    FloatingActionButton createRecipeButton;
 
     private CollectionReference recipeRef = db.collection("RECIPES");
     private FirebaseAuth currAuth = this.passAuth();
@@ -103,6 +105,13 @@ public class Recipes extends MainPage {
         //RadioButton curr = (RadioButton)findViewById(R.id.recipes_tab_button);
         //curr.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.<CLICKED VERSION OF ICON>);
         //curr.setTextColor(Color.parseColor("3F51B5"));
+        createRecipeButton = (FloatingActionButton) findViewById(R.id.createRecipeButton);
+        createRecipeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Recipes.this, CreateRecipe.class));
+            }
+        });
 
         adapter = new RecipeAdapter(context, recipes);
         Jeremy = (LinearLayout)findViewById(R.id.Jeremy);
@@ -783,9 +792,15 @@ public class Recipes extends MainPage {
                 String recipeName = myRecipe.getName();
                 List<String> ingredientList = myRecipe.getIngredients();
                 List<String> steps = myRecipe.getSteps();
+                List<String> equipment = myRecipe.getEquipment();
 
 
                 String equipmentList = "";
+                for(int i = 0; i < equipment.size(); i++)
+                {
+                    equipmentList = equipmentList + (i+1) + ".  " + "" + equipment.get(i) + "\n" + "" + "\n";
+
+                }
 
                 String ingredients = "";
                 for(int i = 0; i < ingredientList.size(); i++){
@@ -820,9 +835,13 @@ public class Recipes extends MainPage {
                 String recipeName = myRecipe.getName();
                 List<String> ingredientList = myRecipe.getIngredients();
                 List<String> steps = myRecipe.getSteps();
+                List<String> equipment = myRecipe.getEquipment();
 
 
                 String equipmentList = "";
+                for(int i = 0; i < equipment.size(); i++) {
+                    equipmentList = equipmentList + (i + 1) + ".  " + "" + equipment.get(i) + "\n" + "" + "\n";
+                }
 
                 String ingredients = "";
                 for(int i = 0; i < ingredientList.size(); i++){

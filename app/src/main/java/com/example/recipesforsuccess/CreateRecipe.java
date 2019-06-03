@@ -27,13 +27,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import javax.annotation.Nullable;
 
 public class CreateRecipe extends MainPage{
 
@@ -49,6 +53,9 @@ public class CreateRecipe extends MainPage{
     private ListView stepList;
     private EditText createSteps;
     private Button submitSteps;
+    private ListView equipmentList;
+    private EditText createEquipment;
+    private Button submitEquipment;
     private FirebaseAuth currAuth = this.passAuth();
     private FirebaseUser user = currAuth.getCurrentUser();
     String userID = user.getUid();
@@ -56,12 +63,14 @@ public class CreateRecipe extends MainPage{
     private DocumentReference currentUser = db.collection("USERS").document(userID);
     ArrayList<String> ingredients = new ArrayList<String>();
     ArrayList<String> steps = new ArrayList<String>();
+    ArrayList<String> equipment = new ArrayList<String>();
     private StorageReference storageRef;
     private DatabaseReference dataRef;
     private Uri imageUri;
     private static final int PICK_IMAGE_REQUEST = 1;
     private ArrayAdapter<String> ingredientAdapter;
     private ArrayAdapter<String> stepAdapter;
+    private ArrayAdapter<String> equipmentAdapter;
     private String recipeID;
 
     @Override
@@ -83,6 +92,11 @@ public class CreateRecipe extends MainPage{
         stepList = (ListView)findViewById(R.id.stepList);
         createSteps = (EditText)findViewById(R.id.createSteps);
         submitSteps = (Button)findViewById(R.id.submitStep);
+        equipmentList = (ListView)findViewById(R.id.equipmentList);
+        createEquipment = (EditText)findViewById(R.id.createEquipment);
+        submitEquipment = (Button)findViewById(R.id.submitEquipment);
+
+
 
         storageRef = FirebaseStorage.getInstance().getReference("uploads");
         dataRef = FirebaseDatabase.getInstance().getReference("uploads");
@@ -113,6 +127,17 @@ public class CreateRecipe extends MainPage{
 
         });
 
+        equipmentAdapter = new ArrayAdapter<String>(this, R.layout.activity_step, equipment);
+        submitEquipment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String currentEquipment = createEquipment.getText().toString();
+                equipment.add(currentEquipment);
+                equipmentAdapter.notifyDataSetChanged();
+
+            }
+        });
+
 
         choosePicture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +151,7 @@ public class CreateRecipe extends MainPage{
             @Override
             public void onClick(View v) {
                 uploadFile();
+                startActivity(new Intent(CreateRecipe.this, Recipes.class));
             }
 
         });
@@ -175,13 +201,26 @@ public class CreateRecipe extends MainPage{
                         @Override
                         public void onSuccess(Uri uri) {
                             String url = uri.toString();
-                            Recipe created = new Recipe(ingredients, recipe_name, prep_time, steps, url);
+                            Recipe created = new Recipe(ingredients, recipe_name, prep_time, steps, url, equipment);
                             db.collection("RECIPES").add(created).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
                                     recipeID = documentReference.getId();
+                                    db.collection("USERS").document(userID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                                            if(documentSnapshot.exists())
+                                            {
+                                                ArrayList<String> IDs = (ArrayList<String>) documentSnapshot.get("personalRecipes");
+                                                IDs.add(recipeID);
+                                                db.collection("USERS").document(userID).update("personalRecipes", IDs);
+                                            }
+                                        }
+                                    });
+                                    /*
                                     db.collection("USERS").document(userID).update("personalRecipes",
                                             recipeID);
+                                    */
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
