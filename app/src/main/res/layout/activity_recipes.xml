@@ -6,25 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Recipes">
 
-    <TextView
-        android:id="@+id/basket_recipes_title2"
-        android:layout_width="285dp"
-        android:layout_height="26dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_weight="1"
-        android:paddingStart="10dp"
-        android:paddingBottom="0dp"
-        android:scrollbarSize="0dp"
-        android:text="From My Basket"
-        android:textColor="@android:color/black"
-        android:textSize="24dp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/filters"
-        app:layout_constraintHorizontal_bias="0.603"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/linearLayout" />
-
     <ImageButton
         android:id="@+id/filters"
         android:layout_width="49dp"
@@ -39,10 +20,29 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/filter" />
 
+    <TextView
+        android:id="@+id/my_recipes"
+        android:layout_width="340dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="1"
+        android:paddingStart="4dp"
+        android:paddingLeft="0dp"
+        android:text="My Recipes"
+        android:textColor="@android:color/black"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="@+id/filters"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="643dp"
+        android:layout_width="414dp"
+        android:layout_height="462dp"
         android:layout_marginBottom="8dp"
         android:orientation="vertical"
         android:paddingLeft="0dp"
@@ -54,10 +54,11 @@
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView2"
             android:layout_width="match_parent"
-            android:layout_height="290dp"
+            android:layout_height="187dp"
             android:layout_marginStart="0dp"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="8dp"
+            android:background="@android:color/holo_orange_light"
             android:scrollbarSize="0dp">
 
             <LinearLayout
@@ -74,6 +75,7 @@
             android:layout_marginBottom="0dp"
             android:layout_weight="1"
             android:paddingStart="10dp"
+            android:paddingTop="20dp"
             android:paddingBottom="0dp"
             android:scrollbarSize="0dp"
             android:text="From My Basket"
@@ -83,12 +85,13 @@
 
         <HorizontalScrollView
             android:id="@+id/basket_recipes"
-            android:layout_width="fill_parent"
-            android:layout_height="300dp"
+            android:layout_width="match_parent"
+            android:layout_height="195dp"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="8dp"
+            android:background="@android:color/holo_orange_light"
             android:paddingTop="0dp"
             android:scrollbarSize="0dp">>
 

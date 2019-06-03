@@ -67,8 +67,8 @@ public class Recipes extends MainPage {
 
     final int RECIPE_LAYOUT_WIDTH = 1000;
     final int RECIPE_LAYOUT_HEIGHT = 500;
-    final int RECIPE_IMG_SIZE = 300;
-    final int REcIPE_TEXT_WIDTH = 700;
+    final int RECIPE_IMG_SIZE = 500;
+    final int REcIPE_TEXT_WIDTH = 500;
     final int RECIPE_TEXT_HEIGHT = 300;
 
     int SECOND_ACTIVITY_REQUEST_CODE = 0;
@@ -318,8 +318,8 @@ public class Recipes extends MainPage {
                     String imgURL = hit.getString("image");
                     String foodName = hit.getString("title");
                     System.out.println("inserting img to photos");
-                    photos.addView(insertIMG(imgURL, foodName, "", hit, 1, SEARCH_LAYOUT_WIDTH,
-                            SEARCH_LAYOUT_HEIGHT,SEARCH_IMG_SIZE,SEARCH_TEXT_WIDTH,SEARCH_TEXT_HEIGHT));
+                    photos.addView(insertIMG(imgURL, foodName, "", hit, 1, RECIPE_LAYOUT_WIDTH,
+                            RECIPE_LAYOUT_HEIGHT,RECIPE_IMG_SIZE,REcIPE_TEXT_WIDTH,RECIPE_TEXT_HEIGHT));
                 }
 
             }catch(JSONException e){
@@ -472,9 +472,11 @@ public class Recipes extends MainPage {
 
                     //System.out.println("data parsed is: " + dataParsed);
                     // System.out.println("img url is: " + imgURL);
-                    photos.addView(insertIMG(imgURL, foodName, prepTime, hit, 0, RECIPE_LAYOUT_WIDTH,
-                            RECIPE_LAYOUT_HEIGHT,RECIPE_IMG_SIZE,REcIPE_TEXT_WIDTH,RECIPE_TEXT_HEIGHT));
+                    photos.addView(insertIMG(imgURL, foodName, prepTime, hit, 0, SEARCH_LAYOUT_WIDTH,
+                            SEARCH_LAYOUT_HEIGHT,SEARCH_IMG_SIZE,SEARCH_TEXT_WIDTH,SEARCH_TEXT_HEIGHT));
                 }
+
+
 
             }catch(JSONException e){}
         }
