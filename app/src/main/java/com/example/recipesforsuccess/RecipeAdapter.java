@@ -61,6 +61,14 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
 
         Recipe recipe = getItem(position);
 
+        name.setText(recipe.getName());
+        time.setText(recipe.getPrepTime());
+        //image.
+        //Picasso.load(recipe.getRecipePic()).into(image);
+
+
+
+
         return convertView;
     }
 
