@@ -150,6 +150,8 @@ public class Basket extends MainPage {
                 newIngredient.put("time added", Calendar.getInstance().getTime());
                 newIngredient.put("imgURL", currImgURL);
 
+                pushToFirebase(newIngredient);
+
                 Log.d("test", "value before: " + newIngredient.get("name"));
 
                 // capitalize first letter of item name
@@ -163,33 +165,8 @@ public class Basket extends MainPage {
                 Date date = new Date();
 
                 addToBasket(new FoodListViewItem(itemname, dateToString(date), currImgURL), v);
-
-                pushToFirebase(newIngredient);
             }
         });
-
-
-        // DEBUG BUTTONS TO ADD OR DELETE ITEM FROM LISTVIEW
-        Button debug_add_item = (Button)findViewById(R.id.debug_add_item);
-        Button debug_delete_item = (Button)findViewById(R.id.debug_delete_item);
-
-        debug_add_item.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addToBasket(new FoodListViewItem("NewFood", "Today", currImgURL), v);
-                Log.d("test", "showing popup");
-                showPopup("hi");
-            }
-        });
-
-        debug_delete_item.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeFromBasket(basketContents.size() - 1, v);
-
-            }
-        });
-
     }
 
     public void removeFromBasket(int index, View v) {
@@ -242,7 +219,7 @@ public class Basket extends MainPage {
                 ArrayList<String> items = (ArrayList<String>) document.get("basket");
 
                 // parse returned basket to get food item names and dates added
-                basketContents = new ArrayList<FoodListViewItem>();
+                basketContents = new ArrayList<>();
                 // Update this activity's list-view to match items
                 ListView listView = (ListView) findViewById(R.id.basket_list_view);
                 basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
@@ -284,6 +261,7 @@ public class Basket extends MainPage {
 
                             basketContents.add(new FoodListViewItem(itemname, dateToString(date), img));
                             basketAdapter.notifyDataSetChanged();
+                            
                         }
                     });
                 }
