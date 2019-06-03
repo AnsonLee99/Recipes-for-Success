@@ -1,6 +1,9 @@
 package com.example.recipesforsuccess.dataobjects;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 import com.example.recipesforsuccess.Basket;
 import com.example.recipesforsuccess.R;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -133,9 +137,34 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
         viewHolder.infoImage.setTag(position);
         viewHolder.deleteImage.setOnClickListener(this);
         viewHolder.deleteImage.setTag(position);
-        viewHolder.foodImage.setImageResource(fooditem.getImageId());;
-        // Return the completed view to render on screen
-        //return convertView;
+//        viewHolder.foodImage.setImageResource(fooditem.getImageId());
+
+        //new DownloadImageTask((ImageView) viewHolder.foodImage)
+        //        .execute("http://java.sogeti.nl/JavaBlog/wp-content/uploads/2009/04/android_icon_256.png");
+
         return result;
+    }
+
+
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
     }
 }

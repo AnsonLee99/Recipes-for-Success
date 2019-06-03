@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -51,6 +52,10 @@ public class Basket extends MainPage {
     private JSONArray res;
     private FirebaseAuth auth = this.passAuth();
     private String ID =  auth.getUid();
+
+    private ArrayList<String> imgURL = new ArrayList<>();
+    private ArrayList<String> prevImgURL;
+    private String currImgURL;
 
     private ArrayList<FoodListViewItem> basketContents;
     FoodListViewAdapter basketAdapter;
@@ -98,10 +103,15 @@ public class Basket extends MainPage {
 
                 options.clear();
                 ArrayList<String> currOptions = new ArrayList<>();
+
+                prevImgURL = imgURL;
+                imgURL = new ArrayList<>();
+
                 try {
                     res = f.get();
                     for ( int i = 0; i < res.length(); i ++ ) {
                         currOptions.add(res.getJSONObject(i).get("name").toString());
+                        imgURL.add(res.getJSONObject(i).get("image").toString());
                     }
                 } catch(Exception e) {
                     Log.d("test", "EXCEPTION WITH RETRIEVING ARRAYLIST: " + e);
@@ -114,6 +124,13 @@ public class Basket extends MainPage {
             @Override
             public void afterTextChanged(Editable s) {
                 options.notifyDataSetChanged();
+            }
+        });
+
+        bar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                currImgURL = prevImgURL.get((int)id);
             }
         });
 
@@ -132,14 +149,16 @@ public class Basket extends MainPage {
                 newIngredient.put("flag", false);
                 newIngredient.put("name", bar.getText().toString());
                 newIngredient.put("time added", Calendar.getInstance().getTime());
+                newIngredient.put("imgURL", currImgURL);
 
                 Log.d("test", "value before: " + newIngredient.get("name"));
-                // capitalize first letter of item name
 
+                // capitalize first letter of item name
                 String ingredientName = newIngredient.get("name").toString();
                 ingredientName = (ingredientName.length() < 2) ? ingredientName : (ingredientName.substring(0, 1).toUpperCase() + ingredientName .substring(1));
 
-                addToBasket(new FoodListViewItem(newIngredient.get("name").toString(), newIngredient.get("time added").toString(), R.drawable.ic_launcher_background), v);
+                addToBasket(new FoodListViewItem(newIngredient.get("name").toString(), newIngredient.get("time added").toString(), currImgURL), v);
+
                 pushToFirebase(newIngredient);
                 showPopup(bar.getText().toString());
             }
@@ -153,7 +172,7 @@ public class Basket extends MainPage {
         debug_add_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addToBasket(new FoodListViewItem("NewFood", "Today", R.drawable.ic_launcher_background), v);
+                addToBasket(new FoodListViewItem("NewFood", "Today", currImgURL), v);
                 Log.d("test", "showing popup");
                 showPopup("hi");
             }
@@ -259,7 +278,10 @@ public class Basket extends MainPage {
                             Log.d("TIME", itemdate);
 
                             // Add string to the foodList
-                            basketContents.add(new FoodListViewItem(itemname, dateToString(date), 0));
+
+                            String img = foodItemDocument.get("imgURL").toString();
+
+                            basketContents.add(new FoodListViewItem(itemname, dateToString(date), img));
                             basketAdapter.notifyDataSetChanged();
                         }
                     });
