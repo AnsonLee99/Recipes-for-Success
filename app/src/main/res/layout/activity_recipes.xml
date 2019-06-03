@@ -24,16 +24,14 @@
         android:id="@+id/my_recipes"
         android:layout_width="340dp"
         android:layout_height="34dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="36dp"
         android:layout_weight="1"
         android:paddingLeft="0dp"
         android:text="My Recipes"
         android:textSize="24dp"
         android:textStyle="bold"
         android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="@+id/filters"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -71,7 +69,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="TextView" />
+                    android:text="
+" />
             </LinearLayout>
         </HorizontalScrollView>
 
@@ -131,7 +130,7 @@
                     android:layout_width="188dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="TextView" />
+                    android:text="" />
             </LinearLayout>
         </HorizontalScrollView>
 
