@@ -95,7 +95,7 @@ public class Recipes extends MainPage {
 
     private CollectionReference recipeRef = db.collection("RECIPES");
     private DocumentReference currentUser = db.collection("USERS").document(userID);
-    LinearLayout Jeremy;
+    LinearLayout personalRecipes;
     private ArrayList<Recipe> recipes = new ArrayList<Recipe>();
     RecipeAdapter adapter;
     Context context;
@@ -126,7 +126,7 @@ public class Recipes extends MainPage {
         });
 
         adapter = new RecipeAdapter(context, recipes);
-        Jeremy = (LinearLayout)findViewById(R.id.Jeremy);
+        personalRecipes = (LinearLayout)findViewById(R.id.personalRecipes);
 
 
         currentUser.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -136,6 +136,9 @@ public class Recipes extends MainPage {
                 {
                     recipeIDs = (List<String>) documentSnapshot.get("personalRecipes");
                     System.out.println("recipeIDS: " + recipeIDs.toString());
+                    if(personalRecipes.getChildCount() > 0){
+                        personalRecipes.removeAllViews();
+                    }
                     new GetPersonalRecipes().execute();
                 }
             }
@@ -259,7 +262,7 @@ public class Recipes extends MainPage {
                         {
                             System.out.println("snapshot exists");
                             Recipe currRecipe = documentSnapshot.toObject(Recipe.class);
-                            Jeremy.addView(insertPersonalIMG(currRecipe, RECIPE_LAYOUT_WIDTH,
+                            personalRecipes.addView(insertPersonalIMG(currRecipe, RECIPE_LAYOUT_WIDTH,
                                     RECIPE_LAYOUT_HEIGHT,RECIPE_IMG_SIZE,REcIPE_TEXT_WIDTH,RECIPE_TEXT_HEIGHT));
                         }
                         System.out.println("snapshot dne");
