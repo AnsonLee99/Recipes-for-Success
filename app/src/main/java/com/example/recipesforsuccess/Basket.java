@@ -1,4 +1,5 @@
 package com.example.recipesforsuccess;
+import android.content.Intent;
 import android.app.ActionBar;
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -61,7 +62,15 @@ public class Basket extends MainPage {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
+        // Check if a current user is logged in
+        if (auth.getCurrentUser() == null) {
+            Intent in = new Intent(Basket.this, MainActivity.class);
+            startActivity(in);
+            return;
+        }
 
         mainDisplay = (LinearLayout) findViewById(R.id.main_display);
         View basketView = getLayoutInflater().inflate(R.layout.activity_basket, null);
@@ -118,7 +127,9 @@ public class Basket extends MainPage {
         });
 
         // Use fetchFoodList to get ingredients from database and add them to listview
-        fetchFoodList();
+        if (auth.getCurrentUser() != null) {
+            fetchFoodList();
+        }
         ListView listView = (ListView) findViewById(R.id.basket_list_view);
         basketContents = new ArrayList<FoodListViewItem>();
         basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
