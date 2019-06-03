@@ -118,12 +118,8 @@ public class Basket extends MainPage {
             }
         });
 
-        // Use fetchFoodList to get ingredients from database and add them to listview
-        if (auth.getCurrentUser() != null) {
-            fetchFoodList();
-        } else {
-          System.err.println("No User!");
-        }
+        fetchFoodList();
+        Log.d("test", "EXECUTED");
 
         // Add To Basket Button
         Button add_to_basket = (Button)findViewById(R.id.add_to_basket);
@@ -218,6 +214,18 @@ public class Basket extends MainPage {
 
                 // parse returned basket to get food item names and dates added
                 basketContents = new ArrayList<FoodListViewItem>();
+                // Update this activity's list-view to match items
+                ListView listView = (ListView) findViewById(R.id.basket_list_view);
+                basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
+                        new Callable<Void>() {
+                            @Override
+                            public Void call() throws Exception {
+                                showPopup("INGREDIENT NAMEEE");
+                                return null;
+                            }
+                        });
+                listView.setAdapter(basketAdapter);
+
                 for (String item : items) {
                     // get date of food item
                     db.collection("INGREDIENTS").document(item).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -232,22 +240,14 @@ public class Basket extends MainPage {
 
                             // Add string to the foodList
                             basketContents.add(new FoodListViewItem(itemname, dateToString(itemdate), 0));
+                            basketAdapter.notifyDataSetChanged();
                         }
                     });
 
                 }
 
-                // Update this activity's list-view to match items
-                ListView listView = (ListView) findViewById(R.id.basket_list_view);
-                basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
-                        new Callable<Void>() {
-                            @Override
-                            public Void call() throws Exception {
-                                showPopup("INGREDIENT NAMEEE");
-                                return null;
-                            }
-                        });
-                listView.setAdapter(basketAdapter);
+
+                basketAdapter.notifyDataSetChanged();
             }
         });
     }
