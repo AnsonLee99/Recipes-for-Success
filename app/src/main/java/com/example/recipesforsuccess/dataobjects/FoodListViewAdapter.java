@@ -138,8 +138,8 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
         viewHolder.deleteImage.setTag(position);
 //        viewHolder.foodImage.setImageResource(fooditem.getImageId());
 
-        new DownloadImageTask((ImageView) viewHolder.foodImage)
-                .execute("http://java.sogeti.nl/JavaBlog/wp-content/uploads/2009/04/android_icon_256.png");
+        //new DownloadImageTask((ImageView) viewHolder.foodImage)
+        //        .execute("http://java.sogeti.nl/JavaBlog/wp-content/uploads/2009/04/android_icon_256.png");
 
         return result;
     }
