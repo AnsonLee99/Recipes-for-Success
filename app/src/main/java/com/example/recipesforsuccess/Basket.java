@@ -1,6 +1,7 @@
 package com.example.recipesforsuccess;
 import android.content.Intent;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -150,7 +152,13 @@ public class Basket extends MainPage {
                 newIngredient.put("imgURL", currImgURL);
 
                 Log.d("test", "value before: " + newIngredient.get("name"));
+
+                // capitalize first letter of item name
+                String ingredientName = newIngredient.get("name").toString();
+                ingredientName = (ingredientName.length() < 2) ? ingredientName : (ingredientName.substring(0, 1).toUpperCase() + ingredientName .substring(1));
+
                 addToBasket(new FoodListViewItem(newIngredient.get("name").toString(), newIngredient.get("time added").toString(), currImgURL), v);
+
                 pushToFirebase(newIngredient);
                 showPopup(bar.getText().toString());
             }
@@ -198,6 +206,7 @@ public class Basket extends MainPage {
 
     public void addToBasket(FoodListViewItem item, View v) {
         Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
+        // capitalize first letter of item name
         basketContents.add(item);
         basketAdapter.notifyDataSetChanged();
     }
@@ -233,15 +242,7 @@ public class Basket extends MainPage {
                 // Update this activity's list-view to match items
                 ListView listView = (ListView) findViewById(R.id.basket_list_view);
                 basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
-                       new Callable<Void>() {
-                            @Override
-                            public Void call() throws Exception {
-                                showPopup("INGREDIENT NAMEEE");
-                                return null;
-                            }
-                        },
-
-                        new BasketDeleter()
+                       new PopulatePopup(), new BasketDeleter()
                  );
 
                 listView.setAdapter(basketAdapter);
@@ -366,4 +367,86 @@ public class Basket extends MainPage {
             this.item = item;
         }
     }
+
+
+    public class PopulatePopup extends AsyncTask<String, Void, JSONObject> {
+        private String ingredientName;
+
+        public PopulatePopup() {};
+
+        public PopulatePopup(String ingredientName) {
+            this.ingredientName = ingredientName;
+        }
+
+        public void setItemName(String itemname){
+            ingredientName = itemname;
+        }
+
+        public void call() {
+            // do whatever here
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... urls) {
+            JSONObject result = new JSONObject();
+
+            try {
+                StringBuilder url = new StringBuilder(urls[0]);
+                url.append("?api_key=LHgDB2008wpwdJEzvK2wlR7gLNv7oPzYXCVAyJVZ&format=json&sort=r&max=1&da=Standard Referece&q=" + ingredientName);
+
+
+
+/*
+
+            String rawURL = convertToREST(params, urls[0]);
+            URL url = new URL(rawURL);
+
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+//            con.setRequestProperty("format", "json");
+//            con.setRequestProperty("q", ingredientName);
+//            con.setRequestProperty("sort", "r");
+            //con.("api_key", "LHgDB2008wpwdJEzvK2wlR7gLNv7oPzYXCVAyJVZ");
+//            con.setRequestProperty("max", "1");
+//            con.setRequestProperty("ds", "Standard Reference");
+
+            Log.d("test", "URL = " + url.toString());
+
+            HttpURLConnection.setFollowRedirects(true);
+            con.setInstanceFollowRedirects(false);
+            con.setDoOutput(true);
+
+            OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
+
+            // Print the response code
+            // and response message from server.
+            Log.d("test", "Response Code:"
+                    + con.getResponseCode());
+            Log.d("test", "Response Message:"
+                    + con.getResponseMessage());
+
+
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestProperty("api_key", "LHgDB2008wpwdJEzvK2wlR7gLNv7oPzYXCVAyJVZ");
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Log.d("test", "CONTENTS: " + line);
+            }
+*/
+            } catch (Exception e) {
+                Log.d("test", "ERROR WITH QUERYING FOR NDBNO ID: " + e );
+            }
+
+
+
+
+            return null;
+        }
+
+    }
+
 }

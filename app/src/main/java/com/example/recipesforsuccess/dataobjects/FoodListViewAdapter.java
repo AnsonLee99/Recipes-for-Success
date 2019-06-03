@@ -27,7 +27,7 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
     private ArrayList<FoodListViewItem> dataSet;
     Context mContext;
     boolean isEditing;
-    Callable<Void> showPopup;
+    Basket.PopulatePopup showPopup;
     Basket.BasketDeleter basketDeleter;
 
     // View lookup cache
@@ -40,7 +40,7 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
     }
 
     public FoodListViewAdapter(ArrayList<FoodListViewItem> data, Context context, boolean isEditing,
-                               Callable<Void> showPopup, Basket.BasketDeleter basketDeleter) {
+                               Basket.PopulatePopup showPopup, Basket.BasketDeleter basketDeleter) {
         super(context, R.layout.food_list_item, data);
         this.dataSet = data;
         this.mContext = context;
@@ -65,6 +65,7 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
                 //Snackbar.make(v, "Food Name: " +fooditem.getName(), Snackbar.LENGTH_LONG)
                 //        .setAction("No action", null).show();
 
+                showPopup.setItemName(fooditem.getName());
                 try {
                     showPopup.call();
                 } catch(Exception e) {
