@@ -27,7 +27,9 @@
         android:layout_marginStart="8dp"
         android:text="FoodName"
         android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textStyle="bold"
         android:textColor="@android:color/black"
+        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/food_image"
         app:layout_constraintTop_toTopOf="@+id/food_image" />
 
@@ -40,6 +42,7 @@
         android:layout_marginTop="5dp"
         android:text="FoodDate"
         android:textColor="@android:color/black"
+        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/food_image"
         app:layout_constraintTop_toBottomOf="@+id/food_name" />
 
