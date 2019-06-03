@@ -111,15 +111,6 @@ public class Basket extends MainPage {
 
         // Use fetchFoodList to get ingredients from database and add them to listview
         fetchFoodList();
-//        basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
-//                new Callable<Void>() {
-//                    @Override
-//                    public Void call() throws Exception {
-//                        showPopup("INGREDIENT NAME");
-//                        return null;
-//                    }
-//                });
-
 
         // Add To Basket Button
         Button add_to_basket = (Button)findViewById(R.id.add_to_basket);
