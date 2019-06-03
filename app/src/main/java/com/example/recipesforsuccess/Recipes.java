@@ -59,6 +59,18 @@ public class Recipes extends MainPage {
     String dataParsed = "";
     String SPOONACULAR_IMAGE_URI = "https://spoonacular.com/recipeImages/";
 
+    final int SEARCH_LAYOUT_WIDTH = 1000;
+    final int SEARCH_LAYOUT_HEIGHT = 500;
+    final int SEARCH_IMG_SIZE = 300;
+    final int SEARCH_TEXT_WIDTH = 700;
+    final int SEARCH_TEXT_HEIGHT = 300;
+
+    final int RECIPE_LAYOUT_WIDTH = 1000;
+    final int RECIPE_LAYOUT_HEIGHT = 500;
+    final int RECIPE_IMG_SIZE = 300;
+    final int REcIPE_TEXT_WIDTH = 700;
+    final int RECIPE_TEXT_HEIGHT = 300;
+
     int SECOND_ACTIVITY_REQUEST_CODE = 0;
 
     ArrayList<String> intolerances = new ArrayList();
@@ -306,7 +318,8 @@ public class Recipes extends MainPage {
                     String imgURL = hit.getString("image");
                     String foodName = hit.getString("title");
                     System.out.println("inserting img to photos");
-                    photos.addView(insertIMG(imgURL, foodName, "", hit, 1));
+                    photos.addView(insertIMG(imgURL, foodName, "", hit, 1, SEARCH_LAYOUT_WIDTH,
+                            SEARCH_LAYOUT_HEIGHT,SEARCH_IMG_SIZE,SEARCH_TEXT_WIDTH,SEARCH_TEXT_HEIGHT));
                 }
 
             }catch(JSONException e){
@@ -457,10 +470,10 @@ public class Recipes extends MainPage {
                     //parsing ingredients
 
 
-
                     //System.out.println("data parsed is: " + dataParsed);
                     // System.out.println("img url is: " + imgURL);
-                    photos.addView(insertIMG(imgURL, foodName, prepTime, hit, 0));
+                    photos.addView(insertIMG(imgURL, foodName, prepTime, hit, 0, RECIPE_LAYOUT_WIDTH,
+                            RECIPE_LAYOUT_HEIGHT,RECIPE_IMG_SIZE,REcIPE_TEXT_WIDTH,RECIPE_TEXT_HEIGHT));
                 }
 
             }catch(JSONException e){}
@@ -506,14 +519,19 @@ public class Recipes extends MainPage {
         }
     }
 
-    View insertIMG(final String imgURL, final String foodName, final String prepTime, final JSONObject hit, final int task){
+
+
+
+
+    View insertIMG(final String imgURL, final String foodName, final String prepTime, final JSONObject hit, final int task,
+                    final int layoutWidth, final int layoutHeight, final int imageSize, final int textWidth, final int textHeight){
 
         LinearLayout layout = new LinearLayout(getApplicationContext());
-        layout.setLayoutParams(new LinearLayout.LayoutParams(1000, 500));
+        layout.setLayoutParams(new LinearLayout.LayoutParams(layoutWidth, layoutHeight));
         ImageButton recipeIMG = new ImageButton(getApplicationContext());
-        recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(300, 300));
+        recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(imageSize, imageSize));
         TextView recipeName = new TextView(getApplicationContext());
-        recipeName.setLayoutParams(new LinearLayout.LayoutParams(700, 300));
+        recipeName.setLayoutParams(new LinearLayout.LayoutParams(textWidth, textHeight));
         recipeName.setPadding(75,50,0,0);
 
         recipeIMG.setOnClickListener(new View.OnClickListener() {
