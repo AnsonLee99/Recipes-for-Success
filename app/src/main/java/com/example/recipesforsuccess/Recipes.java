@@ -87,16 +87,13 @@ public class Recipes extends MainPage {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final FirebaseAuth currAuth = this.passAuth();
     private final FirebaseUser user = currAuth.getCurrentUser();
-    String userID = user.getUid();
+    private String userID = user.getUid();
 
     List<String> userBasket;
     List<String> recipeIDs;;
     FloatingActionButton createRecipeButton;
 
     private CollectionReference recipeRef = db.collection("RECIPES");
-    private FirebaseAuth currAuth = this.passAuth();
-    private FirebaseUser user = currAuth.getCurrentUser();
-    private String userID = user.getUid();
     private DocumentReference currentUser = db.collection("USERS").document(userID);
     LinearLayout Jeremy;
     private ArrayList<Recipe> recipes = new ArrayList<Recipe>();
@@ -157,8 +154,7 @@ public class Recipes extends MainPage {
                 }
             }
         });
-        return true;
-      
+
         handleIntent(getIntent());
 
     }
@@ -185,6 +181,7 @@ public class Recipes extends MainPage {
                 Intent intent = getIntent();
             }
         });
+        return true;
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -262,7 +259,8 @@ public class Recipes extends MainPage {
                         {
                             System.out.println("snapshot exists");
                             Recipe currRecipe = documentSnapshot.toObject(Recipe.class);
-                            Jeremy.addView(insertPersonalIMG(currRecipe));
+                            Jeremy.addView(insertPersonalIMG(currRecipe, RECIPE_LAYOUT_WIDTH,
+                                    RECIPE_LAYOUT_HEIGHT,RECIPE_IMG_SIZE,REcIPE_TEXT_WIDTH,RECIPE_TEXT_HEIGHT));
                         }
                         System.out.println("snapshot dne");
                     }
@@ -801,14 +799,14 @@ public class Recipes extends MainPage {
         return layout;
     }
 
-    View insertPersonalIMG(final Recipe myRecipe){
+    View insertPersonalIMG(final Recipe myRecipe, final int layoutWidth, final int layoutHeight, final int imageSize, final int textWidth, final int textHeight){
 
         LinearLayout layout = new LinearLayout(getApplicationContext());
-        layout.setLayoutParams(new LinearLayout.LayoutParams(1000, 500));
+        layout.setLayoutParams(new LinearLayout.LayoutParams(layoutWidth, layoutHeight));
         ImageButton recipeIMG = new ImageButton(getApplicationContext());
-        recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(300, 300));
+        recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(imageSize, imageSize));
         TextView recipeName = new TextView(getApplicationContext());
-        recipeName.setLayoutParams(new LinearLayout.LayoutParams(700, 300));
+        recipeName.setLayoutParams(new LinearLayout.LayoutParams(textWidth, textHeight));
         recipeName.setPadding(75,50,0,0);
 
         recipeIMG.setOnClickListener(new View.OnClickListener() {

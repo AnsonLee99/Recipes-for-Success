@@ -36,6 +36,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -150,6 +151,7 @@ public class CreateRecipe extends MainPage{
         {
             @Override
             public void onClick(View v) {
+                System.out.println("CALLING UPLOAD FILE");
                 uploadFile();
                 startActivity(new Intent(CreateRecipe.this, Recipes.class));
             }
@@ -190,6 +192,7 @@ public class CreateRecipe extends MainPage{
         final String prep_time = createTime.getText().toString();
         if(imageUri != null)
         {
+            System.out.println("STUCK IN UPLOAD FILE");
             StorageReference fileReference = storageRef.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
 
             fileReference.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -201,22 +204,29 @@ public class CreateRecipe extends MainPage{
                         @Override
                         public void onSuccess(Uri uri) {
                             String url = uri.toString();
+                            System.out.println("URL IS: " + url);
                             Recipe created = new Recipe(ingredients, recipe_name, prep_time, steps, url, equipment);
+                            System.out.println("CREATIED NEW RECIPE");
                             db.collection("RECIPES").add(created).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
                                     recipeID = documentReference.getId();
                                     db.collection("USERS").document(userID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                        int count = 0;
                                         @Override
                                         public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                                            if(documentSnapshot.exists())
+                                            if(documentSnapshot.exists() && count == 0)
                                             {
                                                 ArrayList<String> IDs = (ArrayList<String>) documentSnapshot.get("personalRecipes");
                                                 IDs.add(recipeID);
                                                 db.collection("USERS").document(userID).update("personalRecipes", IDs);
+                                                count++;
+                                            }else{
+                                                System.out.println("count not 0");
                                             }
                                         }
                                     });
+
                                     /*
                                     db.collection("USERS").document(userID).update("personalRecipes",
                                             recipeID);
