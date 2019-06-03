@@ -72,8 +72,10 @@ public class Basket extends MainPage {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
                 new PopulatePopup(), new BasketDeleter());
+
         // Check if a current user is logged in
         if (auth.getCurrentUser() == null) {
             Intent in = new Intent(Basket.this, MainActivity.class);
@@ -208,7 +210,7 @@ public class Basket extends MainPage {
         Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
         // capitalize first letter of item name
         basketContents.add(item);
-        basketAdapter.notifyDataSetChanged();
+        //basketAdapter.notifyDataSetChanged();
     }
 
     protected void pushToFirebase(HashMap<String, Object> ingredient) {
@@ -279,12 +281,14 @@ public class Basket extends MainPage {
                             }
 
                             basketContents.add(new FoodListViewItem(itemname, dateToString(date), img));
+                            basketAdapter.notifyDataSetChanged();
                         }
                     });
                     basketAdapter.notifyDataSetChanged();
                 }
             }
         });
+        basketAdapter.notifyDataSetChanged();
     }
 
     private String dateToString(Date date) {

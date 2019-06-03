@@ -35,7 +35,7 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
         TextView txtName;
         TextView txtDate;
         ImageView foodImage;
-        ImageView infoImage;
+        //ImageView infoImage;
         ImageView deleteImage;
     }
 
@@ -73,7 +73,7 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
                 }
 
                 break;
-
+/*
             // If user presses the delete button
             case R.id.delete_image:
                 Snackbar.make(v, fooditem.getName() + " deleted", Snackbar.LENGTH_SHORT)
@@ -91,7 +91,7 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
                 // remove item from current storage
                 dataSet.remove(fooditem);
                 this.notifyDataSetChanged();
-
+*/
         }
     }
 
@@ -116,8 +116,8 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
             viewHolder.txtName = (TextView) convertView.findViewById(R.id.food_name);
             viewHolder.txtDate = (TextView) convertView.findViewById(R.id.food_date);
             viewHolder.foodImage = (ImageView) convertView.findViewById(R.id.food_image);
-            viewHolder.infoImage = (ImageView) convertView.findViewById(R.id.info_image);
-            viewHolder.deleteImage = (ImageView) convertView.findViewById(R.id.delete_image);
+            //viewHolder.infoImage = (ImageView) convertView.findViewById(R.id.info_image);
+            //viewHolder.deleteImage = (ImageView) convertView.findViewById(R.id.delete_image);
 
 
             result=convertView;
@@ -133,10 +133,10 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
 
         viewHolder.txtName.setText(fooditem.getName());
         viewHolder.txtDate.setText(fooditem.getDate());
-        viewHolder.infoImage.setOnClickListener(this);
-        viewHolder.infoImage.setTag(position);
-        viewHolder.deleteImage.setOnClickListener(this);
-        viewHolder.deleteImage.setTag(position);
+        //viewHolder.infoImage.setOnClickListener(this);
+        //viewHolder.infoImage.setTag(position);
+//        viewHolder.deleteImage.setOnClickListener(this);
+//        viewHolder.deleteImage.setTag(position);
 //        viewHolder.foodImage.setImageResource(fooditem.getImageId());
 
         new DownloadImageTask((ImageView) viewHolder.foodImage)
