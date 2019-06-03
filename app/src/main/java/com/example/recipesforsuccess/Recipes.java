@@ -122,9 +122,11 @@ public class Recipes extends MainPage {
                                 if(documentSnapshot.exists())
                                 {
                                     Recipe currRecipe = documentSnapshot.toObject(Recipe.class);
-                                    recipes.add(currRecipe);
-                                    adapter.notifyDataSetChanged();
-                                    Jeremy.addView(adapter.getView(tracker, null, null));
+                                    //recipes.add(currRecipe);
+                                    //adapter.notifyDataSetChanged();
+                                    //Jeremy.addView(adapter.getView(tracker, null, null));
+                                    System.out.println("addiginv view, calling insertPersonalIMG");
+                                    Jeremy.addView(insertPersonalIMG(currRecipe));
                                     //tracker++;
 
                                 }
@@ -747,6 +749,108 @@ public class Recipes extends MainPage {
             }
         });
 
+        Picasso.with(getApplicationContext()).load(imgURL).into(recipeIMG);
+        recipeIMG.setScaleType(ImageView.ScaleType.FIT_XY);
+        recipeIMG.setPadding(0,0,0,0);
+        String boldedFoodName = "<b>" + foodName + "</b>";
+        recipeName.setText(Html.fromHtml(boldedFoodName));
+        recipeName.append("\nPrep Time: " + prepTime + " min");
+        recipeName.setTextColor(Color.BLACK);
+        layout.setPadding(0,100,0,0);
+        layout.addView(recipeIMG);
+        layout.addView(recipeName);
+        return layout;
+    }
+
+
+
+
+    View insertPersonalIMG(final Recipe myRecipe){
+
+        LinearLayout layout = new LinearLayout(getApplicationContext());
+        layout.setLayoutParams(new LinearLayout.LayoutParams(1000, 500));
+        ImageButton recipeIMG = new ImageButton(getApplicationContext());
+        recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(300, 300));
+        TextView recipeName = new TextView(getApplicationContext());
+        recipeName.setLayoutParams(new LinearLayout.LayoutParams(700, 300));
+        recipeName.setPadding(75,50,0,0);
+
+        recipeIMG.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ViewRecipeInstructions.class);
+                String finalImgURL = myRecipe.getRecipePic();
+                String recipeName = myRecipe.getName();
+                List<String> ingredientList = myRecipe.getIngredients();
+                List<String> steps = myRecipe.getSteps();
+
+
+                String equipmentList = "";
+
+                String ingredients = "";
+                for(int i = 0; i < ingredientList.size(); i++){
+                    ingredients = ingredients + (i+1) + ".  " + "" + ingredientList.get(i) + "\n" + "" + "\n";
+                }
+
+                String dataParsed = "";
+                for(int i = 0; i < steps.size(); i++){
+                    dataParsed = dataParsed + (i+1) + ".  " + "" + steps.get(i) + "\n" + "" + "\n";
+                }
+
+                //JSONObject recipe = hit1.getJSONObject("results");
+                intent.putExtra("ingredients", ingredients);
+                intent.putExtra("equipment", equipmentList);
+                intent.putExtra("instructions", dataParsed);
+                intent.putExtra("imgURL", finalImgURL);
+                intent.putExtra("recipeName", recipeName);
+                System.out.println("HELLO ABOUT TO START");
+
+                //System.out.println("EQUIPMENT HERE: " + equipmentList);
+
+                startActivity(intent);
+
+            }
+        });
+
+        recipeName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ViewRecipeInstructions.class);
+                String finalImgURL = myRecipe.getRecipePic();
+                String recipeName = myRecipe.getName();
+                List<String> ingredientList = myRecipe.getIngredients();
+                List<String> steps = myRecipe.getSteps();
+
+
+                String equipmentList = "";
+
+                String ingredients = "";
+                for(int i = 0; i < ingredientList.size(); i++){
+                    ingredients = ingredients + (i+1) + ".  " + "" + ingredientList.get(i) + "\n" + "" + "\n";
+                }
+
+                String dataParsed = "";
+                for(int i = 0; i < steps.size(); i++){
+                    dataParsed = dataParsed + (i+1) + ".  " + "" + steps.get(i) + "\n" + "" + "\n";
+                }
+
+                //JSONObject recipe = hit1.getJSONObject("results");
+                intent.putExtra("ingredients", ingredients);
+                intent.putExtra("equipment", equipmentList);
+                intent.putExtra("instructions", dataParsed);
+                intent.putExtra("imgURL", finalImgURL);
+                intent.putExtra("recipeName", recipeName);
+                System.out.println("HELLO ABOUT TO START");
+
+                //System.out.println("EQUIPMENT HERE: " + equipmentList);
+
+                startActivity(intent);
+
+            }
+        });
+        String imgURL = myRecipe.getRecipePic();
+        String foodName = myRecipe.getName();
+        String prepTime = myRecipe.getPrepTime();
         Picasso.with(getApplicationContext()).load(imgURL).into(recipeIMG);
         recipeIMG.setScaleType(ImageView.ScaleType.FIT_XY);
         recipeIMG.setPadding(0,0,0,0);
