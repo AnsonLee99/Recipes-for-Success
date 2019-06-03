@@ -4,12 +4,12 @@ public class FoodListViewItem {
 
     String name;
     String dateAdded;
-    int imageid;
+    String imgURL;
 
-    public FoodListViewItem(String name, String dateAdded, int imageid) {
+    public FoodListViewItem(String name, String dateAdded, String imgURL) {
         this.name=name;
         this.dateAdded=dateAdded;
-        this.imageid=imageid;
+        this.imgURL = imgURL;
     }
 
     public String getName() {
@@ -20,5 +20,5 @@ public class FoodListViewItem {
         return dateAdded;
     }
 
-    public int getImageId() { return imageid; }
+    public String getImageId() { return imgURL; }
 }
