@@ -55,7 +55,7 @@ public class Recipes extends MainPage {
     String EDAMAM_API_KEY ="&app_key=836bfa298e5ae162b917c2b0010b9190";
     String EDAMAM_API_URL = "https://api.edamam.com/search?q=";
     String USER_QUERY = "";
-    String SPOONACULAR_API_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search?query=";
+    String SPOONACULAR_API_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search?&instructionsRequired=true&query=";
     String dataParsed = "";
     String SPOONACULAR_IMAGE_URI = "https://spoonacular.com/recipeImages/";
 
@@ -298,23 +298,24 @@ public class Recipes extends MainPage {
                     JSONObject hit = jsonArray.getJSONObject(xx);
                     id = hit.getInt("id");
 
-                    String recipeInformation = new RecipeInstructions().execute().get();
-                    String equipmentInformation = new GetRecipeEquipment().execute().get();
-                    JSONObject recipe = new JSONObject(recipeInformation);
-                    String prepTime = recipe.getString("readyInMinutes");
+                    //String recipeInformation = new RecipeInstructions().execute().get();
+                    //String equipmentInformation = new GetRecipeEquipment().execute().get();
+                    //JSONObject recipe = new JSONObject(recipeInformation);
+                    //String prepTime = recipe.getString("readyInMinutes");
 
                     String imgURL = hit.getString("image");
                     String foodName = hit.getString("title");
-                    photos.addView(insertIMG(imgURL, foodName, prepTime, hit, 1, recipeInformation, equipmentInformation));
+                    System.out.println("inserting img to photos");
+                    photos.addView(insertIMG(imgURL, foodName, "", hit, 1));
                 }
 
             }catch(JSONException e){
                 System.out.println("caught exception " + e);
-            } catch (InterruptedException e) {
+            }/*catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
     }
 
@@ -459,7 +460,7 @@ public class Recipes extends MainPage {
 
                     //System.out.println("data parsed is: " + dataParsed);
                     // System.out.println("img url is: " + imgURL);
-                    photos.addView(insertIMG(imgURL, foodName, prepTime, hit, 0, "", ""));
+                    photos.addView(insertIMG(imgURL, foodName, prepTime, hit, 0));
                 }
 
             }catch(JSONException e){}
@@ -505,8 +506,7 @@ public class Recipes extends MainPage {
         }
     }
 
-    View insertIMG(final String imgURL, final String foodName, final String prepTime, final JSONObject hit,
-                   final int task, final String instructions, final String equipment){
+    View insertIMG(final String imgURL, final String foodName, final String prepTime, final JSONObject hit, final int task){
 
         LinearLayout layout = new LinearLayout(getApplicationContext());
         layout.setLayoutParams(new LinearLayout.LayoutParams(1000, 500));
@@ -537,19 +537,29 @@ public class Recipes extends MainPage {
 
                     String recipeInfo = "";
                     String equipmentInfo = "";
-                    if( task == 0 ) {
-                        recipeInfo = new RecipeInstructions().execute().get();
-                        equipmentInfo = new GetRecipeEquipment().execute().get();
-                    }else{
-                        equipmentInfo = equipment;
-                        recipeInfo = new RecipeInstructions().execute().get(); // without preptime
-                    }
+                    recipeInfo = new RecipeInstructions().execute().get();
+                    equipmentInfo = new GetRecipeEquipment().execute().get();
+
+
+                    //String equipmentInformation = new GetRecipeEquipment().execute().get();
 
                     //For instructions
                     JSONObject recipeSearch = new JSONObject(recipeInfo);
+                    System.out.println("trying to get analyzedInstructions");
                     JSONArray analyzedInstructions = recipeSearch.getJSONArray("analyzedInstructions");
-                    JSONObject instructionsArray = analyzedInstructions.getJSONObject(0);
-                    JSONArray stepsArray = instructionsArray.getJSONArray("steps");
+                    System.out.println("analyzedinsturcionts is: " + analyzedInstructions);
+                    JSONObject instructionsArray;
+                    JSONArray stepsArray;
+                    if( !analyzedInstructions.isNull(0) ){
+                        System.out.println("recipeInfo is; " + recipeInfo);
+                        System.out.println("analyzedInstructions is: " + analyzedInstructions);
+                        instructionsArray = analyzedInstructions.getJSONObject(0);
+                        stepsArray = instructionsArray.getJSONArray("steps");
+                    }else{
+                        instructionsArray = null;
+                        stepsArray = null;
+                    }
+
 
                     //For equipment
                     JSONObject equipmentSearch = new JSONObject(equipmentInfo);
@@ -572,12 +582,14 @@ public class Recipes extends MainPage {
                         equipmentList = equipmentList + (ii + 1) + ".   " + "" + name + "\n" + "" + "\n";
                     };
                     dataParsed = "";
-                    for(int ii = 0; ii < stepsArray.length(); ii++){
-                        JSONObject step = stepsArray.getJSONObject(ii);
-                        int number = step.getInt("number");
-                        String stepInfo = step.getString("step");
-                        dataParsed = dataParsed + number + ".   " + "" + stepInfo + "\n" + "" +
-                                "\n";
+                    if( stepsArray != null ) {
+                        for (int ii = 0; ii < stepsArray.length(); ii++) {
+                            JSONObject step = stepsArray.getJSONObject(ii);
+                            int number = step.getInt("number");
+                            String stepInfo = step.getString("step");
+                            dataParsed = dataParsed + number + ".   " + "" + stepInfo + "\n" + "" +
+                                    "\n";
+                        }
                     }
 
 
@@ -631,19 +643,25 @@ public class Recipes extends MainPage {
 
                     String recipeInfo = "";
                     String equipmentInfo = "";
-                    if( task == 0 ) {
-                        recipeInfo = new RecipeInstructions().execute().get();
-                        equipmentInfo = new GetRecipeEquipment().execute().get();
-                    }else{
-                        equipmentInfo = equipment;
-                        recipeInfo = new RecipeInstructions().execute().get();
-                    }
+                    recipeInfo = new RecipeInstructions().execute().get();
+                    equipmentInfo = new GetRecipeEquipment().execute().get();
+
 
                     //For instructions
                     JSONObject recipeSearch = new JSONObject(recipeInfo);
                     JSONArray analyzedInstructions = recipeSearch.getJSONArray("analyzedInstructions");
-                    JSONObject instructionsArray = analyzedInstructions.getJSONObject(0);
-                    JSONArray stepsArray = instructionsArray.getJSONArray("steps");
+
+                    JSONObject instructionsArray;
+                    JSONArray stepsArray;
+                    if( !analyzedInstructions.isNull(0) ){
+                        System.out.println("recipeInfo is; " + recipeInfo);
+                        System.out.println("analyzedInstructions is: " + analyzedInstructions);
+                        instructionsArray = analyzedInstructions.getJSONObject(0);
+                        stepsArray = instructionsArray.getJSONArray("steps");
+                    }else{
+                        instructionsArray = null;
+                        stepsArray = null;
+                    }
 
                     //For equipment
                     JSONObject equipmentSearch = new JSONObject(equipmentInfo);
@@ -666,12 +684,14 @@ public class Recipes extends MainPage {
                         equipmentList = equipmentList + (ii + 1) + ".   " + "" + name + "\n" + "" + "\n";
                     };
                     dataParsed = "";
-                    for(int ii = 0; ii < stepsArray.length(); ii++){
-                        JSONObject step = stepsArray.getJSONObject(ii);
-                        int number = step.getInt("number");
-                        String stepInfo = step.getString("step");
-                        dataParsed = dataParsed + number + ".   " + "" + stepInfo + "\n" + "" +
-                                "\n";
+                    if(stepsArray != null) {
+                        for (int ii = 0; ii < stepsArray.length(); ii++) {
+                            JSONObject step = stepsArray.getJSONObject(ii);
+                            int number = step.getInt("number");
+                            String stepInfo = step.getString("step");
+                            dataParsed = dataParsed + number + ".   " + "" + stepInfo + "\n" + "" +
+                                    "\n";
+                        }
                     }
 
                     intent.putExtra("ingredients", ingredientList);
@@ -704,7 +724,9 @@ public class Recipes extends MainPage {
         recipeIMG.setPadding(0,0,0,0);
         String boldedFoodName = "<b>" + foodName + "</b>";
         recipeName.setText(Html.fromHtml(boldedFoodName));
-        recipeName.append("\nPrep Time: " + prepTime + " min");
+        if(task == 0) {
+            recipeName.append("\nPrep Time: " + prepTime + " min");
+        }
         recipeName.setTextColor(Color.BLACK);
         layout.setPadding(0,100,0,0);
         layout.addView(recipeIMG);
