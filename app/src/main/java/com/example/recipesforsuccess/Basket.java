@@ -1,6 +1,5 @@
 package com.example.recipesforsuccess;
 import android.content.Intent;
-import android.app.ActionBar;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -18,8 +17,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.example.recipesforsuccess.dataobjects.FoodListViewAdapter;
@@ -35,7 +32,6 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -166,7 +162,7 @@ public class Basket extends MainPage {
 
     }
 
-    protected void removeFromBasket(int index, View v) {
+    public void removeFromBasket(int index, View v) {
         if(basketContents.size() > index) {
             Snackbar.make(v, "Removed: " + basketContents.get(index).getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
             basketContents.remove(index);
@@ -176,12 +172,13 @@ public class Basket extends MainPage {
         }
     }
 
-    protected void removeFromBasket(FoodListViewItem item) {
+    public void removeFromBasket(FoodListViewItem item) {
         basketContents.remove(item);
         basketAdapter.notifyDataSetChanged();
+        deleteFromFirebase(item.getName());
     }
 
-    protected void addToBasket(FoodListViewItem item, View v) {
+    public void addToBasket(FoodListViewItem item, View v) {
         Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
         basketContents.add(item);
         basketAdapter.notifyDataSetChanged();
@@ -218,13 +215,17 @@ public class Basket extends MainPage {
                 // Update this activity's list-view to match items
                 ListView listView = (ListView) findViewById(R.id.basket_list_view);
                 basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
-                        new Callable<Void>() {
+                       new Callable<Void>() {
                             @Override
                             public Void call() throws Exception {
                                 showPopup("INGREDIENT NAMEEE");
                                 return null;
                             }
-                        });
+                        },
+
+                        new BasketDeleter()
+                 );
+
                 listView.setAdapter(basketAdapter);
 
                 for (String item : items) {
@@ -266,6 +267,8 @@ public class Basket extends MainPage {
 
     // itemToDelete is the name of the item to delete
     protected void deleteFromFirebase(String itemToDelete) {
+
+        Log.d("delete", "deleting item " + itemToDelete);
 
         final String docName = itemToDelete + "_" + ID;
         db.collection("INGREDIENTS").document(docName).delete()
@@ -310,6 +313,21 @@ public class Basket extends MainPage {
         } catch(Exception e) {
             Log.d("TEST", "ERROR OCCURED WITH POPUP");
             e.printStackTrace();
+        }
+    }
+
+    public class BasketDeleter implements Callable<Void> {
+        FoodListViewItem item;
+
+        @Override
+        public Void call() throws Exception {
+            Log.d("delete", "delete called in BasketDeleter");
+            removeFromBasket(item);
+            return null;
+        }
+
+        public void setItem(FoodListViewItem item) {
+            this.item = item;
         }
     }
 }
