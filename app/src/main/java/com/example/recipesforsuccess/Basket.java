@@ -63,7 +63,7 @@ public class Basket extends MainPage {
     private ArrayList<String> prevImgURL;
     private String currImgURL;
 
-    private ArrayList<FoodListViewItem> basketContents;
+    private ArrayList<FoodListViewItem> basketContents = new ArrayList<>();
     FoodListViewAdapter basketAdapter;
 
     private PopupWindow window;
@@ -74,7 +74,8 @@ public class Basket extends MainPage {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+        basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
+                new PopulatePopup(), new BasketDeleter());
         // Check if a current user is logged in
         if (auth.getCurrentUser() == null) {
             Intent in = new Intent(Basket.this, MainActivity.class);
@@ -135,12 +136,12 @@ public class Basket extends MainPage {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 handler.removeCallbacks(input_finish_checker);
+                lastTextUpdate = System.currentTimeMillis();
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 if(s.length() >0) {
-                    lastTextUpdate = System.currentTimeMillis();
                     handler.postDelayed(input_finish_checker, delay);
                     str = s;
                 }
@@ -238,13 +239,8 @@ public class Basket extends MainPage {
                 DocumentSnapshot document = task.getResult();
                 ArrayList<String> items = (ArrayList<String>) document.get("basket");
 
-                // parse returned basket to get food item names and dates added
-                basketContents = new ArrayList<>();
-                // Update this activity's list-view to match items
+                // parse returned basket to get food item names and dates added                // Update this activity's list-view to match items
                 ListView listView = (ListView) findViewById(R.id.basket_list_view);
-                basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
-                        new PopulatePopup(), new BasketDeleter()
-                );
 
                 listView.setAdapter(basketAdapter);
 
@@ -277,16 +273,18 @@ public class Basket extends MainPage {
                             Date date = new Date(Long.parseLong(itemseconds) * 1000l);
 
                             // Add string to the foodList
-                            String img = foodItemDocument.get("imgURL").toString();
+                            String img;
+                            try {
+                                img = foodItemDocument.get("imgURL").toString();
+                            } catch (Exception e){
+                                img = "";
+                            }
 
                             basketContents.add(new FoodListViewItem(itemname, dateToString(date), img));
-                            basketAdapter.notifyDataSetChanged();
-
                         }
                     });
+                    basketAdapter.notifyDataSetChanged();
                 }
-
-                basketAdapter.notifyDataSetChanged();
             }
         });
     }
