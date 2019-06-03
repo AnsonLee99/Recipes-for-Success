@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GroceryList">
+    tools:context=".GroceryList"
+    android:layout_marginBottom="56dp">
 
     <AutoCompleteTextView
         android:id="@+id/grocery_searchBar"
@@ -22,14 +23,16 @@
     <ListView
         android:id="@+id/shopping_list_view"
         android:layout_width="373dp"
-        android:layout_height="wrap_content"
+        android:layout_height="500dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="56dp"
         android:paddingBottom="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/grocery_searchBar" />
+        app:layout_constraintTop_toBottomOf="@+id/grocery_searchBar"
+        app:layout_constraintBottom_toTopOf="@+id/NavBar_Group"/>
 
     <Button
         android:id="@+id/add_to_shopping_list"
