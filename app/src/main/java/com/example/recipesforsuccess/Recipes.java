@@ -276,6 +276,7 @@ public class Recipes extends MainPage {
 
         protected void onPostExecute(String response){
             try{
+                String instructions;
                 //System.out.println("the response is: " + response);
                 System.out.println("IN POST EXECUTE");
                 /*TextView txt = (TextView) findViewById(R.id.recipe_text);
@@ -570,7 +571,7 @@ public class Recipes extends MainPage {
                         String name = equipment.getString("name");
                         equipmentList = equipmentList + (ii + 1) + ".   " + "" + name + "\n" + "" + "\n";
                     };
-
+                    dataParsed = "";
                     for(int ii = 0; ii < stepsArray.length(); ii++){
                         JSONObject step = stepsArray.getJSONObject(ii);
                         int number = step.getInt("number");
@@ -578,6 +579,11 @@ public class Recipes extends MainPage {
                         dataParsed = dataParsed + number + ".   " + "" + stepInfo + "\n" + "" +
                                 "\n";
                     }
+
+
+                    System.out.println("instructions HEREEEEEEEE! " + dataParsed);
+
+
 
                     intent.putExtra("ingredients", ingredientList);
                     intent.putExtra("equipment", equipmentList);
@@ -659,7 +665,7 @@ public class Recipes extends MainPage {
                         String name = equipment.getString("name");
                         equipmentList = equipmentList + (ii + 1) + ".   " + "" + name + "\n" + "" + "\n";
                     };
-
+                    dataParsed = "";
                     for(int ii = 0; ii < stepsArray.length(); ii++){
                         JSONObject step = stepsArray.getJSONObject(ii);
                         int number = step.getInt("number");
