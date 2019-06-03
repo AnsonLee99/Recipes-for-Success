@@ -138,13 +138,11 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
         viewHolder.deleteImage.setTag(position);
 //        viewHolder.foodImage.setImageResource(fooditem.getImageId());
 
-        //new DownloadImageTask((ImageView) viewHolder.foodImage)
-        //        .execute("http://java.sogeti.nl/JavaBlog/wp-content/uploads/2009/04/android_icon_256.png");
+        new DownloadImageTask((ImageView) viewHolder.foodImage)
+                .execute("https://spoonacular.com/cdn/ingredients_250x250/"+fooditem.getImageId());
 
         return result;
     }
-
-
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
@@ -164,6 +162,10 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
                 e.printStackTrace();
             }
             return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
         }
     }
 }
