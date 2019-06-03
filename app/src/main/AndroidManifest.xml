@@ -14,39 +14,48 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Profile" android:exported="true"></activity>
-        <activity android:name=".Basket" android:exported="true"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".Recipes"
-            android:label="Recipes"
-            android:launchMode="singleTop"
-            android:exported="true">
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH"/>
-            </intent-filter>
-        </activity>
-        <activity android:name=".BasketEditing" android:exported="true"/>
-        <activity android:name=".GroceryList" android:exported="true"
-            android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".CreateAccount" android:exported="true"/>
-        <activity android:name=".PersonalRecipes" android:exported="true"/>
-        <activity android:name=".CreateRecipe" android:exported="true"/>
-        <activity android:name=".dataobjects.NutritionalInfo"></activity>
+        <activity android:name=".ViewRecipeInstructions"/>
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
+            android:name=".Profile"
+            android:exported="true" />
+        <activity
+            android:name=".Basket"
             android:exported="true"
-            android:windowSoftInputMode="adjustPan" >
-        </activity>
+            android:windowSoftInputMode="stateHidden|adjustPan" >
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name=".Recipes"
+        android:exported="true"
+        android:label="Recipes"
+        android:launchMode="singleTop">
+        <meta-data
+            android:name="android.app.searchable"
+            android:resource="@xml/searchable" />
+        <intent-filter>
+            <action android:name="android.intent.action.SEARCH"/>
+        </intent-filter>
+    </activity>
+    <activity android:name=".BasketEditing" android:exported="true"/>
+    <activity android:name=".GroceryList" android:exported="true"
+        android:windowSoftInputMode="stateHidden|adjustPan" />
+    <activity android:name=".CreateAccount" android:exported="true"/>
+    <!--<activity android:name=".PersonalRecipes" android:exported="true"/>-->
+    <activity android:name=".CreateRecipe" android:exported="true"/>
+    <activity android:name=".dataobjects.NutritionalInfo"/>
+    <activity android:name=".Filters"
+        android:exported="true"
+        android:label="Filters"/>
+
+    <activity android:name=".MainActivity"
+    android:label="@string/app_name"
+    android:exported="true"
+    android:windowSoftInputMode="adjustPan" >
+</activity>
     </application>
 
-</manifest>
+    </manifest>
