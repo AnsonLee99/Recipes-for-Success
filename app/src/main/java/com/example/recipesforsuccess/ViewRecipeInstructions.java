@@ -35,27 +35,6 @@ public class ViewRecipeInstructions extends AppCompatActivity {
         layout.setGravity(Gravity.CENTER_HORIZONTAL);
         //findViewById(R.id.recipe_instruct_screen).setBackgroundColor(889176327);
 
-        // Star for title
-        final ImageButton favButton = (ImageButton) findViewById(R.id.fav_button);
-        favButton.setBackgroundColor(Color.WHITE);
-        favButton.setPadding(0,0,0,0);
-
-        favButton.setOnClickListener(new View.OnClickListener() {
-            Boolean saved = false;
-
-            @Override
-            public void onClick(View v) {
-                if(!saved) {
-                    favButton.setImageResource(R.drawable.yellow_star);
-                    saved = true;
-                }
-                else{
-                    favButton.setImageResource(R.drawable.plain_star);
-                    saved = false;
-
-                }
-            }
-        });
         // Recipe Name
         TextView recipeName = findViewById(R.id.recipe_title);
         recipeName.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
