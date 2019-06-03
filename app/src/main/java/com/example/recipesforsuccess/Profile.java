@@ -78,9 +78,9 @@ public class Profile extends MainPage {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Profile.this, PersonalRecipes.class));
 
-                //reAuthenticate();
+                reAuthenticate();
+
             }
         });
 
@@ -96,23 +96,25 @@ public class Profile extends MainPage {
     {
 
         String getOldPass = oldPass.getText().toString();
-
-        //TODO
-        //Update this to require the password in order to update.
-        AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), getOldPass);
-        user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful())
-                {
-                    updateInfo();
-                    Toast.makeText(Profile.this, "Update Successful", Toast.LENGTH_LONG).show();
+        if (TextUtils.isEmpty(getOldPass)) {
+            Toast.makeText(Profile.this, "Password is empty", Toast.LENGTH_LONG).show();
+        }
+        else {
+            //Update this to require the password in order to update.
+            AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), getOldPass);
+            user.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        updateInfo();
+                        Toast.makeText(Profile.this, "Update Successful", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(Profile.this, "Old Password is Incorrect", Toast.LENGTH_LONG).show();
+                        Log.d("Profile.class", "Authentication Unsuccessful");
+                    }
                 }
-                else {
-                    Log.d("Profile.class", "Authentication Unsuccessful");
-                }
-            }
-        });
+            });
+        }
 
     }
 
