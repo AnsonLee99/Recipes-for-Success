@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -15,6 +16,7 @@ import android.widget.LinearLayout;
 import android.view.MenuInflater;
 import android.view.Menu;
 import android.app.SearchManager;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -36,7 +38,10 @@ import java.util.concurrent.ExecutionException;
 import com.fasterxml.jackson.core.util.BufferRecycler;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -68,8 +73,21 @@ public class Recipes extends MainPage {
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     List<String> userBasket;
+    List<String> userRecipes;
+
+    private CollectionReference recipeRef = db.collection("RECIPES");
+    private FirebaseAuth currAuth = this.passAuth();
+    private FirebaseUser user = currAuth.getCurrentUser();
+    private String userID = user.getUid();
+    private DocumentReference currentUser = db.collection("USERS").document(userID);
+    LinearLayout Jeremy;
+    private ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+    RecipeAdapter adapter;
+    Context context;
+
 
     int id = 0;
+    int tracker = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,13 +96,49 @@ public class Recipes extends MainPage {
         mainDisplay = (LinearLayout) findViewById(R.id.main_display);
         View groceryView = getLayoutInflater().inflate(R.layout.activity_recipes, null);
         mainDisplay.addView(groceryView);
-
+        context = this;
         // For displaying the currently selected tab
         // I can't fuckin figure it out
         //RadioGroup rg = (RadioGroup) findViewById(R.id.NavBar_Group);
         //RadioButton curr = (RadioButton)findViewById(R.id.recipes_tab_button);
         //curr.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.<CLICKED VERSION OF ICON>);
         //curr.setTextColor(Color.parseColor("3F51B5"));
+
+        adapter = new RecipeAdapter(context, recipes);
+        Jeremy = (LinearLayout)findViewById(R.id.Jeremy);
+
+        currentUser.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if(documentSnapshot.exists())
+                {
+                    ArrayList<String> recipeIDs = (ArrayList<String>) documentSnapshot.get("personalRecipes");
+                    for(String ID : recipeIDs)
+                    {
+                        recipeRef.document(ID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                            @Override
+                            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+
+                                if(documentSnapshot.exists())
+                                {
+                                    Recipe currRecipe = documentSnapshot.toObject(Recipe.class);
+                                    recipes.add(currRecipe);
+                                    adapter.notifyDataSetChanged();
+                                    Jeremy.addView(adapter.getView(tracker, null, null));
+                                    //tracker++;
+
+                                }
+                            }
+                        });
+                    }
+                    /*
+                    list = (ListView) findViewById(R.id.test_list);
+                    adapter = new RecipeAdapter(context, recipes);
+                    list.setAdapter(adapter);
+                    */
+                }
+            }
+        });
 
         handleIntent(getIntent());
 

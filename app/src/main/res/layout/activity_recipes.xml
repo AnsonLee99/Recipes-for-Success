@@ -61,7 +61,8 @@
             android:scrollbarSize="0dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/Jeremy"
+                android:layout_width="353dp"
                 android:layout_height="180dp"
                 android:orientation="horizontal"
                 android:paddingLeft="0dp">
@@ -72,6 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="TextView" />
+
             </LinearLayout>
         </HorizontalScrollView>
 
