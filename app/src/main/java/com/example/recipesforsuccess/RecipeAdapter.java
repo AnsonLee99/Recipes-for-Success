@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,6 +41,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -71,18 +73,8 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
 
         name.setText(recipe.getName());
         time.setText(recipe.getPrepTime());
-        try {
-            URL url = new URL(recipe.getRecipePic());
-            Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-            image.setImageBitmap(bmp);
-        }
-        catch(MalformedURLException e){
-            Log.d("PersonalRecipes.class", "Didn't work");
-        }
-        catch(IOException e)
-        {
-            Log.d("PersonalRecipes.class", "exception");
-        }
+
+        new DownloadImageTask((ImageView) image).execute(recipe.getRecipePic());
         //image.
         //Picasso.with(context).load(recipe.getRecipePic()).into(image);
 
@@ -90,6 +82,31 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
 
 
         return convertView;
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
     }
 
 }
