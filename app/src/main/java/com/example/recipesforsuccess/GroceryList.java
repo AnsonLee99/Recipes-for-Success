@@ -57,6 +57,9 @@ public class GroceryList extends MainPage {
         View groceryView = getLayoutInflater().inflate(R.layout.activity_grocery_list, null);
         mainDisplay.addView(groceryView);
 
+        groceryContents = new ArrayList<GroceryListViewItem>();
+        groceryAdapter = new GroceryListViewAdapter(groceryContents, getApplicationContext(), false);
+
         // For displaying the currently selected tab
         RadioGroup rg = (RadioGroup) findViewById(R.id.NavBar_Group);
         RadioButton curr = (RadioButton)findViewById(R.id.recipes_tab_button);
@@ -147,7 +150,11 @@ public class GroceryList extends MainPage {
     protected void addToGrocery(GroceryListViewItem item, View v) {
         Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
         groceryContents.add(item);
-        groceryAdapter.notifyDataSetChanged();
+        groceryAdapter = new GroceryListViewAdapter(groceryContents, getApplicationContext(), false);
+
+        // Update this activity's list-view to match items
+        ListView listView = (ListView) findViewById(R.id.shopping_list_view);
+        listView.setAdapter(groceryAdapter);
     }
 
     protected void fetchShoppingList() {
@@ -168,6 +175,9 @@ public class GroceryList extends MainPage {
                     // Add string to the foodList
                     shoppingList.add(new GroceryListViewItem(item));
                 }
+
+                // Update parent container's grocery list
+                GroceryList.this.groceryContents = (ArrayList)shoppingList.clone();
 
                 // Update this activity's list-view to match items
                 ListView listView = (ListView) findViewById(R.id.shopping_list_view);

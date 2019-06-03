@@ -1,7 +1,10 @@
 package com.example.recipesforsuccess;
 import android.content.Intent;
-import android.app.ActionBar;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.os.Bundle;
@@ -12,14 +15,14 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.example.recipesforsuccess.dataobjects.FoodListViewAdapter;
@@ -35,10 +38,12 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
-import org.w3c.dom.Text;
+import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -52,8 +57,16 @@ public class Basket extends MainPage {
     private JSONArray res;
     private FirebaseAuth auth = this.passAuth();
     private String ID =  auth.getUid();
+    private Context context;
 
-    private ArrayList<FoodListViewItem> basketContents;
+    private long delay = 300; // Wait .5 sec after user stops typing to update
+    long lastTextUpdate = 0;
+    Handler handler = new Handler();
+    private Editable str;
+
+    private ArrayList<String> imgURL = new ArrayList<>();
+
+    private ArrayList<FoodListViewItem> basketContents = new ArrayList<>();
     FoodListViewAdapter basketAdapter;
 
     private PopupWindow window;
@@ -64,6 +77,10 @@ public class Basket extends MainPage {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
+                new PopulatePopup(), new BasketDeleter());
+        context = this;
 
         // Check if a current user is logged in
         if (auth.getCurrentUser() == null) {
@@ -76,20 +93,44 @@ public class Basket extends MainPage {
         View basketView = getLayoutInflater().inflate(R.layout.activity_basket, null);
         mainDisplay.addView(basketView);
 
-        // For displaying the currently selected tab
-        // I can't fuckin figure it out
-        RadioGroup rg = (RadioGroup) findViewById(R.id.NavBar_Group);
-        RadioButton curr = (RadioButton)findViewById(R.id.recipes_tab_button);
-        //curr.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.<CLICKED VERSION OF ICON>);
-        //curr.setTextColor(Color.parseColor("3F51B5"));
-
-
         // Auto-complete searchbar
         bar = (AutoCompleteTextView) findViewById(R.id.basket_searchBar);
         options = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
         bar.setAdapter(options);
         //bar.setDropDownHeight(6);
         options.notifyDataSetChanged();
+
+
+        final Runnable input_finish_checker = new Runnable() {
+            public void run() {
+                if (System.currentTimeMillis() > (lastTextUpdate + delay - 500)) {
+                    Log.d("test", "NEW ENTRY: " + str.toString());
+
+                    ExecutorService service = Executors.newSingleThreadExecutor();
+                    CustomCallable call = new CustomCallable(str.toString());
+                    Future<JSONArray> f = service.submit(call);
+
+                    options.clear();
+                    ArrayList<String> currOptions = new ArrayList<>();
+
+                    imgURL = new ArrayList<>();
+
+                    try {
+                        res = f.get();
+                        for ( int i = 0; i < res.length(); i ++ ) {
+                            currOptions.add(res.getJSONObject(i).get("name").toString());
+                            imgURL.add(res.getJSONObject(i).get("image").toString());
+                        }
+                    } catch(Exception e) {
+                        Log.d("test", "EXCEPTION WITH RETRIEVING ARRAYLIST: " + e);
+                    }
+                    service.shutdown();
+
+                    options.addAll(currOptions);
+                    options.notifyDataSetChanged();
+                }
+            }
+        };
 
         bar.addTextChangedListener(new TextWatcher() {
             @Override
@@ -99,56 +140,34 @@ public class Basket extends MainPage {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d("test", "NEW ENTRY: " + s.toString());
-
-                ExecutorService service = Executors.newSingleThreadExecutor();
-                CustomCallable call = new CustomCallable(s.toString());
-                Future<JSONArray> f = service.submit(call);
-
-                options.clear();
-                ArrayList<String> currOptions = new ArrayList<>();
-                try {
-                    res = f.get();
-                    for ( int i = 0; i < res.length(); i ++ ) {
-                        currOptions.add(res.getJSONObject(i).get("name").toString());
-                    }
-                } catch(Exception e) {
-                    Log.d("test", "EXCEPTION WITH RETRIEVING ARRAYLIST: " + e);
-                }
-                service.shutdown();
-
-                options.addAll(currOptions);
+                handler.removeCallbacks(input_finish_checker);
+                lastTextUpdate = System.currentTimeMillis();
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                options.notifyDataSetChanged();
+                if(s.length() >0) {
+                    handler.postDelayed(input_finish_checker, delay);
+                    str = s;
+                }
             }
         });
 
-        // Use fetchFoodList to get ingredients from database and add them to listview
-        if (auth.getCurrentUser() != null) {
-            fetchFoodList();
-        }
-        ListView listView = (ListView) findViewById(R.id.basket_list_view);
-        basketContents = new ArrayList<FoodListViewItem>();
-        basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
-                new Callable<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        showPopup("INGREDIENT NAME");
-                        return null;
-                    }
-                });
-
-        listView.setAdapter(basketAdapter);
+        fetchFoodList();
+        Log.d("test", "EXECUTED");
 
         // Add To Basket Button
         Button add_to_basket = (Button)findViewById(R.id.add_to_basket);
         add_to_basket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addToBasket(new FoodListViewItem(bar.getText().toString(), "Time", R.drawable.ic_launcher_background), v);
+
+                int idx = 0;
+                for ( int i = 0; i < options.getCount(); i ++) {
+                    if (options.getItem(i) == bar.getText().toString()) {
+                        idx = i;
+                    }
+                }
 
                 // REPLACE "new JSONObject()" with the JSON object from the selected "res" array
                 HashMap<String, Object> newIngredient = new HashMap<>();
@@ -156,37 +175,28 @@ public class Basket extends MainPage {
                 newIngredient.put("flag", false);
                 newIngredient.put("name", bar.getText().toString());
                 newIngredient.put("time added", Calendar.getInstance().getTime());
+                newIngredient.put("imgURL", imgURL.get(idx));
+
+                pushToFirebase(newIngredient);
 
                 Log.d("test", "value before: " + newIngredient.get("name"));
-                pushToFirebase(newIngredient);
+
+                // capitalize first letter of item name
+                String ingredientName = newIngredient.get("name").toString();
+                ingredientName = (ingredientName.length() < 2) ? ingredientName :
+                        (ingredientName.substring(0, 1).toUpperCase() + ingredientName .substring(1));
+
+                // capitalize first letter of item name
+                String itemname = (bar.getText().toString().length() < 2) ? bar.getText().toString() :
+                        (bar.getText().toString().substring(0, 1).toUpperCase() + bar.getText().toString().substring(1));
+                Date date = new Date();
+
+                addToBasket(new FoodListViewItem(itemname, dateToString(date), imgURL.get(idx), context, basketAdapter));
             }
         });
-
-
-        // DEBUG BUTTONS TO ADD OR DELETE ITEM FROM LISTVIEW
-        Button debug_add_item = (Button)findViewById(R.id.debug_add_item);
-        Button debug_delete_item = (Button)findViewById(R.id.debug_delete_item);
-
-        debug_add_item.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addToBasket(new FoodListViewItem("NewFood", "Today", R.drawable.ic_launcher_background), v);
-                Log.d("test", "showing popup");
-                showPopup("hi");
-            }
-        });
-
-        debug_delete_item.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeFromBasket(basketContents.size() - 1, v);
-
-            }
-        });
-
     }
 
-    protected void removeFromBasket(int index, View v) {
+    public void removeFromBasket(int index, View v) {
         if(basketContents.size() > index) {
             Snackbar.make(v, "Removed: " + basketContents.get(index).getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
             basketContents.remove(index);
@@ -196,18 +206,17 @@ public class Basket extends MainPage {
         }
     }
 
-    protected void removeFromBasket(FoodListViewItem item) {
+    public void removeFromBasket(FoodListViewItem item) {
         basketContents.remove(item);
         basketAdapter.notifyDataSetChanged();
+        deleteFromFirebase(item.getName());
     }
 
-    protected void addToBasket(FoodListViewItem item, View v) {
-        Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
+    public void addToBasket(FoodListViewItem item) {
+        //Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
+        // capitalize first letter of item name
         basketContents.add(item);
         basketAdapter.notifyDataSetChanged();
-
-        ListView listView = (ListView) findViewById(R.id.basket_list_view);
-        listView.setAdapter(basketAdapter);
     }
 
     protected void pushToFirebase(HashMap<String, Object> ingredient) {
@@ -235,49 +244,84 @@ public class Basket extends MainPage {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
                 ArrayList<String> items = (ArrayList<String>) document.get("basket");
-                ArrayList<FoodListViewItem> foodList = new ArrayList<FoodListViewItem>();
-                for (String item : items) {
-                    // Remove the user ID from the string
-                    item = item.substring(0, item.indexOf("_"));
-                    // Capitalize the first letter
-                    if (item.length() < 2) continue;
-                    item  = item.substring(0, 1).toUpperCase() + item.substring(1);
 
-                    // Add string to the foodList
-                    foodList.add(new FoodListViewItem(item, "4/20/1420", 0));
+                // parse returned basket to get food item names and dates added                // Update this activity's list-view to match items
+                ListView listView = (ListView) findViewById(R.id.basket_list_view);
+
+                listView.setAdapter(basketAdapter);
+
+                if(items.size() <= 0) {
+                    return;
                 }
 
-                // Update this activity's list-view to match items
-                ListView listView = (ListView) findViewById(R.id.basket_list_view);
-                basketAdapter = new FoodListViewAdapter(foodList, getApplicationContext(), false,
-                        new Callable<Void>() {
-                            @Override
-                            public Void call() throws Exception {
-                                showPopup("INGREDIENT NAMEEE");
-                                return null;
+                for (String item : items) {
+                    // get date of food item
+                    db.collection("INGREDIENTS").document(item).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            DocumentSnapshot foodItemDocument = task.getResult();
+
+                            Object itemobj = foodItemDocument.get("name");
+                            String itemname;
+                            if(itemobj != null) {
+                                itemname = itemobj.toString();
+                            } else {
+                                return;
                             }
-                        });
-                listView.setAdapter(basketAdapter);
+
+                            // capitalize first letter of item name
+                            itemname = (itemname.length() < 2) ? itemname : (itemname.substring(0, 1).toUpperCase() + itemname.substring(1));
+
+                            String itemdate = foodItemDocument.get("time added").toString();
+                            String[] itemdates = itemdate.split(",");
+                            String itemseconds = itemdates[0].replace("Timestamp(seconds=", "");
+                            String itemnano = itemdates[1].replace(" nanoseconds=", "").replace(")", "");
+
+                            Date date = new Date(Long.parseLong(itemseconds) * 1000l);
+
+                            // Add string to the foodList
+                            String img;
+                            try {
+                                img = foodItemDocument.get("imgURL").toString();
+                            } catch (Exception e){
+                                img = "";
+                            }
+
+                            addToBasket(new FoodListViewItem(itemname, dateToString(date), img, context, basketAdapter));
+                            basketAdapter.notifyDataSetChanged();
+                        }
+                    });
+                    basketAdapter.notifyDataSetChanged();
+                }
             }
         });
+        basketAdapter.notifyDataSetChanged();
+    }
+
+    private String dateToString(Date date) {
+
+        String[] splitDate = date.toString().split(" ");
+        return "Added: " + splitDate[1] + " " + splitDate[2];
     }
 
     // itemToDelete is the name of the item to delete
     protected void deleteFromFirebase(String itemToDelete) {
 
-        final String docName = itemToDelete + "_" + ID;
+        Log.d("delete", "deleting item " + itemToDelete);
+
+        final String docName = itemToDelete.toLowerCase() + "_" + ID;
         db.collection("INGREDIENTS").document(docName).delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         db.collection("USERS").document(ID).update("basket",
                                 FieldValue.arrayRemove(docName));
+                        Log.d("delete", "DELETING SUCCESS");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("test", "DELETING FAILED");
+                        Log.d("delete", "DELETING FAILED");
                     }
                 });
     }
@@ -304,10 +348,109 @@ public class Basket extends MainPage {
             TextView title = (TextView) layout.findViewById(R.id.nutritional_info_title);
             title.setText(ingredient);
 
-            
+            PopulatePopup updatePopup = new PopulatePopup(ingredient);
+            updatePopup.execute("https://api.nal.usda.gov/ndb/list");
+            //updatePopup.execute("Browser: https://api.nal.usda.gov/ndb/search/?format=json&q=butter&sort=n&max=25&offset=0&api_key=DEMO_KEY ");
+
         } catch(Exception e) {
             Log.d("TEST", "ERROR OCCURED WITH POPUP");
             e.printStackTrace();
         }
     }
+
+
+    public class BasketDeleter implements Callable<Void> {
+        FoodListViewItem item;
+
+        @Override
+        public Void call() throws Exception {
+            Log.d("delete", "delete called in BasketDeleter");
+            removeFromBasket(item);
+            return null;
+        }
+
+        public void setItem(FoodListViewItem item) {
+            this.item = item;
+        }
+    }
+
+
+    public class PopulatePopup extends AsyncTask<String, Void, JSONObject> {
+        private String ingredientName;
+
+        public PopulatePopup() {};
+
+        public PopulatePopup(String ingredientName) {
+            this.ingredientName = ingredientName;
+        }
+
+        public void setItemName(String itemname){
+            ingredientName = itemname;
+        }
+
+        public void call() {
+            // do whatever here
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... urls) {
+            JSONObject result = new JSONObject();
+
+            try {
+                StringBuilder url = new StringBuilder(urls[0]);
+                url.append("?api_key=LHgDB2008wpwdJEzvK2wlR7gLNv7oPzYXCVAyJVZ&format=json&sort=r&max=1&da=Standard Referece&q=" + ingredientName);
+
+
+
+/*
+
+            String rawURL = convertToREST(params, urls[0]);
+            URL url = new URL(rawURL);
+
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+//            con.setRequestProperty("format", "json");
+//            con.setRequestProperty("q", ingredientName);
+//            con.setRequestProperty("sort", "r");
+            //con.("api_key", "LHgDB2008wpwdJEzvK2wlR7gLNv7oPzYXCVAyJVZ");
+//            con.setRequestProperty("max", "1");
+//            con.setRequestProperty("ds", "Standard Reference");
+
+            Log.d("test", "URL = " + url.toString());
+
+            HttpURLConnection.setFollowRedirects(true);
+            con.setInstanceFollowRedirects(false);
+            con.setDoOutput(true);
+
+            OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
+
+            // Print the response code
+            // and response message from server.
+            Log.d("test", "Response Code:"
+                    + con.getResponseCode());
+            Log.d("test", "Response Message:"
+                    + con.getResponseMessage());
+
+
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestProperty("api_key", "LHgDB2008wpwdJEzvK2wlR7gLNv7oPzYXCVAyJVZ");
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Log.d("test", "CONTENTS: " + line);
+            }
+*/
+            } catch (Exception e) {
+                Log.d("test", "ERROR WITH QUERYING FOR NDBNO ID: " + e );
+            }
+            return null;
+        }
+
+    }
+
+
+
 }

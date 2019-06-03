@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="20dp"
-    android:id="@+id/relativeLayout">
+    android:id="@+id/relativeLayout"
+    android:background="@drawable/fooditemborder">
 
     <ImageView
         android:id="@+id/food_image"
@@ -46,15 +47,26 @@
         app:layout_constraintStart_toEndOf="@+id/food_image"
         app:layout_constraintTop_toBottomOf="@+id/food_name" />
 
+    <!--<ImageView-->
+        <!--android:id="@+id/info_image"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:src="@android:drawable/ic_dialog_info"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toStartOf="@+id/delete_image"-->
+        <!--app:layout_constraintTop_toTopOf="parent" />-->
+
     <ImageView
-        android:id="@+id/info_image"
+        android:id="@+id/delete_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_dialog_info"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="8dp"
+        android:src="@android:drawable/ic_menu_delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.493"/>
 
 
 </android.support.constraint.ConstraintLayout>
