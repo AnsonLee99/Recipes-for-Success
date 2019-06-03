@@ -261,7 +261,7 @@ public class Basket extends MainPage {
 
                             basketContents.add(new FoodListViewItem(itemname, dateToString(date), img));
                             basketAdapter.notifyDataSetChanged();
-                            
+
                         }
                     });
                 }
