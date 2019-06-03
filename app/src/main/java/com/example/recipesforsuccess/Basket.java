@@ -130,7 +130,6 @@ public class Basket extends MainPage {
         add_to_basket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addToBasket(new FoodListViewItem(bar.getText().toString(), "Time", R.drawable.ic_launcher_background), v);
 
                 // REPLACE "new JSONObject()" with the JSON object from the selected "res" array
                 HashMap<String, Object> newIngredient = new HashMap<>();
@@ -140,7 +139,9 @@ public class Basket extends MainPage {
                 newIngredient.put("time added", Calendar.getInstance().getTime());
 
                 Log.d("test", "value before: " + newIngredient.get("name"));
+                addToBasket(new FoodListViewItem(newIngredient.get("name").toString(), newIngredient.get("time added").toString(), R.drawable.ic_launcher_background), v);
                 pushToFirebase(newIngredient);
+                showPopup(bar.getText().toString());
             }
         });
 
@@ -187,9 +188,6 @@ public class Basket extends MainPage {
         Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
         basketContents.add(item);
         basketAdapter.notifyDataSetChanged();
-
-        //ListView listView = (ListView) findViewById(R.id.basket_list_view);
-        //listView.setAdapter(basketAdapter);
     }
 
     protected void pushToFirebase(HashMap<String, Object> ingredient) {
@@ -217,16 +215,26 @@ public class Basket extends MainPage {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
                 ArrayList<String> items = (ArrayList<String>) document.get("basket");
+
+                // parse returned basket to get food item names and dates added
                 basketContents = new ArrayList<FoodListViewItem>();
                 for (String item : items) {
-                    // Remove the user ID from the string
-                    item = item.substring(0, item.indexOf("_"));
-                    // Capitalize the first letter
-                    if (item.length() < 2) continue;
-                    item  = item.substring(0, 1).toUpperCase() + item.substring(1);
+                    // get date of food item
+                    db.collection("INGREDIENTS").document(item).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            DocumentSnapshot foodItemDocument = task.getResult();
 
-                    // Add string to the foodList
-                    basketContents.add(new FoodListViewItem(item, "4/20/1420", 0));
+                            String itemname = foodItemDocument.get("name").toString();
+                            // capitalize first letter of item name
+                            itemname = (itemname.length() < 2) ? itemname : (itemname.substring(0, 1).toUpperCase() + itemname.substring(1));
+
+                            String itemdate = foodItemDocument.get("time added").toString();
+
+                            // Add string to the foodList
+                            basketContents.add(new FoodListViewItem(itemname, dateToString(itemdate), 0));
+                        }
+                    });
+
                 }
 
                 // Update this activity's list-view to match items
@@ -242,6 +250,19 @@ public class Basket extends MainPage {
                 listView.setAdapter(basketAdapter);
             }
         });
+    }
+
+    private String dateToString(String longdate) {
+        if(true) {
+            return longdate;
+        }
+
+        String[] splitDate = longdate.split(" ");
+        if(longdate == null || longdate.length() == 0) {
+            System.err.println("Date string is null");
+            return null;
+        }
+        return splitDate[0] + splitDate[1] + splitDate[2];
     }
 
     // itemToDelete is the name of the item to delete
