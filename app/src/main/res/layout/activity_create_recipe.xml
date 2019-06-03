@@ -8,14 +8,12 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="26dp"
-        tools:layout_editor_absoluteY="-16dp">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical" >
 
             <ImageView
                 android:id="@+id/imageView"
@@ -27,13 +25,11 @@
 
             <Button
                 android:id="@+id/choosePicture"
-                android:layout_width="143dp"
-                android:layout_height="35dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="136dp"
                 android:layout_marginTop="20dp"
-                android:background="@android:color/holo_orange_dark"
-                android:text="Choose Picture"
-                android:textColor="@android:color/white" />
+                android:text="Choose Picture" />
 
             <EditText
                 android:id="@+id/createName"
@@ -58,7 +54,7 @@
             <ListView
                 android:id="@+id/list"
                 android:layout_width="395dp"
-                android:layout_height="128dp"
+                android:layout_height="250dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="20dp" />
 
@@ -74,18 +70,16 @@
 
             <Button
                 android:id="@+id/submit"
-                android:layout_width="168dp"
-                android:layout_height="33dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="115dp"
                 android:layout_marginTop="5dp"
-                android:background="@android:color/holo_orange_dark"
-                android:text="Submit Ingredients"
-                android:textColor="@android:color/white" />
+                android:text="Submit Ingredients" />
 
             <ListView
                 android:id="@+id/stepList"
                 android:layout_width="match_parent"
-                android:layout_height="133dp"
+                android:layout_height="250dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="30dp" />
 
@@ -101,31 +95,28 @@
 
             <Button
                 android:id="@+id/submitStep"
-                android:layout_width="140dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="128dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="140dp"
                 android:layout_marginTop="0dp"
-                android:background="@android:color/holo_orange_dark"
-                android:text="Submit Step"
-                android:textColor="@android:color/white" />
+                android:text="Submit Step" />
 
 
             <Button
                 android:id="@+id/createRecipe"
-                android:layout_width="141dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="128dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="138dp"
                 android:layout_marginTop="10dp"
-                android:background="@android:color/holo_orange_dark"
-                android:text="Create Recipe"
-                android:textColor="@android:color/white" />
+                android:text="Create Recipe" />
 
             <TextView
                 android:id="@+id/invisible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="96dp"
-                android:layout_marginTop="80dp" />
+                android:layout_marginTop="80dp"
+                />
 
         </LinearLayout>
     </ScrollView>
