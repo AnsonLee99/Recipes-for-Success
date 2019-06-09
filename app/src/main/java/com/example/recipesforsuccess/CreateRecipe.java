@@ -176,7 +176,6 @@ public class CreateRecipe extends MainPage{
             final String prep_time = createTime.getText().toString();
             if(imageUri != null)
             {
-                System.out.println("STUCK IN UPLOAD FILE");
                 StorageReference fileReference = storageRef.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
 
                 fileReference.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -188,9 +187,7 @@ public class CreateRecipe extends MainPage{
                             @Override
                             public void onSuccess(Uri uri) {
                                 String url = uri.toString();
-                                System.out.println("URL IS: " + url);
                                 Recipe created = new Recipe(ingredients, recipe_name, prep_time, steps, url, equipment);
-                                System.out.println("CREATIED NEW RECIPE");
                                 db.collection("RECIPES").add(created).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {
@@ -205,8 +202,6 @@ public class CreateRecipe extends MainPage{
                                                     IDs.add(recipeID);
                                                     db.collection("USERS").document(userID).update("personalRecipes", IDs);
                                                     count++;
-                                                }else{
-                                                    System.out.println("count not 0");
                                                 }
                                             }
                                         });
