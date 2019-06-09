@@ -10,16 +10,19 @@ public class User {
     private String lastName;
     private ArrayList<String> PersonalRecipes = new ArrayList<String>();
     private String profilePic;
+    private ArrayList<String> ShoppingList = new ArrayList<String>();
 
     public User() {}
 
-    public User(ArrayList<String> Basket, String firstName, String lastName, ArrayList<String> PersonalRecipes, String profilePic)
+    public User(ArrayList<String> Basket, String firstName, String lastName, ArrayList<String> PersonalRecipes, String profilePic,
+                ArrayList<String> ShoppingList)
     {
         this.Basket = Basket;
         this.firstName = firstName;
         this.lastName = lastName;
         this.PersonalRecipes = PersonalRecipes;
         this.profilePic = profilePic;
+        this.ShoppingList = ShoppingList;
     }
 
     public User(String firstName, String lastName)
@@ -51,5 +54,7 @@ public class User {
     {
         return profilePic;
     }
+
+    public List<String> getShoppingList() {return ShoppingList;}
 
 }
