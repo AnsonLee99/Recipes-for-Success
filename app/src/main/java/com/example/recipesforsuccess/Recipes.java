@@ -835,12 +835,20 @@ public class Recipes extends MainPage {
     View insertPersonalIMG(final Recipe myRecipe, final int layoutWidth, final int layoutHeight, final int imageSize, final int textWidth, final int textHeight){
 
         LinearLayout layout = new LinearLayout(getApplicationContext());
-        layout.setLayoutParams(new LinearLayout.LayoutParams(layoutWidth, layoutHeight));
         ImageButton recipeIMG = new ImageButton(getApplicationContext());
-        recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(imageSize, imageSize));
+        layout.setLayoutParams(new LinearLayout.LayoutParams(layoutWidth - 200, layoutHeight + 250));
+        recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(imageSize, imageSize - 300));
         TextView recipeName = new TextView(getApplicationContext());
         recipeName.setLayoutParams(new LinearLayout.LayoutParams(textWidth, textHeight));
-        recipeName.setPadding(75,50,0,0);
+        recipeName.setPadding(50,0,0,0);
+        recipeName.setTextSize(15);
+        recipeName.setGravity(Gravity.TOP);
+
+        LinearLayout pictureTextCombo = new LinearLayout(getApplicationContext());
+        pictureTextCombo.setOrientation(LinearLayout.VERTICAL);
+        pictureTextCombo.setLayoutParams(new LinearLayout.LayoutParams(layoutWidth - 200, layoutHeight + 250));
+        pictureTextCombo.setPadding(0,45,0,0);
+
 
         recipeIMG.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -933,12 +941,17 @@ public class Recipes extends MainPage {
         recipeIMG.setPadding(0,0,0,0);
         String boldedFoodName = "<b>" + foodName + "</b>";
         recipeName.setText(Html.fromHtml(boldedFoodName));
-        recipeName.append("\nPrep Time: " + prepTime + " min");
         recipeName.setTextColor(Color.BLACK);
         layout.setPadding(0,0,0,0);
         layout.setGravity(Gravity.CENTER);
-        layout.addView(recipeIMG);
-        layout.addView(recipeName);
+
+        recipeIMG.setScaleType(ImageView.ScaleType.FIT_XY);
+        recipeIMG.setBackground(getDrawable(R.drawable.recipe_scroll_viewer));
+
+
+        pictureTextCombo.addView(recipeIMG);
+        pictureTextCombo.addView(recipeName);
+        layout.addView(pictureTextCombo);
         return layout;
     }
 }

@@ -39,8 +39,8 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="413dp"
-        android:layout_height="518dp"
+        android:layout_width="405dp"
+        android:layout_height="605dp"
         android:layout_marginBottom="8dp"
         android:orientation="vertical"
         android:paddingLeft="0dp"
@@ -52,7 +52,7 @@
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView2"
             android:layout_width="match_parent"
-            android:layout_height="206dp"
+            android:layout_height="253dp"
             android:layout_marginStart="0dp"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="8dp"
@@ -85,7 +85,7 @@
         <HorizontalScrollView
             android:id="@+id/basket_recipes"
             android:layout_width="match_parent"
-            android:layout_height="240dp"
+            android:layout_height="269dp"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
             android:layout_marginEnd="0dp"
@@ -98,8 +98,8 @@
                 android:id="@+id/recommended_recipes"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center"></LinearLayout>
+                android:gravity="center"
+                android:orientation="horizontal"></LinearLayout>
 
         </HorizontalScrollView>
 
@@ -113,7 +113,7 @@
         android:clickable="true"
         android:scaleX=".65"
         android:scaleY=".65"
-        app:backgroundTint="@color/colorPrimaryDark"
+        app:backgroundTint="@color/colorPrimaryLight"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintStart_toEndOf="@+id/my_recipes"
         app:srcCompat="@android:drawable/ic_input_add" />
