@@ -39,8 +39,8 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="414dp"
-        android:layout_height="462dp"
+        android:layout_width="413dp"
+        android:layout_height="518dp"
         android:layout_marginBottom="8dp"
         android:orientation="vertical"
         android:paddingLeft="0dp"
@@ -85,7 +85,7 @@
         <HorizontalScrollView
             android:id="@+id/basket_recipes"
             android:layout_width="match_parent"
-            android:layout_height="195dp"
+            android:layout_height="240dp"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
             android:layout_marginEnd="0dp"
@@ -96,9 +96,10 @@
 
             <LinearLayout
                 android:id="@+id/recommended_recipes"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"></LinearLayout>
+                android:orientation="horizontal"
+                android:gravity="center"></LinearLayout>
 
         </HorizontalScrollView>
 
