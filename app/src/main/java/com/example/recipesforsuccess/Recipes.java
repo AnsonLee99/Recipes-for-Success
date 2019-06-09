@@ -70,13 +70,13 @@ public class Recipes extends MainPage {
     final int SEARCH_LAYOUT_WIDTH = 1000;
     final int SEARCH_LAYOUT_HEIGHT = 500;
     final int SEARCH_IMG_SIZE = 300;
-    final int SEARCH_TEXT_WIDTH = 800;
+    final int SEARCH_TEXT_WIDTH = 700;
     final int SEARCH_TEXT_HEIGHT = 300;
 
     final int RECIPE_LAYOUT_WIDTH = 1200;
     final int RECIPE_LAYOUT_HEIGHT = 500;
     final int RECIPE_IMG_SIZE = 800;
-    final int REcIPE_TEXT_WIDTH = 500;
+    final int REcIPE_TEXT_WIDTH = 700;
     final int RECIPE_TEXT_HEIGHT = 400;
 
     int SECOND_ACTIVITY_REQUEST_CODE = 0;
@@ -573,22 +573,28 @@ public class Recipes extends MainPage {
                     final int layoutWidth, final int layoutHeight, final int imageSize, final int textWidth, final int textHeight){
 
         LinearLayout layout = new LinearLayout(getApplicationContext());
-        layout.setLayoutParams(new LinearLayout.LayoutParams(layoutWidth, layoutHeight));
         ImageButton recipeIMG = new ImageButton(getApplicationContext());
-        if(task == 0) {
-            recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(imageSize, imageSize));
-        } else {
-            recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(imageSize - 200, imageSize - 300));
-        }
+
         TextView recipeName = new TextView(getApplicationContext());
         recipeName.setLayoutParams(new LinearLayout.LayoutParams(textWidth, textHeight));
-        if(task == 0 ) {
+
+        LinearLayout pictureTextCombo = new LinearLayout(getApplicationContext());
+        pictureTextCombo.setOrientation(LinearLayout.VERTICAL);
+        pictureTextCombo.setLayoutParams(new LinearLayout.LayoutParams(layoutWidth - 200, layoutHeight + 250));
+        pictureTextCombo.setPadding(0,45,0,0);
+
+        if(task == 0) {
+            layout.setLayoutParams(new LinearLayout.LayoutParams(layoutWidth, layoutHeight));
+            recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(imageSize, imageSize));
             recipeName.setPadding(75, 50, 0, 0);
         } else {
+            layout.setLayoutParams(new LinearLayout.LayoutParams(layoutWidth - 200, layoutHeight + 250));
+            recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(imageSize, imageSize - 300));
             recipeName.setPadding(50,0,0,0);
-            recipeName.setTextSize(20);
-            recipeName.setGravity(Gravity.CENTER);
+            recipeName.setTextSize(15);
+            recipeName.setGravity(Gravity.TOP);
         }
+
 
         recipeIMG.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -793,6 +799,7 @@ public class Recipes extends MainPage {
             }
         });
 
+
         Picasso.with(getApplicationContext()).load(imgURL).into(recipeIMG);
         recipeIMG.setScaleType(ImageView.ScaleType.FIT_XY);
         recipeIMG.setBackground(getDrawable(R.drawable.recipe_scroll_viewer));
@@ -803,13 +810,25 @@ public class Recipes extends MainPage {
         if(task == 0) {
             recipeName.append("\nPrep Time: " + prepTime + " min");
         }
+
         recipeName.setTextColor(Color.BLACK);
 
-        if(task==0) {
+        if(task == 0) {
             layout.setPadding(0, 100, 0, 0);
         }
-        layout.addView(recipeIMG);
-        layout.addView(recipeName);
+
+        if( task == 1 ) {
+
+            pictureTextCombo.addView(recipeIMG);
+            pictureTextCombo.addView(recipeName);
+            layout.addView(pictureTextCombo);
+
+        } else {
+
+            layout.addView(recipeIMG);
+            layout.addView(recipeName);
+        }
+
         return layout;
     }
 
