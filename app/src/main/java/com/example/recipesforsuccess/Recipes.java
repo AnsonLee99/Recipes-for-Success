@@ -393,7 +393,6 @@ public class Recipes extends MainPage {
                 if (!cuisine.isEmpty()){
                     urlString = appendOptionToURL(cuisine, urlString, "cuisine");
                 }
-                String test2 = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search?query=pie&intolerances=egg%2Ctree+nut&diet=vegetarian";
                 URL url = new URL(urlString);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
