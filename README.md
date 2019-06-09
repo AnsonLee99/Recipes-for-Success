@@ -1,5 +1,7 @@
 # Foodify 
-![foodify-logo](images/logo.png)
+
+<img src="images/logo.png" width="250" height="250">
+
 ## By Team Recipes-For-Success
 Foodify is an app that stores and tracks what foods the user currently owns, and uses this stored information to recommend recipes that the user can cook with items on hand. It is able to filter out specifications for recipe, such as allergies/diets/meal type. Foodify also has a shopping list feature to allow users to record what ingredients they should pick up on their next grocery shopping trip.
 ## Sample Screens
@@ -14,6 +16,7 @@ Foodify is an app that stores and tracks what foods the user currently owns, and
 ## Getting Started
 ### Prerequisites
 - Android Studio
+- Pixel 3 XL
 ### Installing
 1. Clone this repository
 ```
