@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -87,60 +88,17 @@ public class CreateRecipe extends MainPage{
 
         createName = (EditText)findViewById(R.id.createName);
         createTime = (EditText)findViewById(R.id.createTime);
-        ingredientList = (ListView)findViewById(R.id.list);
         image = (ImageView)findViewById(R.id.imageView);
         choosePicture = (Button)findViewById(R.id.choosePicture);
-        submitIngredient = (Button)findViewById(R.id.submit);
         createRecipe = (Button)findViewById(R.id.createRecipe);
         ingredientEditor = (EditText)findViewById(R.id.ingredientEditor);
-        stepList = (ListView)findViewById(R.id.stepList);
         createSteps = (EditText)findViewById(R.id.createSteps);
-        submitSteps = (Button)findViewById(R.id.submitStep);
-        equipmentList = (ListView)findViewById(R.id.equipmentList);
         createEquipment = (EditText)findViewById(R.id.createEquipment);
-        submitEquipment = (Button)findViewById(R.id.submitEquipment);
 
         context = this;
 
         storageRef = FirebaseStorage.getInstance().getReference("uploads");
         dataRef = FirebaseDatabase.getInstance().getReference("uploads");
-        ingredientAdapter = new ArrayAdapter<String>(this, R.layout.activity_step, ingredients);
-        ingredientList.setAdapter(ingredientAdapter);
-
-        submitIngredient.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String currentIngredient = ingredientEditor.getText().toString();
-                ingredients.add(currentIngredient);
-                ingredientAdapter.notifyDataSetChanged();
-            }
-        });
-
-        stepAdapter = new ArrayAdapter<String>(this, R.layout.activity_step, steps);
-        stepList.setAdapter(stepAdapter);
-        submitSteps.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                String currentStep = createSteps.getText().toString();
-                steps.add(currentStep);
-                stepAdapter.notifyDataSetChanged();
-
-            }
-
-        });
-
-        equipmentAdapter = new ArrayAdapter<String>(this, R.layout.activity_step, equipment);
-        submitEquipment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String currentEquipment = createEquipment.getText().toString();
-                equipment.add(currentEquipment);
-                equipmentAdapter.notifyDataSetChanged();
-
-            }
-        });
 
 
         choosePicture.setOnClickListener(new View.OnClickListener() {
@@ -156,6 +114,25 @@ public class CreateRecipe extends MainPage{
             public void onClick(View v) {
                 System.out.println("CALLING UPLOAD FILE");
                 //uploadFile();
+                String ingredientString = ingredientEditor.getText().toString();
+                if(TextUtils.isEmpty(ingredientString))
+                {
+                    Toast.makeText(CreateRecipe.this, "Ingredients are empty", Toast.LENGTH_LONG).show();
+
+                }
+                arrayFill(ingredients, ingredientString);
+                String stepString = createSteps.getText().toString();
+                if(TextUtils.isEmpty(stepString))
+                {
+                    Toast.makeText(CreateRecipe.this, "Steps are empty", Toast.LENGTH_LONG).show();
+                }
+                arrayFill(steps, stepString);
+                String equipmentString = createEquipment.getText().toString();
+                if(TextUtils.isEmpty(equipmentString))
+                {
+                    Toast.makeText(CreateRecipe.this, "Equipment is empty", Toast.LENGTH_LONG).show();
+                }
+                arrayFill(equipment, equipmentString);
                 new uploadFile().execute();
                 startActivity(new Intent(CreateRecipe.this, Recipes.class));
             }
@@ -267,77 +244,31 @@ public class CreateRecipe extends MainPage{
             return null;
         }
     }
-    /*
-    private void uploadFile() {
-        final String recipe_name = createName.getText().toString();
-        final String prep_time = createTime.getText().toString();
-        if(imageUri != null)
+
+    public void arrayFill(ArrayList<String> fillArray, String input)
+    {
+        String currIngredient = "";
+        for(int i = 0; i < input.length(); i++)
         {
-            System.out.println("STUCK IN UPLOAD FILE");
-            StorageReference fileReference = storageRef.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
-
-            fileReference.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(CreateRecipe.this, "Upload Successful", Toast.LENGTH_LONG).show();
-                    //Upload upload = new Upload(taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
-                    taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            String url = uri.toString();
-                            System.out.println("URL IS: " + url);
-                            Recipe created = new Recipe(ingredients, recipe_name, prep_time, steps, url, equipment);
-                            System.out.println("CREATIED NEW RECIPE");
-                            db.collection("RECIPES").add(created).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                    recipeID = documentReference.getId();
-                                    db.collection("USERS").document(userID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                        int count = 0;
-                                        @Override
-                                        public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                                            if(documentSnapshot.exists() && count == 0)
-                                            {
-                                                ArrayList<String> IDs = (ArrayList<String>) documentSnapshot.get("personalRecipes");
-                                                IDs.add(recipeID);
-                                                db.collection("USERS").document(userID).update("personalRecipes", IDs);
-                                                count++;
-                                            }else{
-                                                System.out.println("count not 0");
-                                            }
-                                        }
-                                    });
-
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w("CreateRecipe.class", "Error adding document", e);
-                                }
-                            });
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d("CreateRecipe.class", "It didn't work!");
-                        }
-                    });
-
-
-                  //  String uploadID = dataRef.push().getKey();
-                   // dataRef.child(uploadID).setValue(taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
+            char currChar = input.charAt(i);
+            if(currChar != ',')
+            {
+                currIngredient = currIngredient + currChar;
+            }
+            else
+            {
+                currIngredient = currIngredient.trim();
+                if(currIngredient == "")
+                {
+                    continue;
                 }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d("CreateRecipe.class", "Upload Failed");
-                }
-            });
-        }
-        else {
-            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
+                fillArray.add(currIngredient);
+                currIngredient = "";
+            }
+            if(i == input.length()-1)
+            {
+                fillArray.add(currIngredient);
+            }
         }
     }
-    */
 }

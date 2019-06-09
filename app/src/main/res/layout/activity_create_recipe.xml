@@ -46,86 +46,51 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="96dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="20dp"
                 android:ems="10"
                 android:hint="Prep Time"
                 android:inputType="textPersonName" />
 
-            <ListView
-                android:id="@+id/list"
-                android:layout_width="395dp"
-                android:layout_height="250dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="20dp" />
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="Separate ingredients, steps, and equipment with commas."
+                android:textSize="18dp" />
 
             <EditText
                 android:id="@+id/ingredientEditor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="96dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="20dp"
                 android:ems="10"
-                android:hint="Type Ingredients Here"
+                android:hint="Ingredients"
                 android:inputType="textPersonName" />
-
-            <Button
-                android:id="@+id/submit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="115dp"
-                android:layout_marginTop="5dp"
-                android:text="Submit Ingredients" />
-
-            <ListView
-                android:id="@+id/stepList"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="30dp" />
 
             <EditText
                 android:id="@+id/createSteps"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="96dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="20dp"
                 android:ems="10"
-                android:hint="Type Steps Here"
+                android:hint="Steps"
                 android:inputType="textPersonName" />
 
-            <Button
-                android:id="@+id/submitStep"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="140dp"
-                android:layout_marginTop="0dp"
-                android:text="Submit Step" />
-
-
-            <ListView
-                android:id="@+id/equipmentList"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="30dp" />
 
             <EditText
                 android:id="@+id/createEquipment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="96dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="20dp"
                 android:ems="10"
-                android:hint="Type Equipment Here"
+                android:hint="Equipment"
                 android:inputType="textPersonName" />
-
-            <Button
-                android:id="@+id/submitEquipment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="140dp"
-                android:layout_marginTop="0dp"
-                android:text="Submit Equipment" />
 
             <Button
                 android:id="@+id/createRecipe"
