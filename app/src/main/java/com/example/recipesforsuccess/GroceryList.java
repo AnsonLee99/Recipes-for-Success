@@ -58,14 +58,11 @@ public class GroceryList extends MainPage {
         View groceryView = getLayoutInflater().inflate(R.layout.activity_grocery_list, null);
         mainDisplay.addView(groceryView);
 
+        setSelected(0);
+
         groceryContents = new ArrayList<GroceryListViewItem>();
         groceryAdapter = new GroceryListViewAdapter(groceryContents, getApplicationContext(), false,
                 new GroceryDeleter());
-
-        // For displaying the currently selected tab
-        RadioGroup rg = (RadioGroup) findViewById(R.id.NavBar_Group);
-        RadioButton curr = (RadioButton)findViewById(R.id.recipes_tab_button);
-
 
         // Auto-complete searchbar
         bar = (AutoCompleteTextView) findViewById(R.id.grocery_searchBar);

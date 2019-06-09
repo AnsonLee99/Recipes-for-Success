@@ -50,12 +50,7 @@ public class Profile extends MainPage {
         View groceryView = getLayoutInflater().inflate(R.layout.activity_profile, null);
         mainDisplay.addView(groceryView);
 
-        // For displaying the currently selected tab
-        // I can't fuckin figure it out
-        RadioGroup rg = (RadioGroup) findViewById(R.id.NavBar_Group);
-        RadioButton curr = (RadioButton)findViewById(R.id.recipes_tab_button);
-        //curr.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.<CLICKED VERSION OF ICON>);
-        //curr.setTextColor(Color.parseColor("3F51B5"));
+        setSelected(3);
 
         //Firebase Stuff starts here
 

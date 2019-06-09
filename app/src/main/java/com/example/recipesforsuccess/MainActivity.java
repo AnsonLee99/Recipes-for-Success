@@ -23,7 +23,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.database.FirebaseDatabase;
-//import com.google.firebase.database.core.view.View;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "NAVBAR";
@@ -84,12 +83,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         //mAuth.addAuthStateListener(mAuthListener);
         user = mAuth.getCurrentUser();
-/*
-        if(user != null)
-        {
-            new Intent(MainActivity.this, Basket.class);
-        }
-  */
 
     }
 
@@ -130,11 +123,9 @@ public class MainActivity extends AppCompatActivity {
                             userId = user.getUid();
                             startActivity(new Intent(MainActivity.this, Basket.class));
                         }
-
                     }
                 });
             }
-
         }
 
         public String getUserId() {

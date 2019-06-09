@@ -121,6 +121,8 @@ public class Recipes extends MainPage {
             }
         });
 
+        setSelected(1);
+
         adapter = new RecipeAdapter(context, recipes);
         personalRecipes = (LinearLayout)findViewById(R.id.personalRecipes);
 
