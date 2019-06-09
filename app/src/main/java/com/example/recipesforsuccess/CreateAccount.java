@@ -75,14 +75,14 @@ public class CreateAccount extends MainActivity {
 
 
                     if (!(task.isSuccessful())) {
-                        Toast.makeText(CreateAccount.this, "First check", Toast.LENGTH_LONG).show();
+                        Toast.makeText(CreateAccount.this, "Cannot Create User: Either user exists or password is not 6 characters", Toast.LENGTH_LONG).show();
                     } else {
 
                         nAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (!(task.isSuccessful())) {
-                                    Toast.makeText(CreateAccount.this, "Sign In Problem", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(CreateAccount.this, "Sign In Problem: Account Not Successfully Created", Toast.LENGTH_LONG).show();
                                 }
 
                                 else {

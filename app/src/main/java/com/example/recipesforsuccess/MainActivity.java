@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                         if (!(task.isSuccessful())) {
-                            Toast.makeText(MainActivity.this, "Sign In Problem", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "Sign In Problem: Email and Password Don't Match", Toast.LENGTH_LONG).show();
                         }
 
                         else {

@@ -32,6 +32,7 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -58,7 +59,8 @@ public class GroceryList extends MainPage {
         mainDisplay.addView(groceryView);
 
         groceryContents = new ArrayList<GroceryListViewItem>();
-        groceryAdapter = new GroceryListViewAdapter(groceryContents, getApplicationContext(), false);
+        groceryAdapter = new GroceryListViewAdapter(groceryContents, getApplicationContext(), false,
+                new GroceryDeleter());
 
         // For displaying the currently selected tab
         RadioGroup rg = (RadioGroup) findViewById(R.id.NavBar_Group);
@@ -142,15 +144,17 @@ public class GroceryList extends MainPage {
         }
     }
 
-    protected void removeFromGrocery(GroceryListViewItem item) {
+
+    public void removeFromGrocery(GroceryListViewItem item) {
         groceryContents.remove(item);
         groceryAdapter.notifyDataSetChanged();
+        deleteFromFirebase(item.getName());
     }
 
     protected void addToGrocery(GroceryListViewItem item, View v) {
         Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
         groceryContents.add(item);
-        groceryAdapter = new GroceryListViewAdapter(groceryContents, getApplicationContext(), false);
+        groceryAdapter = new GroceryListViewAdapter(groceryContents, getApplicationContext(), false, new GroceryDeleter());
 
         // Update this activity's list-view to match items
         ListView listView = (ListView) findViewById(R.id.shopping_list_view);
@@ -163,7 +167,7 @@ public class GroceryList extends MainPage {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
-                ArrayList<String> items = (ArrayList<String>) document.get("Shopping List");
+                ArrayList<String> items = (ArrayList<String>) document.get("shoppingList");
                 ArrayList<GroceryListViewItem> shoppingList = new ArrayList<GroceryListViewItem>();
                 for (String item : items) {
                     // Remove the user ID from the string
@@ -181,7 +185,7 @@ public class GroceryList extends MainPage {
 
                 // Update this activity's list-view to match items
                 ListView listView = (ListView) findViewById(R.id.shopping_list_view);
-                groceryAdapter = new GroceryListViewAdapter(shoppingList, getApplicationContext(), false);
+                groceryAdapter = new GroceryListViewAdapter(shoppingList, getApplicationContext(), false, new GroceryDeleter());
                 listView.setAdapter(groceryAdapter);
             }
         });
@@ -194,7 +198,7 @@ public class GroceryList extends MainPage {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        db.collection("USERS").document(ID).update("Shopping List",
+                        db.collection("USERS").document(ID).update("shoppingList",
                                 FieldValue.arrayUnion(docName));
                     }
                 })
@@ -214,7 +218,7 @@ public class GroceryList extends MainPage {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        db.collection("USERS").document(ID).update("Shopping List",
+                        db.collection("USERS").document(ID).update("shoppingList",
                                 FieldValue.arrayRemove(docName));
                     }
                 })
@@ -224,6 +228,21 @@ public class GroceryList extends MainPage {
                         Log.d("test", "DELETING FAILED");
                     }
                 });
+    }
+
+    public class GroceryDeleter implements Callable<Void> {
+        GroceryListViewItem item;
+
+        @Override
+        public Void call() throws Exception {
+            Log.d("delete", "delete called in GroceryDeleter");
+            removeFromGrocery(item);
+            return null;
+        }
+
+        public void setItem(GroceryListViewItem item) {
+            this.item = item;
+        }
     }
 
 }
