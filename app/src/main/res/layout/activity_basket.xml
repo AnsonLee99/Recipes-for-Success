@@ -16,7 +16,7 @@
 
         <AutoCompleteTextView
             android:id="@+id/basket_searchBar"
-            android:layout_width="300dp"
+            android:layout_width="330dp"
             android:layout_height="50dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
@@ -52,11 +52,11 @@
 
         <Button
             android:id="@+id/add_to_basket"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="Add"
+            android:background="@mipmap/ic_add_basket_button"
             app:layout_constraintStart_toEndOf="@+id/basket_searchBar"
             app:layout_constraintTop_toTopOf="parent" />
 
