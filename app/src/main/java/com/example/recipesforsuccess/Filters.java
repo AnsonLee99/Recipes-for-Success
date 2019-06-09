@@ -2,14 +2,17 @@ package com.example.recipesforsuccess;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -22,35 +25,120 @@ public class Filters extends AppCompatActivity {
     ArrayList<String> type = new ArrayList();
     ArrayList<String> cuisine = new ArrayList();
 
+    private Boolean isEggsChecked;
+    private Boolean isVeganChecked;
+    private Boolean isDessertChecked;
+
+    public CheckBox eggs;
+    public CheckBox vegan;
+    public CheckBox dessert;
+    private Button apply;
+
+
+
+    public static final String SHARED_PREFS = "sharedPrefs";
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Checkboxes
+        System.out.println("finding eggs");
+//        if( eggs == null ){
+//            System.out.println("fucking null eggss");
+//        }else{
+//            System.out.println("good eggs");
+//        }
+
+
         setContentView(R.layout.activity_filters);
+        apply = (Button) findViewById(R.id.confirmFilters);
 
-        Button confirm = (Button) findViewById(R.id.confirmFilters);
 
-        confirm.setOnClickListener(new View.OnClickListener() {
+        apply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                saveData();
                 intent.putExtra("intolerances", intolerances);
                 intent.putExtra("diet", diet);
                 intent.putExtra("type", type);
                 intent.putExtra("cuisine", cuisine);
                 setResult(RESULT_OK, intent);
-
                 finish();
             }
         });
+
+        eggs = (CheckBox) findViewById(R.id.eggs);
+        eggs.setChecked(false);
+        System.out.println("ONCREATE is eggs checked: " + eggs.isChecked());
+        //eggs.setTextColor(Color.RED);
+        loadData();
+        updateViews();
 
 
         System.out.println("ENTERING FILTERS INTENT");
     }
 
+    public void saveData(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        System.out.println("saving data, eggsischecked is: " + eggs.isChecked());
+        editor.putBoolean("eggs", eggs.isChecked());
+        //editor.putBoolean("Vegan", eggs.isChecked());
+        //editor.putBoolean("Soy", eggs.isChecked());
+
+        editor.apply();
+        System.out.println("IS EGGS CHECKED?" + eggs.isChecked());
+
+        Toast.makeText(this, "Data saved", Toast.LENGTH_SHORT).show();
+    }
+
+    public boolean test(SharedPreferences sp){
+        return sp.getBoolean("eggs", false);
+    }
+    public void loadData(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+        System.out.println("sharedpref for soy " + sharedPreferences.getBoolean("soy", false));
+        isEggsChecked = sharedPreferences.getBoolean("eggs", false);
+        //isVeganChecked = sharedPreferences.getBoolean("Vegan", false);
+        //isDessertChecked = sharedPreferences.getBoolean("Dessert", false);
+
+
+        System.out.println("loaded data iseggschecked...: " + test(sharedPreferences));
+    }
+
+    public void updateViews(){
+        eggs.setChecked(isEggsChecked);
+        //vegan.setChecked(isVeganChecked);
+        //dessert.setChecked(isDessertChecked);
+
+
+        Log.d("test", "THIS IS THE BOOL " + isEggsChecked);
+    }
+
     public void onCheckboxClicked(View v) {
         //code to check if this checkbox is checked!
-
         boolean checked = ((CheckBox) v).isChecked();
 
+        eggs = (CheckBox) v.findViewById(R.id.eggs);
+        //vegan = (CheckBox) v.findViewById(R.id.eggs);
+        //eggs = (CheckBox) v.findViewById(R.id.eggs);
+
+
+        System.out.println("inside oncheckbox clicked");
+//        if( eggs == null ){
+//            System.out.println("fucking null eggss");
+//        }else{
+//            System.out.println("good eggs");
+//        }
+//        if (v.getId() == R.id.eggs){
+//            Log.d("test", "EGGS IS TRUE");
+//        }
+//        else{
+//            Log.d("test", "EGGS IS FALSE ");
+//        }
         switch(v.getId()){
             case R.id.eggs:
                 if (checked){

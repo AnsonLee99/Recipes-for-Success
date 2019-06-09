@@ -27,9 +27,6 @@ public class ViewRecipeInstructions extends AppCompatActivity {
         //getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().hide();
 
-        //TextView instructions = (TextView) findViewById(R.id.instruction_text);
-        //TextView recipeText = (TextView) findViewById(R.id.recipe_name);
-        //ImageView imgView = (ImageView) findViewById(R.id.recipe_img);
 
         LinearLayout layout = (LinearLayout)findViewById(R.id.recipe_instruct_page);
         layout.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -59,6 +56,13 @@ public class ViewRecipeInstructions extends AppCompatActivity {
         //ingredients title
         TextView ingredientsTitle = (TextView) findViewById(R.id.ingredientsTitle);
         ingredientsTitle.setTextColor(Color.BLACK);
+
+        //add to shopping list button
+        Intent toRecipe = new Intent(this, GroceryList.class);
+
+
+        ImageButton addToShoppingList = (ImageButton) findViewById(R.id.add_to_shopping_list);
+
 
         // ingredients
         Intent intent = getIntent();
