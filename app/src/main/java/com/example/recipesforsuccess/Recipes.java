@@ -662,8 +662,9 @@ public class Recipes extends MainPage {
                     intent.putExtra("instructions", dataParsed);
                     intent.putExtra("imgURL", finalImgURL);
                     intent.putExtra("recipeName", recipeName);
-                    intent.putExtra("missingIngredients", missedIngredients.toString());
+                    intent.putExtra("missingIngredients", missingIngredients.toString());
                     intent.putExtra("usedIngredients", usedIngredients.toString());
+                    intent.putExtra("ID", userID);
                     System.out.println("HELLO ABOUT TO START");
 
                     System.out.println("EQUIPMENT HERE: " + equipmentList);
@@ -839,7 +840,6 @@ public class Recipes extends MainPage {
                 for(int i = 0; i < equipment.size(); i++)
                 {
                     equipmentList = equipmentList + (i+1) + ".  " + "" + equipment.get(i) + "\n" + "" + "\n";
-
                 }
 
                 String ingredients = "";
