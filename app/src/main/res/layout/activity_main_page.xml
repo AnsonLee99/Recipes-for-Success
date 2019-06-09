@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="675dp"
         android:layout_gravity="center"
-        android:background="#34FFC107"
+        android:background="#dedede"
         android:orientation="vertical"/>
 
     <LinearLayout
@@ -23,7 +23,7 @@
         android:id="@+id/bottonNavBar"
         android:paddingTop="5dp"
         android:orientation="horizontal"
-        android:background="#FFF0A22C"
+        android:background="#89df91"
         android:layout_alignParentBottom="true"
         android:foregroundGravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -35,7 +35,7 @@
             android:gravity="center"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:background="#FFF0A22C"
+            android:background="#89df91"
             android:orientation="horizontal"
             android:baselineAligned="false">
 
