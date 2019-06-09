@@ -77,7 +77,7 @@ public class Recipes extends MainPage {
     final int RECIPE_LAYOUT_HEIGHT = 500;
     final int RECIPE_IMG_SIZE = 800;
     final int REcIPE_TEXT_WIDTH = 700;
-    final int RECIPE_TEXT_HEIGHT = 400;
+    final int RECIPE_TEXT_HEIGHT = 440;
 
     int SECOND_ACTIVITY_REQUEST_CODE = 0;
 
