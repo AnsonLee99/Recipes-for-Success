@@ -166,6 +166,7 @@ public class GroceryList extends MainPage {
                 DocumentSnapshot document = task.getResult();
                 ArrayList<String> items = (ArrayList<String>) document.get("shoppingList");
                 ArrayList<GroceryListViewItem> shoppingList = new ArrayList<GroceryListViewItem>();
+                if (items == null) return;
                 for (String item : items) {
                     // Remove the user ID from the string
                     item = item.substring(0, item.indexOf("_"));
@@ -210,7 +211,7 @@ public class GroceryList extends MainPage {
     // itemToDelete is the name of the item to delete
     protected void deleteFromFirebase(String itemToDelete) {
 
-        final String docName = itemToDelete + "_" + ID;
+        final String docName = itemToDelete.toLowerCase() + "_" + ID;
         db.collection("INGREDIENTS").document(docName).delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

@@ -42,6 +42,9 @@ public class ViewRecipeInstructions extends AppCompatActivity {
         recipeName.setBackgroundColor(Color.WHITE);
         recipeName.setPadding(50,30,0,30);
 
+        TextView prepTime = findViewById(R.id.prepTime);
+        prepTime.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+
         // Recipe Image
         ImageView imgView = (ImageView)findViewById(R.id.recipe_image);
         imgView.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, 1100));
