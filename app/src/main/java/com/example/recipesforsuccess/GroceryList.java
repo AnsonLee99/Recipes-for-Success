@@ -112,7 +112,7 @@ public class GroceryList extends MainPage {
         fetchShoppingList();
 
         // Add To Grocery Button
-        Button add_to_grocery = (Button)findViewById(R.id.add_to_shopping_list);
+        Button add_to_grocery = (Button)findViewById(R.id.ingredient_to_shopping);
         add_to_grocery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

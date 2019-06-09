@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -61,7 +60,7 @@ public class ViewRecipeInstructions extends AppCompatActivity {
         Intent toRecipe = new Intent(this, GroceryList.class);
 
 
-        ImageButton addToShoppingList = (ImageButton) findViewById(R.id.add_to_shopping_list);
+        ImageButton addToShoppingList = (ImageButton) findViewById(R.id.ingredient_to_shopping);
 
 
         // ingredients

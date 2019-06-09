@@ -25,7 +25,7 @@
 
         <LinearLayout
             android:id="@+id/searched_recipes"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@drawable/horizontal_divider_1"
             android:orientation="vertical"

@@ -7,7 +7,7 @@
     <!-- we define border color and thick -->
     <stroke
         android:width="3dp"
-        android:color="#ffcd59" />
+        android:color="@color/colorPrimary" />
 
     <!-- add some padding for text inside -->
     <padding
