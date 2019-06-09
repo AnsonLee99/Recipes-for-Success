@@ -578,7 +578,7 @@ public class Recipes extends MainPage {
         if(task == 0) {
             recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(imageSize, imageSize));
         } else {
-            recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(imageSize-200, imageSize+100));
+            recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(imageSize - 200, imageSize - 300));
         }
         TextView recipeName = new TextView(getApplicationContext());
         recipeName.setLayoutParams(new LinearLayout.LayoutParams(textWidth, textHeight));
@@ -586,6 +586,8 @@ public class Recipes extends MainPage {
             recipeName.setPadding(75, 50, 0, 0);
         } else {
             recipeName.setPadding(50,0,0,0);
+            recipeName.setTextSize(20);
+            recipeName.setGravity(Gravity.CENTER);
         }
 
         recipeIMG.setOnClickListener(new View.OnClickListener() {
@@ -793,21 +795,16 @@ public class Recipes extends MainPage {
 
         Picasso.with(getApplicationContext()).load(imgURL).into(recipeIMG);
         recipeIMG.setScaleType(ImageView.ScaleType.FIT_XY);
-        recipeIMG.setPadding(0,0,0,0);
+        recipeIMG.setBackground(getDrawable(R.drawable.recipe_scroll_viewer));
+
         String boldedFoodName = "<b>" + foodName + "</b>";
         recipeName.setText(Html.fromHtml(boldedFoodName));
-        if( task == 1 ) {
 
-            recipeName.setTextSize(20);
-
-        }
         if(task == 0) {
             recipeName.append("\nPrep Time: " + prepTime + " min");
         }
         recipeName.setTextColor(Color.BLACK);
-        if( task == 1) {
-            recipeName.setGravity(Gravity.CENTER);
-        }
+
         if(task==0) {
             layout.setPadding(0, 100, 0, 0);
         }
@@ -919,7 +916,8 @@ public class Recipes extends MainPage {
         recipeName.setText(Html.fromHtml(boldedFoodName));
         recipeName.append("\nPrep Time: " + prepTime + " min");
         recipeName.setTextColor(Color.BLACK);
-        layout.setPadding(0,100,0,0);
+        layout.setPadding(0,0,0,0);
+        layout.setGravity(Gravity.CENTER);
         layout.addView(recipeIMG);
         layout.addView(recipeName);
         return layout;
