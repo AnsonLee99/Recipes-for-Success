@@ -73,7 +73,7 @@ public class ViewRecipeInstructions extends AppCompatActivity {
         String ingredientString = intent.getStringExtra("ingredients");
         TextView ingredients = findViewById(R.id.ingredients_text);
         ingredients.setBackgroundColor(Color.WHITE);
-        ingredients.setPadding(40, 75, 40, 50);
+        ingredients.setPadding(40, 75, 40, 0);
         ingredients.setTextColor(Color.BLACK);
         ingredients.setText(ingredientString);
 

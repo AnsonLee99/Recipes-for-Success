@@ -73,18 +73,26 @@
                 android:layout_height="wrap_content" />
 
 
-            <Button
-                android:id="@+id/ingredient_to_shopping"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:text="Add To Shopping" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/ingredient_from_basket"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintRight_toRightOf="@+id/ingredient_to_shopping"
-                android:text="Remove from Basket" />
+                <Button
+                    android:id="@+id/ingredient_to_shopping"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#00969292"
+                    android:text="Add To Shopping" />
+
+                <Button
+                    android:id="@+id/ingredient_from_basket"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#00969292"
+                    android:text="Remove from Basket"
+                    app:layout_constraintRight_toRightOf="@+id/ingredient_to_shopping" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/indent_space2"
