@@ -15,8 +15,8 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.example.recipesforsuccess.dataobjects.GroceryListViewAdapter;
-import com.example.recipesforsuccess.dataobjects.GroceryListViewItem;
+import com.example.recipesforsuccess.dataobjects.ShoppingListViewAdapter;
+import com.example.recipesforsuccess.dataobjects.ShoppingListViewItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -37,7 +37,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class GroceryList extends MainPage {
+public class ShoppingList extends MainPage {
     LinearLayout mainDisplay;
     private AutoCompleteTextView bar;
     private ArrayAdapter<String> options;
@@ -45,8 +45,8 @@ public class GroceryList extends MainPage {
     private FirebaseAuth auth = this.passAuth();
     private String ID =  auth.getUid();
 
-    private ArrayList<GroceryListViewItem> groceryContents;
-    GroceryListViewAdapter groceryAdapter;
+    private ArrayList<ShoppingListViewItem> shoppingContents;
+    ShoppingListViewAdapter shoppingAdapter;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -55,12 +55,12 @@ public class GroceryList extends MainPage {
         super.onCreate(savedInstanceState);
 
         mainDisplay = (LinearLayout) findViewById(R.id.main_display);
-        View groceryView = getLayoutInflater().inflate(R.layout.activity_grocery_list, null);
-        mainDisplay.addView(groceryView);
+        View shoppingView = getLayoutInflater().inflate(R.layout.activity_shopping_list, null);
+        mainDisplay.addView(shoppingView);
 
-        groceryContents = new ArrayList<GroceryListViewItem>();
-        groceryAdapter = new GroceryListViewAdapter(groceryContents, getApplicationContext(), false,
-                new GroceryDeleter());
+        shoppingContents = new ArrayList<ShoppingListViewItem>();
+        shoppingAdapter = new ShoppingListViewAdapter(shoppingContents, getApplicationContext(), false,
+                new shoppingDeleter());
 
         // For displaying the currently selected tab
         RadioGroup rg = (RadioGroup) findViewById(R.id.NavBar_Group);
@@ -68,7 +68,7 @@ public class GroceryList extends MainPage {
 
 
         // Auto-complete searchbar
-        bar = (AutoCompleteTextView) findViewById(R.id.grocery_searchBar);
+        bar = (AutoCompleteTextView) findViewById(R.id.shopping_searchBar);
         options = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
         bar.setAdapter(options);
         //bar.setDropDownHeight(6);
@@ -113,12 +113,12 @@ public class GroceryList extends MainPage {
         // and display them on the screen as a listView
         fetchShoppingList();
 
-        // Add To Grocery Button
-        Button add_to_grocery = (Button)findViewById(R.id.add_to_shopping_list);
-        add_to_grocery.setOnClickListener(new View.OnClickListener() {
+        // Add To shopping Button
+        Button add_to_shopping = (Button)findViewById(R.id.add_to_shopping_list);
+        add_to_shopping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addToGrocery(new GroceryListViewItem(bar.getText().toString()), v);
+                addToshopping(new ShoppingListViewItem(bar.getText().toString()), v);
 
                 // REPLACE "new JSONObject()" with the JSON object from the selected "res" array
                 HashMap<String, Object> newIngredient = new HashMap<>();
@@ -134,31 +134,31 @@ public class GroceryList extends MainPage {
         
     }
 
-    protected void removeFromGrocery(int index, View v) {
-        if(groceryContents.size() > index) {
-            Snackbar.make(v, "Removed: " + groceryContents.get(index).getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
-            groceryContents.remove(index);
-            groceryAdapter.notifyDataSetChanged();
+    protected void removeFromshopping(int index, View v) {
+        if(shoppingContents.size() > index) {
+            Snackbar.make(v, "Removed: " + shoppingContents.get(index).getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
+            shoppingContents.remove(index);
+            shoppingAdapter.notifyDataSetChanged();
         } else {
-            Snackbar.make(v, "Grocery is empty!", Snackbar.LENGTH_LONG).setAction("No action", null).show();
+            Snackbar.make(v, "shopping is empty!", Snackbar.LENGTH_LONG).setAction("No action", null).show();
         }
     }
 
 
-    public void removeFromGrocery(GroceryListViewItem item) {
-        groceryContents.remove(item);
-        groceryAdapter.notifyDataSetChanged();
+    public void removeFromshopping(ShoppingListViewItem item) {
+        shoppingContents.remove(item);
+        shoppingAdapter.notifyDataSetChanged();
         deleteFromFirebase(item.getName());
     }
 
-    protected void addToGrocery(GroceryListViewItem item, View v) {
+    protected void addToshopping(ShoppingListViewItem item, View v) {
         Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
-        groceryContents.add(item);
-        groceryAdapter = new GroceryListViewAdapter(groceryContents, getApplicationContext(), false, new GroceryDeleter());
+        shoppingContents.add(item);
+        shoppingAdapter = new ShoppingListViewAdapter(shoppingContents, getApplicationContext(), false, new shoppingDeleter());
 
         // Update this activity's list-view to match items
         ListView listView = (ListView) findViewById(R.id.shopping_list_view);
-        listView.setAdapter(groceryAdapter);
+        listView.setAdapter(shoppingAdapter);
     }
 
     protected void fetchShoppingList() {
@@ -168,7 +168,7 @@ public class GroceryList extends MainPage {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
                 ArrayList<String> items = (ArrayList<String>) document.get("shoppingList");
-                ArrayList<GroceryListViewItem> shoppingList = new ArrayList<GroceryListViewItem>();
+                ArrayList<ShoppingListViewItem> shoppingList = new ArrayList<ShoppingListViewItem>();
                 for (String item : items) {
                     // Remove the user ID from the string
                     item = item.substring(0, item.indexOf("_"));
@@ -177,16 +177,16 @@ public class GroceryList extends MainPage {
                     item  = item.substring(0, 1).toUpperCase() + item.substring(1);
 
                     // Add string to the foodList
-                    shoppingList.add(new GroceryListViewItem(item));
+                    shoppingList.add(new ShoppingListViewItem(item));
                 }
 
-                // Update parent container's grocery list
-                GroceryList.this.groceryContents = (ArrayList)shoppingList.clone();
+                // Update parent container's shopping list
+                ShoppingList.this.shoppingContents = (ArrayList)shoppingList.clone();
 
                 // Update this activity's list-view to match items
                 ListView listView = (ListView) findViewById(R.id.shopping_list_view);
-                groceryAdapter = new GroceryListViewAdapter(shoppingList, getApplicationContext(), false, new GroceryDeleter());
-                listView.setAdapter(groceryAdapter);
+                shoppingAdapter = new ShoppingListViewAdapter(shoppingList, getApplicationContext(), false, new ShoppingDeleter());
+                listView.setAdapter(shoppingAdapter);
             }
         });
 
@@ -230,17 +230,17 @@ public class GroceryList extends MainPage {
                 });
     }
 
-    public class GroceryDeleter implements Callable<Void> {
-        GroceryListViewItem item;
+    public class ShoppingDeleter implements Callable<Void> {
+        ShoppingListViewItem item;
 
         @Override
         public Void call() throws Exception {
-            Log.d("delete", "delete called in GroceryDeleter");
-            removeFromGrocery(item);
+            Log.d("delete", "delete called in shoppingDeleter");
+            removeFromshopping(item);
             return null;
         }
 
-        public void setItem(GroceryListViewItem item) {
+        public void setItem(ShoppingListViewItem item) {
             this.item = item;
         }
     }

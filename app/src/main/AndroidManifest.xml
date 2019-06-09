@@ -41,7 +41,7 @@
         </intent-filter>
     </activity>
     <activity android:name=".BasketEditing" android:exported="true"/>
-    <activity android:name=".GroceryList" android:exported="true"
+    <activity android:name=".ShoppingList" android:exported="true"
         android:windowSoftInputMode="stateHidden|adjustPan" />
     <activity android:name=".CreateAccount" android:exported="true"/>
     <!--<activity android:name=".PersonalRecipes" android:exported="true"/>-->

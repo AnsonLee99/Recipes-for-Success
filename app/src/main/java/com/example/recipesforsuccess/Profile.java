@@ -47,8 +47,8 @@ public class Profile extends MainPage {
         super.onCreate(savedInstanceState);
 
         mainDisplay = (LinearLayout) findViewById(R.id.main_display);
-        View groceryView = getLayoutInflater().inflate(R.layout.activity_profile, null);
-        mainDisplay.addView(groceryView);
+        View View = getLayoutInflater().inflate(R.layout.activity_profile, null);
+        mainDisplay.addView(View);
 
         // For displaying the currently selected tab
         // I can't fuckin figure it out

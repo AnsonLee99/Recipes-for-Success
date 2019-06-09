@@ -10,17 +10,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.recipesforsuccess.GroceryList;
+import com.example.recipesforsuccess.ShoppingList;
 import com.example.recipesforsuccess.R;
 
 import java.util.ArrayList;
 
-public class GroceryListViewAdapter extends ArrayAdapter<GroceryListViewItem> implements View.OnClickListener{
+public class ShoppingListViewAdapter extends ArrayAdapter<ShoppingListViewItem> implements View.OnClickListener{
 
-    private ArrayList<GroceryListViewItem> dataSet;
+    private ArrayList<ShoppingListViewItem> dataSet;
     Context mContext;
     boolean isEditing;
-    private GroceryList.GroceryDeleter groceryDeleter;
+    private ShoppingList.ShoppingDeleter shoppingDeleter;
 
     // View lookup cache
     private static class ViewHolder {
@@ -28,12 +28,12 @@ public class GroceryListViewAdapter extends ArrayAdapter<GroceryListViewItem> im
         ImageView deleteImage;
     }
 
-    public GroceryListViewAdapter(ArrayList<GroceryListViewItem> data, Context context, boolean isEditing, GroceryList.GroceryDeleter groceryDeleter) {
+    public ShoppingListViewAdapter(ArrayList<ShoppingListViewItem> data, Context context, boolean isEditing, ShoppingList.ShoppingDeleter shoppingDeleter) {
         super(context, R.layout.food_list_item, data);
         this.dataSet = data;
         this.mContext=context;
         this.isEditing = isEditing;
-        this.groceryDeleter = groceryDeleter;
+        this.shoppingDeleter = shoppingDeleter;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class GroceryListViewAdapter extends ArrayAdapter<GroceryListViewItem> im
 
         int position=(Integer) v.getTag();
         Object object= getItem(position);
-        GroceryListViewItem fooditem=(GroceryListViewItem) object;
+        ShoppingListViewItem fooditem=(ShoppingListViewItem) object;
 
         switch (v.getId())
         {
@@ -58,10 +58,10 @@ public class GroceryListViewAdapter extends ArrayAdapter<GroceryListViewItem> im
                         .setAction("No action", null).show();
 
                 // delete item from firebase
-                groceryDeleter.setItem(fooditem);
+                shoppingDeleter.setItem(fooditem);
                 try {
                     Log.d("delete", "deleting in adapter");
-                    groceryDeleter.call();
+                    shoppingDeleter.call();
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
@@ -77,7 +77,7 @@ public class GroceryListViewAdapter extends ArrayAdapter<GroceryListViewItem> im
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        GroceryListViewItem fooditem = getItem(position);
+        ShoppingListViewItem fooditem = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         ViewHolder viewHolder; // view lookup cache stored in tag
 
@@ -88,7 +88,7 @@ public class GroceryListViewAdapter extends ArrayAdapter<GroceryListViewItem> im
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             // choose to show editing or non-editing list items
-            int layoutType = R.layout.grocery_list_item;
+            int layoutType = R.layout.shopping_list_item;
             convertView = inflater.inflate(layoutType, parent, false);
             viewHolder.txtName = (TextView) convertView.findViewById(R.id.food_name);
             viewHolder.deleteImage = (ImageView) convertView.findViewById(R.id.delete_image);

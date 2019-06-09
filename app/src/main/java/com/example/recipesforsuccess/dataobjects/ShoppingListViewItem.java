@@ -1,10 +1,10 @@
 package com.example.recipesforsuccess.dataobjects;
 
-public class GroceryListViewItem {
+public class ShoppingListViewItem {
 
     String name;
 
-    public GroceryListViewItem(String name) {
+    public ShoppingListViewItem(String name) {
         this.name=name;
     }
 

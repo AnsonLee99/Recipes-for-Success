@@ -23,8 +23,8 @@ public class MainPage extends MainActivity {
                 Intent in;
 
                 switch(checkedId) {
-                    case R.id.grocery_tab_button:
-                        in = new Intent(getBaseContext(), GroceryList.class);
+                    case R.id.shopping_tab_button:
+                        in = new Intent(getBaseContext(), ShoppingList.class);
                         startActivity(in);
                         overridePendingTransition(0,0);
                         break;

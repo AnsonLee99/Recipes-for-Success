@@ -19,8 +19,8 @@ public class BasketEditing extends MainPage {
         super.onCreate(savedInstanceState);
 
         mainDisplay = (LinearLayout) findViewById(R.id.main_display);
-        View groceryView = getLayoutInflater().inflate(R.layout.activity_basket_editing, null);
-        mainDisplay.addView(groceryView);
+        View shoppingView = getLayoutInflater().inflate(R.layout.activity_basket_editing, null);
+        mainDisplay.addView(shoppingView);
 
         // For displaying the currently selected tab
         // I can't fuckin figure it out

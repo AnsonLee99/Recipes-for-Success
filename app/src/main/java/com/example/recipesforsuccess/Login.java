@@ -19,8 +19,8 @@ public class Login extends AppCompatActivity {
         //setContentView(R.layout.activity_login);
         /*
         mainDisplay = (ConstraintLayout) findViewById(R.id.main_display);
-        View groceryView = getLayoutInflater().inflate(R.layout.activity_login, null);
-        mainDisplay.addView(groceryView);
+        View shoppingView = getLayoutInflater().inflate(R.layout.activity_login, null);
+        mainDisplay.addView(shoppingView);
         */
         /*
         if(!FirebaseApp.getApps(this).isEmpty())

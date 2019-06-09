@@ -110,8 +110,8 @@ public class Recipes extends MainPage {
         super.onCreate(savedInstanceState);
 
         mainDisplay = (LinearLayout) findViewById(R.id.main_display);
-        View groceryView = getLayoutInflater().inflate(R.layout.activity_recipes, null);
-        mainDisplay.addView(groceryView);
+        View shoppingView = getLayoutInflater().inflate(R.layout.activity_recipes, null);
+        mainDisplay.addView(shoppingView);
         context = this;
         createRecipeButton = (FloatingActionButton) findViewById(R.id.createRecipeButton);
         createRecipeButton.setOnClickListener(new View.OnClickListener() {
