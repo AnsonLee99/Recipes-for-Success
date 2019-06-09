@@ -9,30 +9,39 @@
     android:paddingBottom="15dp"
     android:layout_marginBottom="15dp">
 
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         tools:context=".Basket">
 
         <AutoCompleteTextView
             android:id="@+id/basket_searchBar"
-            android:layout_width="0dp"
+            android:layout_width="300dp"
             android:layout_height="50dp"
-
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:completionThreshold="1"
             android:hint="Add Ingredients"
-            app:layout_constraintEnd_toStartOf="@+id/add_to_basket"
+            app:layout_constraintEnd_toEndOf="@+id/basket_search_clear"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <Button
+            android:id="@+id/basket_search_clear"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:background="@mipmap/ic_text_clear"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="5dp"
+            tools:layout_editor_absoluteX="217dp"
+            tools:layout_editor_absoluteY="0dp"
+            app:layout_constraintEnd_toEndOf="@+id/basket_searchBar"
+            app:layout_constraintBottom_toBottomOf="@id/basket_searchBar"/>
+
         <ListView
             android:id="@+id/basket_list_view"
-            android:layout_width="373dp"
-            android:layout_height="wrap_content"
+            android:layout_width="398dp"
+            android:layout_height="593dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
@@ -48,7 +57,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:text="Add"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/basket_searchBar"
             app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
