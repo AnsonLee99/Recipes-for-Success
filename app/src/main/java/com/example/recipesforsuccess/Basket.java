@@ -232,7 +232,6 @@ public class Basket extends MainPage {
     }
 
     public void addToBasket(FoodListViewItem item) {
-        //Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
         // capitalize first letter of item name
         basketContents.add(item);
         basketAdapter.notifyDataSetChanged();

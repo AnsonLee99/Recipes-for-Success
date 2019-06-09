@@ -59,9 +59,6 @@ import javax.annotation.Nullable;
 
 public class Recipes extends MainPage {
     LinearLayout mainDisplay;
-    String EDAMAM_API_ID = "&app_id=4934de74";
-    String EDAMAM_API_KEY ="&app_key=836bfa298e5ae162b917c2b0010b9190";
-    String EDAMAM_API_URL = "https://api.edamam.com/search?q=";
     String USER_QUERY = "";
     String SPOONACULAR_API_URL = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/search?&instructionsRequired=true&query=";
     String dataParsed = "";
@@ -206,17 +203,6 @@ public class Recipes extends MainPage {
         startActivityForResult(intent,SECOND_ACTIVITY_REQUEST_CODE);
     }
 
- /*   @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()){
-            case R.id.search_bar:
-                TextView txt = (TextView) findViewById(R.id.textView2);
-                txt.setText("hi searb-bar");
-                return true;
-        }
-        return true;
-    }*/
-
     @Override
     protected void onNewIntent(Intent intent){
         setIntent(intent);
@@ -356,11 +342,6 @@ public class Recipes extends MainPage {
                     JSONObject hit = jsonArray.getJSONObject(xx);
                     id = hit.getInt("id");
 
-                    //String recipeInformation = new RecipeInstructions().execute().get();
-                    //String equipmentInformation = new GetRecipeEquipment().execute().get();
-                    //JSONObject recipe = new JSONObject(recipeInformation);
-                    //String prepTime = recipe.getString("readyInMinutes");
-
                     String imgURL = hit.getString("image");
                     String foodName = hit.getString("title");
                     System.out.println("inserting img to photos");
@@ -370,11 +351,7 @@ public class Recipes extends MainPage {
 
             }catch(JSONException e){
                 System.out.println("caught exception " + e);
-            }/*catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }*/
+            }
         }
     }
 
@@ -401,7 +378,7 @@ public class Recipes extends MainPage {
                         stringBuilder.append(line).append("\n");
                     }
                     bufferedReader.close();
-                    //System.out.println("returning reponse of: " + stringBuilder.toString());
+
                     return stringBuilder.toString();
                 } finally {
                     urlConnection.disconnect();
@@ -493,9 +470,6 @@ public class Recipes extends MainPage {
             }
 
             try{
-                /*System.out.println("the response is: " + response);
-                TextView txt = (TextView) findViewById(R.id.recipe_text);
-                txt.setText(response);*/
                 // Remove all current photos on new search
                 LinearLayout photos = (LinearLayout) findViewById(R.id.searched_recipes);
                 if( photos.getChildCount() > 0){
@@ -515,9 +489,6 @@ public class Recipes extends MainPage {
 
                     //parsing ingredients
 
-
-                    //System.out.println("data parsed is: " + dataParsed);
-                    // System.out.println("img url is: " + imgURL);
                     photos.addView(insertIMG(imgURL, foodName, prepTime, hit, 0, SEARCH_LAYOUT_WIDTH,
                             SEARCH_LAYOUT_HEIGHT,SEARCH_IMG_SIZE,SEARCH_TEXT_WIDTH,SEARCH_TEXT_HEIGHT));
                 }
@@ -622,9 +593,6 @@ public class Recipes extends MainPage {
                     recipeInfo = new RecipeInstructions().execute().get();
                     equipmentInfo = new GetRecipeEquipment().execute().get();
 
-
-                    //String equipmentInformation = new GetRecipeEquipment().execute().get();
-
                     //For instructions
                     JSONObject recipeSearch = new JSONObject(recipeInfo);
                     System.out.println("trying to get analyzedInstructions");
@@ -714,7 +682,6 @@ public class Recipes extends MainPage {
                 String equipmentList = "";
 
                 try {
-                    //JSONObject recipe = hit1.getJSONObject("results");
                     recipeName = hit.getString("title");
 
 
@@ -792,10 +759,7 @@ public class Recipes extends MainPage {
                 } catch (Exception e) {
 
                     System.out.println("exception is: " + e);
-//                    //intent.putExtra("instructions", dataParsed);
-//                    intent.putExtra("imgURL", imgURL);
-//                    intent.putExtra("recipeName", recipeName);
-//                    startActivity(intent);
+
                     System.out.println("AFTER STARTING NEW INTENT ACTIVITY");
                 }
             }
@@ -880,7 +844,6 @@ public class Recipes extends MainPage {
                     dataParsed = dataParsed + (i+1) + ".  " + "" + steps.get(i) + "\n" + "" + "\n";
                 }
 
-                //JSONObject recipe = hit1.getJSONObject("results");
                 intent.putExtra("ingredients", ingredients);
                 intent.putExtra("equipment", equipmentList);
                 intent.putExtra("instructions", dataParsed);
@@ -888,7 +851,6 @@ public class Recipes extends MainPage {
                 intent.putExtra("recipeName", recipeName);
                 System.out.println("HELLO ABOUT TO START");
 
-                //System.out.println("EQUIPMENT HERE: " + equipmentList);
 
                 startActivity(intent);
 
@@ -921,7 +883,6 @@ public class Recipes extends MainPage {
                     dataParsed = dataParsed + (i+1) + ".  " + "" + steps.get(i) + "\n" + "" + "\n";
                 }
 
-                //JSONObject recipe = hit1.getJSONObject("results");
                 intent.putExtra("ingredients", ingredients);
                 intent.putExtra("equipment", equipmentList);
                 intent.putExtra("instructions", dataParsed);
@@ -929,7 +890,6 @@ public class Recipes extends MainPage {
                 intent.putExtra("recipeName", recipeName);
                 System.out.println("HELLO ABOUT TO START");
 
-                //System.out.println("EQUIPMENT HERE: " + equipmentList);
 
                 startActivity(intent);
 
