@@ -93,6 +93,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0,0);
+    }
+
     private void signIn() {
         String email = emailField.getText().toString();
         String password = passwordField.getText().toString();
