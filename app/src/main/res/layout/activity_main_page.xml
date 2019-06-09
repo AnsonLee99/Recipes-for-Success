@@ -13,31 +13,31 @@
         android:layout_width="match_parent"
         android:layout_height="675dp"
         android:layout_gravity="center"
-        android:background="#34FFC107"
+        android:background="#dedede"
         android:orientation="vertical"/>
 
     <LinearLayout
+        android:id="@+id/bottonNavBar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:elevation="10dp"
-        android:id="@+id/bottonNavBar"
-        android:paddingTop="5dp"
-        android:orientation="horizontal"
-        android:background="#FFF0A22C"
         android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:elevation="10dp"
         android:foregroundGravity="bottom"
+        android:orientation="horizontal"
+        android:paddingTop="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <RadioGroup
             android:id="@+id/NavBar_Group"
-            android:gravity="center"
-            android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:background="#FFF0A22C"
-            android:orientation="horizontal"
-            android:baselineAligned="false">
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary"
+            android:baselineAligned="false"
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/grocery_tab_button"
@@ -98,7 +98,6 @@
                 android:text="@string/menu_profile"
                 android:textColor="@android:color/white"
                 android:textSize="12sp" />
-
 
 
         </RadioGroup>
