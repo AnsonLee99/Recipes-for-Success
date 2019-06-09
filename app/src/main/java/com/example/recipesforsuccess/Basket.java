@@ -92,6 +92,7 @@ public class Basket extends MainPage {
         mainDisplay.addView(basketView);
 
         clear = (Button) findViewById(R.id.basket_search_clear);
+        clear.setVisibility(View.GONE);
 
         Log.d("test", "clear button: " + clear) ;
         clear.setOnClickListener(new View.OnClickListener() {

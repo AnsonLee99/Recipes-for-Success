@@ -27,6 +27,10 @@ public class ViewRecipeInstructions extends AppCompatActivity {
         //getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().hide();
 
+        //TextView instructions = (TextView) findViewById(R.id.instruction_text);
+        //TextView recipeText = (TextView) findViewById(R.id.recipe_name);
+        //ImageView imgView = (ImageView) findViewById(R.id.recipe_img);
+
         LinearLayout layout = (LinearLayout)findViewById(R.id.recipe_instruct_page);
         layout.setGravity(Gravity.CENTER_HORIZONTAL);
         //findViewById(R.id.recipe_instruct_screen).setBackgroundColor(889176327);
@@ -102,10 +106,9 @@ public class ViewRecipeInstructions extends AppCompatActivity {
         instructions.setTextColor(Color.BLACK);
         instructions.setText(instructionString);
 
-
-
         // adding everything to the layout
         Picasso.with(getApplicationContext()).load(intent.getStringExtra("imgURL")).into(imgView);
+
 
     }
 }
