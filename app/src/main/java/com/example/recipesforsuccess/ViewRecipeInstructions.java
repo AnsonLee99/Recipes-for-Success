@@ -4,32 +4,37 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public class ViewRecipeInstructions extends AppCompatActivity {
+    private Button pushToShopping;
+    private Button pullFromBasket;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_recipe_instructions);
 
-        // Hide action bar
-        //getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().hide();
+        pushToShopping = (Button) findViewById(R.id.ingredient_to_shopping);
+        pullFromBasket = (Button) findViewById(R.id.ingredient_from_basket);
 
-        //TextView instructions = (TextView) findViewById(R.id.instruction_text);
-        //TextView recipeText = (TextView) findViewById(R.id.recipe_name);
-        //ImageView imgView = (ImageView) findViewById(R.id.recipe_img);
+        // Hide action bar
+        getSupportActionBar().hide();
 
         LinearLayout layout = (LinearLayout)findViewById(R.id.recipe_instruct_page);
         layout.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -108,7 +113,32 @@ public class ViewRecipeInstructions extends AppCompatActivity {
 
         // adding everything to the layout
         Picasso.with(getApplicationContext()).load(intent.getStringExtra("imgURL")).into(imgView);
+        pushToShopping.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] names = getIntent().getStringExtra("missingIngredients").split(";");
 
+                for (String name : names ) {
+                    name += "_" + getIntent().getStringExtra("ID");
 
+                    db.collection("USERS").document(getIntent().getStringExtra("ID")).update("shoppingList",
+                            FieldValue.arrayUnion(name));
+                }
+            }
+        });
+
+        pullFromBasket.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                String[] names = getIntent().getStringExtra("usedIngredients").split(";");
+
+                for (String name: names) {
+                    name += "_" + getIntent().getStringExtra("ID");
+
+                    db.collection("USERS").document(getIntent().getStringExtra("ID")).update("basket",
+                            FieldValue.arrayRemove(name));
+                }
+            }
+        });
     }
 }
