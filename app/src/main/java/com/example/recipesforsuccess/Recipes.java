@@ -120,7 +120,6 @@ public class Recipes extends MainPage {
                 if(documentSnapshot.exists())
                 {
                     recipeIDs = (List<String>) documentSnapshot.get("personalRecipes");
-                    System.out.println("recipeIDS: " + recipeIDs.toString());
                     if(personalRecipes.getChildCount() > 0){
                         personalRecipes.removeAllViews();
                     }
@@ -136,7 +135,6 @@ public class Recipes extends MainPage {
                 if( documentSnapshot.exists() ){
                     userBasket = (List<String>) documentSnapshot.get("basket");
                     for(int i = 0; i < userBasket.size(); i++){
-                        System.out.println("item in basket is: " + userBasket.get(i));
                     }
                     new GetRecipeByIngredients().execute();
                 }
@@ -224,21 +222,17 @@ public class Recipes extends MainPage {
             for(int i = 0; i < recipeIDs.size(); i++)
             {
                 String ID = recipeIDs.get(i);
-                System.out.println("id is:" + ID);
                 //private DocumentReference currentUser = db.collection("USERS").document(userID);
                 DocumentReference recRef = db.document("RECIPES/" + ID);
                 recRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
                     public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                        System.out.println("checking if snapsnot exists");
                         if(documentSnapshot.exists())
                         {
-                            System.out.println("snapshot exists");
                             Recipe currRecipe = documentSnapshot.toObject(Recipe.class);
                             personalRecipes.addView(insertPersonalIMG(currRecipe, RECIPE_LAYOUT_WIDTH,
                                     RECIPE_LAYOUT_HEIGHT,RECIPE_IMG_SIZE,REcIPE_TEXT_WIDTH,RECIPE_TEXT_HEIGHT));
                         }
-                        System.out.println("snapshot dne");
                     }
                 });
             }
@@ -273,8 +267,6 @@ public class Recipes extends MainPage {
                 }else{
                     finalIng = userBasket.get(ingInd).split("_")[0];
                 }
-                System.out.println("final ingredient is: " + finalIng);
-                //System.out.println("basket item as array: " + Arrays.toString(ingArray));
                 if(ingInd == userBasket.size() - 1) {
                     ingredients += finalIng;
                 }else{
@@ -283,14 +275,12 @@ public class Recipes extends MainPage {
 
             }
             String apiURL = base_url + numSearch + maxUsed + ingredients;
-            System.out.println("apiURL is: " + apiURL);
             try {
                 URL url = new URL(apiURL);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setRequestProperty("X-RapidAPI-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
                 urlConnection.setRequestProperty("X-RapidAPI-Key", "94cfccb0c9msh2df1f90eef1052fp15b07bjsna54028f8b980");
-                System.out.println("connection code: " + urlConnection.getResponseCode());
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                     StringBuilder stringBuilder = new StringBuilder();
@@ -305,7 +295,6 @@ public class Recipes extends MainPage {
                     urlConnection.disconnect();
                 }
             }catch(Exception e){
-                System.out.println("caught exception " + e);
                 return null;
             }
         }
@@ -320,12 +309,9 @@ public class Recipes extends MainPage {
                     photos.removeAllViews();
                 }
                 int numToRetrieve = 5;
-                System.out.println("GETTING JSONOBJECT");
 
                 JSONArray jsonArray = new JSONArray(response);
-                System.out.println("json array is: " + jsonArray);
                 for(int xx = 0; xx < numToRetrieve; xx++) {
-                    System.out.println("retrieiving shit num: " + xx);
                     dataParsed = "";
                     JSONObject hit = jsonArray.getJSONObject(xx);
                     id = hit.getInt("id");
@@ -333,13 +319,11 @@ public class Recipes extends MainPage {
                     String imgURL = hit.getString("image");
                     String foodName = hit.getString("title");
                     //String prepTime = hit.getString("readyInMinutes");
-                    System.out.println("inserting img to photos");
                     photos.addView(insertIMG(imgURL, foodName, "", hit, 1, RECIPE_LAYOUT_WIDTH,
                             RECIPE_LAYOUT_HEIGHT,RECIPE_IMG_SIZE,REcIPE_TEXT_WIDTH,RECIPE_TEXT_HEIGHT));
                 }
 
             }catch(JSONException e){
-                System.out.println("caught exception " + e);
             }
         }
     }
@@ -350,18 +334,15 @@ public class Recipes extends MainPage {
         protected String doInBackground(Void... voids) {
             String equipmentURLString = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/" + id + "/equipmentWidget.json";
 
-            System.out.println("equipmentURL is: " + equipmentURLString);
             try {
                 URL url = new URL(equipmentURLString);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setRequestProperty("X-RapidAPI-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
                 urlConnection.setRequestProperty("X-RapidAPI-Key", "94cfccb0c9msh2df1f90eef1052fp15b07bjsna54028f8b980");
-                System.out.println("connection code: " + urlConnection.getResponseCode());
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                     StringBuilder stringBuilder = new StringBuilder();
-                    //System.out.println("getInputStream is: " + bufferedReader.readLine());
                     String line;
                     while ((line = bufferedReader.readLine()) != null) {
                         stringBuilder.append(line).append("\n");
@@ -373,7 +354,6 @@ public class Recipes extends MainPage {
                     urlConnection.disconnect();
                 }
             }catch(Exception e){
-                System.out.println("caught exception " + e);
                 return null;
             }
         }
@@ -420,9 +400,6 @@ public class Recipes extends MainPage {
                 urlConnection.setRequestProperty("X-RapidAPI-Host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com");
                 urlConnection.setRequestProperty("X-RapidAPI-Key", "345c2d3917msh6a48dea5f64bfa4p1a6cd4jsn7ead3be73465");
 
-                System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-                System.out.println("URL STRING AFTER FILTERS: " + url.toString());
-
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                     StringBuilder stringBuilder = new StringBuilder();
@@ -437,7 +414,6 @@ public class Recipes extends MainPage {
                 }
             } catch (Exception e) {
 
-                System.out.println("EXCEPTION WHEN SEARCHING IS " + e);
                 return null;
             }
 
@@ -448,7 +424,6 @@ public class Recipes extends MainPage {
             for(int i = 1; i < options.size(); i++){
                 urlString = urlString + "%2C" + options.get(i);
             }
-            System.out.println("urlSTRING" + urlString);
             return urlString;
         }
 
@@ -494,7 +469,6 @@ public class Recipes extends MainPage {
         protected String doInBackground(Void... voids) {
             try{
                 String url_str = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/" + id + "/information";
-                System.out.println("url is : " + url_str);
                 URL url = new URL(url_str);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("GET");
@@ -581,16 +555,12 @@ public class Recipes extends MainPage {
 
                     //getting prep time and servings
                     int prepTime = recipeSearch.getInt("readyInMinutes");
-                    System.out.println("PREP TIMEEEEEEEEEEEEEEEE" + prepTime);
 
-                    System.out.println("trying to get analyzedInstructions");
                     JSONArray analyzedInstructions = recipeSearch.getJSONArray("analyzedInstructions");
-                    System.out.println("analyzedinsturcionts is: " + analyzedInstructions);
                     JSONObject instructionsArray;
                     JSONArray stepsArray;
                     if( !analyzedInstructions.isNull(0) ){
-                        System.out.println("recipeInfo is; " + recipeInfo);
-                        System.out.println("analyzedInstructions is: " + analyzedInstructions);
+
                         instructionsArray = analyzedInstructions.getJSONObject(0);
                         stepsArray = instructionsArray.getJSONArray("steps");
                     }else{
@@ -645,7 +615,6 @@ public class Recipes extends MainPage {
                         }
                     }
 
-                    System.out.println("instructions HEREEEEEEEE! " + dataParsed);
 
                     intent.putExtra("ingredients", ingredientList);
                     intent.putExtra("equipment", equipmentList);
@@ -661,9 +630,6 @@ public class Recipes extends MainPage {
 
                 } catch (Exception e) {
 
-                    System.out.println("exception is: " + e);
-
-                    System.out.println("AFTER STARTING NEW INTENT ACTIVITY");
                 }
             }
         });
@@ -682,7 +648,6 @@ public class Recipes extends MainPage {
 
 
                     id = hit.getInt("id");
-                    System.out.println("ID FOR RECIPE" + id);
 
                     finalImgURL = imgURL;
 
@@ -702,8 +667,6 @@ public class Recipes extends MainPage {
                     JSONObject instructionsArray;
                     JSONArray stepsArray;
                     if( !analyzedInstructions.isNull(0) ){
-                        System.out.println("recipeInfo is; " + recipeInfo);
-                        System.out.println("analyzedInstructions is: " + analyzedInstructions);
                         instructionsArray = analyzedInstructions.getJSONObject(0);
                         stepsArray = instructionsArray.getJSONArray("steps");
                     }else{
@@ -718,7 +681,6 @@ public class Recipes extends MainPage {
 
                     //getting ingredients list
                     JSONArray extendedIngredients = recipeSearch.getJSONArray("extendedIngredients");
-                    System.out.println("ingredients is: " + extendedIngredients.toString());
                     for (int ii = 0; ii < extendedIngredients.length(); ii++){
                         JSONObject ingredient = extendedIngredients.getJSONObject(ii);
                         String original = ingredient.getString("original");
@@ -753,9 +715,6 @@ public class Recipes extends MainPage {
 
                 } catch (Exception e) {
 
-                    System.out.println("exception is: " + e);
-
-                    System.out.println("AFTER STARTING NEW INTENT ACTIVITY");
                 }
             }
         });
@@ -883,8 +842,6 @@ public class Recipes extends MainPage {
                 intent.putExtra("instructions", dataParsed);
                 intent.putExtra("imgURL", finalImgURL);
                 intent.putExtra("recipeName", recipeName);
-                System.out.println("HELLO ABOUT TO START");
-
 
                 startActivity(intent);
 
