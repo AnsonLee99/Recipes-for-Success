@@ -33,7 +33,8 @@ public class ViewRecipeInstructions extends AppCompatActivity {
         pushToShopping = (Button) findViewById(R.id.ingredient_to_shopping);
         pullFromBasket = (Button) findViewById(R.id.ingredient_from_basket);
 
-        if ( getIntent().getStringExtra("missingIngredients") == null ) {
+        if ( getIntent().getStringExtra("missingIngredients") == null ||
+                getIntent().getStringExtra("missingIngredients") == "") {
             pushToShopping.setVisibility(View.GONE);
         }
         else {
@@ -52,7 +53,8 @@ public class ViewRecipeInstructions extends AppCompatActivity {
             });
         }
 
-        if ( getIntent().getStringExtra("usedIngredients") == null) {
+        if ( getIntent().getStringExtra("usedIngredients") == null ||
+                getIntent().getStringExtra("usedIngredients") == "") {
             pullFromBasket.setVisibility(View.GONE);
         }
         else {
