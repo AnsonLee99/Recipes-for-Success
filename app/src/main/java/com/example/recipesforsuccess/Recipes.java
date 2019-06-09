@@ -332,6 +332,7 @@ public class Recipes extends MainPage {
 
                     String imgURL = hit.getString("image");
                     String foodName = hit.getString("title");
+                    //String prepTime = hit.getString("readyInMinutes");
                     System.out.println("inserting img to photos");
                     photos.addView(insertIMG(imgURL, foodName, "", hit, 1, RECIPE_LAYOUT_WIDTH,
                             RECIPE_LAYOUT_HEIGHT,RECIPE_IMG_SIZE,REcIPE_TEXT_WIDTH,RECIPE_TEXT_HEIGHT));
@@ -435,7 +436,7 @@ public class Recipes extends MainPage {
                     urlConnection.disconnect();
                 }
             } catch (Exception e) {
-                System.out.println("########################################");
+
                 System.out.println("EXCEPTION WHEN SEARCHING IS " + e);
                 return null;
             }
@@ -567,7 +568,6 @@ public class Recipes extends MainPage {
 
 
                     id = hit.getInt("id");
-                    System.out.println("ID FOR RECIPE" + id);
 
                     finalImgURL = imgURL;
 
@@ -578,6 +578,11 @@ public class Recipes extends MainPage {
 
                     //For instructions
                     JSONObject recipeSearch = new JSONObject(recipeInfo);
+
+                    //getting prep time and servings
+                    int prepTime = recipeSearch.getInt("readyInMinutes");
+                    System.out.println("PREP TIMEEEEEEEEEEEEEEEE" + prepTime);
+
                     System.out.println("trying to get analyzedInstructions");
                     JSONArray analyzedInstructions = recipeSearch.getJSONArray("analyzedInstructions");
                     System.out.println("analyzedinsturcionts is: " + analyzedInstructions);
@@ -650,12 +655,10 @@ public class Recipes extends MainPage {
                     intent.putExtra("missingIngredients", missingIngredients.toString());
                     intent.putExtra("usedIngredients", usedIngredients.toString());
                     intent.putExtra("ID", userID);
-                    System.out.println("HELLO ABOUT TO START");
-
-                    System.out.println("EQUIPMENT HERE: " + equipmentList);
+                    intent.putExtra("prepTime", prepTime);
 
                     startActivity(intent);
-                    System.out.println("STARTED");
+
                 } catch (Exception e) {
 
                     System.out.println("exception is: " + e);
@@ -692,6 +695,9 @@ public class Recipes extends MainPage {
                     //For instructions
                     JSONObject recipeSearch = new JSONObject(recipeInfo);
                     JSONArray analyzedInstructions = recipeSearch.getJSONArray("analyzedInstructions");
+
+                    //getting prep time and servings
+                    int prepTime = recipeSearch.getInt("readyInMinutes");
 
                     JSONObject instructionsArray;
                     JSONArray stepsArray;
@@ -741,13 +747,9 @@ public class Recipes extends MainPage {
                     intent.putExtra("instructions", dataParsed);
                     intent.putExtra("imgURL", finalImgURL);
                     intent.putExtra("recipeName", recipeName);
-                    System.out.println("HELLO ABOUT TO START");
-
-                    System.out.println("EQUIPMENT HERE: " + equipmentList);
+                    intent.putExtra("prepTime", prepTime);
 
                     startActivity(intent);
-                    System.out.println("STARTED");
-
 
                 } catch (Exception e) {
 
@@ -793,6 +795,7 @@ public class Recipes extends MainPage {
 
     View insertPersonalIMG(final Recipe myRecipe, final int layoutWidth, final int layoutHeight, final int imageSize, final int textWidth, final int textHeight){
 
+        final String prepTime = myRecipe.getPrepTime();
         LinearLayout layout = new LinearLayout(getApplicationContext());
         ImageButton recipeIMG = new ImageButton(getApplicationContext());
         layout.setLayoutParams(new LinearLayout.LayoutParams(layoutWidth - 200, layoutHeight + 250));
@@ -841,8 +844,8 @@ public class Recipes extends MainPage {
                 intent.putExtra("instructions", dataParsed);
                 intent.putExtra("imgURL", finalImgURL);
                 intent.putExtra("recipeName", recipeName);
-                System.out.println("HELLO ABOUT TO START");
-
+                intent.putExtra("prepTime", prepTime);
+                //intent.putExtra("servings", servings);
 
                 startActivity(intent);
 
@@ -889,7 +892,6 @@ public class Recipes extends MainPage {
         });
         String imgURL = myRecipe.getRecipePic();
         String foodName = myRecipe.getName();
-        String prepTime = myRecipe.getPrepTime();
         Picasso.with(getApplicationContext()).load(imgURL).into(recipeIMG);
         recipeIMG.setScaleType(ImageView.ScaleType.FIT_XY);
         recipeIMG.setPadding(0,0,0,0);
