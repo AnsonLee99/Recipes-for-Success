@@ -211,7 +211,7 @@ public class GroceryList extends MainPage {
     // itemToDelete is the name of the item to delete
     protected void deleteFromFirebase(String itemToDelete) {
 
-        final String docName = itemToDelete + "_" + ID;
+        final String docName = itemToDelete.toLowerCase() + "_" + ID;
         db.collection("INGREDIENTS").document(docName).delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
