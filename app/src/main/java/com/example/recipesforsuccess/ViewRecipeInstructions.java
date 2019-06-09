@@ -27,10 +27,6 @@ public class ViewRecipeInstructions extends AppCompatActivity {
         //getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().hide();
 
-        //TextView instructions = (TextView) findViewById(R.id.instruction_text);
-        //TextView recipeText = (TextView) findViewById(R.id.recipe_name);
-        //ImageView imgView = (ImageView) findViewById(R.id.recipe_img);
-
         LinearLayout layout = (LinearLayout)findViewById(R.id.recipe_instruct_page);
         layout.setGravity(Gravity.CENTER_HORIZONTAL);
         //findViewById(R.id.recipe_instruct_screen).setBackgroundColor(889176327);
@@ -44,6 +40,9 @@ public class ViewRecipeInstructions extends AppCompatActivity {
         recipeName.setGravity(Gravity.CENTER_VERTICAL);
         recipeName.setBackgroundColor(Color.WHITE);
         recipeName.setPadding(50,30,0,30);
+
+        TextView prepTime = findViewById(R.id.prepTime);
+        prepTime.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
 
         // Recipe Image
         ImageView imgView = (ImageView)findViewById(R.id.recipe_image);
