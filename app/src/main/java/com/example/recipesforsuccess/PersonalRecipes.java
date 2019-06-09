@@ -99,11 +99,7 @@ public class PersonalRecipes extends MainPage {
                             }
                         });
                     }
-                    /*
-                    list = (ListView) findViewById(R.id.test_list);
-                    adapter = new RecipeAdapter(context, recipes);
-                    list.setAdapter(adapter);
-                    */
+
                 }
             }
         });

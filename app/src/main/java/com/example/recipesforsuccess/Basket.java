@@ -22,8 +22,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import com.example.recipesforsuccess.dataobjects.FoodListViewAdapter;
 import com.example.recipesforsuccess.dataobjects.FoodListViewItem;
@@ -38,7 +36,6 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -59,6 +56,8 @@ public class Basket extends MainPage {
     private String ID =  auth.getUid();
     private Context context;
 
+    private Button clear;
+
     private long delay = 300; // Wait .5 sec after user stops typing to update
     long lastTextUpdate = 0;
     Handler handler = new Handler();
@@ -69,8 +68,6 @@ public class Basket extends MainPage {
     private ArrayList<FoodListViewItem> basketContents = new ArrayList<>();
     FoodListViewAdapter basketAdapter;
 
-    private PopupWindow window;
-
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
@@ -78,8 +75,7 @@ public class Basket extends MainPage {
 
         super.onCreate(savedInstanceState);
 
-        basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false,
-                new PopulatePopup(), new BasketDeleter());
+        basketAdapter = new FoodListViewAdapter(basketContents, getApplicationContext(), false, new BasketDeleter());
         context = this;
 
         // Check if a current user is logged in
@@ -89,18 +85,31 @@ public class Basket extends MainPage {
             return;
         }
 
+        setSelected(2);
+
         mainDisplay = (LinearLayout) findViewById(R.id.main_display);
         View basketView = getLayoutInflater().inflate(R.layout.activity_basket, null);
         mainDisplay.addView(basketView);
+
+        clear = (Button) findViewById(R.id.basket_search_clear);
+        clear.setVisibility(View.GONE);
+
+        Log.d("test", "clear button: " + clear) ;
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bar.setText("");
+                clear.setVisibility(View.GONE);
+            }
+        });
 
         // Auto-complete searchbar
         bar = (AutoCompleteTextView) findViewById(R.id.basket_searchBar);
         options = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
         bar.setAdapter(options);
-        //bar.setDropDownHeight(6);
         options.notifyDataSetChanged();
 
-
+        // Runs Autocomplete options update after 500 sec of inactivity in textview
         final Runnable input_finish_checker = new Runnable() {
             public void run() {
                 if (System.currentTimeMillis() > (lastTextUpdate + delay - 500)) {
@@ -126,6 +135,7 @@ public class Basket extends MainPage {
                     }
                     service.shutdown();
 
+                    bar.setAdapter(options);
                     options.addAll(currOptions);
                     options.notifyDataSetChanged();
                 }
@@ -135,7 +145,9 @@ public class Basket extends MainPage {
         bar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                if (s.length() == 0) {
+                    clear.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -149,6 +161,10 @@ public class Basket extends MainPage {
                 if(s.length() >0) {
                     handler.postDelayed(input_finish_checker, delay);
                     str = s;
+                    clear.setVisibility(View.VISIBLE);
+                }
+                else {
+                    clear.setVisibility(View.GONE);
                 }
             }
         });
@@ -162,36 +178,40 @@ public class Basket extends MainPage {
             @Override
             public void onClick(View v) {
 
-                int idx = 0;
-                for ( int i = 0; i < options.getCount(); i ++) {
-                    if (options.getItem(i) == bar.getText().toString()) {
-                        idx = i;
+                if (bar.getText().toString().length() != 0 ) {
+                    int idx = 0;
+                    for (int i = 0; i < options.getCount(); i++) {
+                        if (options.getItem(i) == bar.getText().toString()) {
+                            idx = i;
+                        }
                     }
+
+                    // REPLACE "new JSONObject()" with the JSON object from the selected "res" array
+                    HashMap<String, Object> newIngredient = new HashMap<>();
+
+                    newIngredient.put("flag", false);
+                    newIngredient.put("name", bar.getText().toString());
+                    newIngredient.put("time added", Calendar.getInstance().getTime());
+                    newIngredient.put("imgURL", imgURL.get(idx));
+
+                    pushToFirebase(newIngredient);
+
+                    Log.d("test", "value before: " + newIngredient.get("name"));
+
+                    // capitalize first letter of item name
+                    String ingredientName = newIngredient.get("name").toString();
+                    ingredientName = (ingredientName.length() < 2) ? ingredientName :
+                            (ingredientName.substring(0, 1).toUpperCase() + ingredientName.substring(1));
+
+                    // capitalize first letter of item name
+                    String itemname = (bar.getText().toString().length() < 2) ? bar.getText().toString() :
+                            (bar.getText().toString().substring(0, 1).toUpperCase() + bar.getText().toString().substring(1));
+                    Date date = new Date();
+
+                    addToBasket(new FoodListViewItem(itemname, dateToString(date), imgURL.get(idx), context, basketAdapter));
+                    bar.setText("");
+                    clear.setVisibility(View.GONE);
                 }
-
-                // REPLACE "new JSONObject()" with the JSON object from the selected "res" array
-                HashMap<String, Object> newIngredient = new HashMap<>();
-
-                newIngredient.put("flag", false);
-                newIngredient.put("name", bar.getText().toString());
-                newIngredient.put("time added", Calendar.getInstance().getTime());
-                newIngredient.put("imgURL", imgURL.get(idx));
-
-                pushToFirebase(newIngredient);
-
-                Log.d("test", "value before: " + newIngredient.get("name"));
-
-                // capitalize first letter of item name
-                String ingredientName = newIngredient.get("name").toString();
-                ingredientName = (ingredientName.length() < 2) ? ingredientName :
-                        (ingredientName.substring(0, 1).toUpperCase() + ingredientName .substring(1));
-
-                // capitalize first letter of item name
-                String itemname = (bar.getText().toString().length() < 2) ? bar.getText().toString() :
-                        (bar.getText().toString().substring(0, 1).toUpperCase() + bar.getText().toString().substring(1));
-                Date date = new Date();
-
-                addToBasket(new FoodListViewItem(itemname, dateToString(date), imgURL.get(idx), context, basketAdapter));
             }
         });
     }
@@ -213,7 +233,6 @@ public class Basket extends MainPage {
     }
 
     public void addToBasket(FoodListViewItem item) {
-        //Snackbar.make(v, "Adding: " + item.getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
         // capitalize first letter of item name
         basketContents.add(item);
         basketAdapter.notifyDataSetChanged();
@@ -326,39 +345,6 @@ public class Basket extends MainPage {
                 });
     }
 
-    // Shows popup with nutritional info
-    private void showPopup(String ingredient) {
-        try {
-            LayoutInflater inflater = (LayoutInflater) Basket.this.
-                    getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View layout = inflater.inflate(R.layout.nutritioanl_info_popup, (ViewGroup) findViewById(R.id.nutritional_popup) );
-
-            window = new PopupWindow(layout, 500, 700, true);
-
-            window.showAtLocation(layout, Gravity.CENTER, 0, 0);
-
-            Button close = (Button) layout.findViewById(R.id.popup_close);
-            close.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    window.dismiss();
-                }
-            });
-
-            TextView title = (TextView) layout.findViewById(R.id.nutritional_info_title);
-            title.setText(ingredient);
-
-            PopulatePopup updatePopup = new PopulatePopup(ingredient);
-            updatePopup.execute("https://api.nal.usda.gov/ndb/list");
-            //updatePopup.execute("Browser: https://api.nal.usda.gov/ndb/search/?format=json&q=butter&sort=n&max=25&offset=0&api_key=DEMO_KEY ");
-
-        } catch(Exception e) {
-            Log.d("TEST", "ERROR OCCURED WITH POPUP");
-            e.printStackTrace();
-        }
-    }
-
-
     public class BasketDeleter implements Callable<Void> {
         FoodListViewItem item;
 
@@ -373,84 +359,5 @@ public class Basket extends MainPage {
             this.item = item;
         }
     }
-
-
-    public class PopulatePopup extends AsyncTask<String, Void, JSONObject> {
-        private String ingredientName;
-
-        public PopulatePopup() {};
-
-        public PopulatePopup(String ingredientName) {
-            this.ingredientName = ingredientName;
-        }
-
-        public void setItemName(String itemname){
-            ingredientName = itemname;
-        }
-
-        public void call() {
-            // do whatever here
-        }
-
-        @Override
-        protected JSONObject doInBackground(String... urls) {
-            JSONObject result = new JSONObject();
-
-            try {
-                StringBuilder url = new StringBuilder(urls[0]);
-                url.append("?api_key=LHgDB2008wpwdJEzvK2wlR7gLNv7oPzYXCVAyJVZ&format=json&sort=r&max=1&da=Standard Referece&q=" + ingredientName);
-
-
-
-/*
-
-            String rawURL = convertToREST(params, urls[0]);
-            URL url = new URL(rawURL);
-
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-//            con.setRequestProperty("format", "json");
-//            con.setRequestProperty("q", ingredientName);
-//            con.setRequestProperty("sort", "r");
-            //con.("api_key", "LHgDB2008wpwdJEzvK2wlR7gLNv7oPzYXCVAyJVZ");
-//            con.setRequestProperty("max", "1");
-//            con.setRequestProperty("ds", "Standard Reference");
-
-            Log.d("test", "URL = " + url.toString());
-
-            HttpURLConnection.setFollowRedirects(true);
-            con.setInstanceFollowRedirects(false);
-            con.setDoOutput(true);
-
-            OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
-
-            // Print the response code
-            // and response message from server.
-            Log.d("test", "Response Code:"
-                    + con.getResponseCode());
-            Log.d("test", "Response Message:"
-                    + con.getResponseMessage());
-
-
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestProperty("api_key", "LHgDB2008wpwdJEzvK2wlR7gLNv7oPzYXCVAyJVZ");
-            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                Log.d("test", "CONTENTS: " + line);
-            }
-*/
-            } catch (Exception e) {
-                Log.d("test", "ERROR WITH QUERYING FOR NDBNO ID: " + e );
-            }
-            return null;
-        }
-
-    }
-
-
 
 }

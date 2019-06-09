@@ -23,7 +23,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.database.FirebaseDatabase;
-//import com.google.firebase.database.core.view.View;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "NAVBAR";
@@ -84,13 +83,13 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         //mAuth.addAuthStateListener(mAuthListener);
         user = mAuth.getCurrentUser();
-/*
-        if(user != null)
-        {
-            new Intent(MainActivity.this, Basket.class);
-        }
-  */
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0,0);
     }
 
     private void signIn() {
@@ -116,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                         if (!(task.isSuccessful())) {
-                            Toast.makeText(MainActivity.this, "Sign In Problem", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "Sign In Problem: Email and Password Don't Match", Toast.LENGTH_LONG).show();
                         }
 
                         else {
@@ -124,11 +123,9 @@ public class MainActivity extends AppCompatActivity {
                             userId = user.getUid();
                             startActivity(new Intent(MainActivity.this, Basket.class));
                         }
-
                     }
                 });
             }
-
         }
 
         public String getUserId() {

@@ -50,7 +50,7 @@
                 android:drawableTop="@drawable/ic_shopping_black_24dp"
                 android:gravity="center"
                 android:padding="2dp"
-                android:text="@string/menu_shopping_list"
+                android:text="Shopping List"
                 android:textColor="@android:color/white"
                 android:textSize="12sp" />
 
@@ -66,8 +66,7 @@
                 android:gravity="center"
                 android:padding="2dp"
                 android:text="@string/menu_recipes"
-                android:textColor="@android:color/white"
-                android:textSize="12sp" />
+                android:textColor="@android:color/white" />
 
             <RadioButton
                 android:id="@+id/basket_tab_button"

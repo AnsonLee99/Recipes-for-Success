@@ -27,7 +27,6 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
     private ArrayList<FoodListViewItem> dataSet;
     private Context mContext;
     private boolean isEditing;
-    private Basket.PopulatePopup showPopup;
     private Basket.BasketDeleter basketDeleter;
 
     // View lookup cache
@@ -39,13 +38,11 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
         ImageView deleteImage;
     }
 
-    public FoodListViewAdapter(ArrayList<FoodListViewItem> data, Context context, boolean isEditing,
-                               Basket.PopulatePopup showPopup, Basket.BasketDeleter basketDeleter) {
+    public FoodListViewAdapter(ArrayList<FoodListViewItem> data, Context context, boolean isEditing, Basket.BasketDeleter basketDeleter) {
         super(context, R.layout.food_list_item, data);
         this.dataSet = data;
         this.mContext = context;
         this.isEditing = isEditing;
-        this.showPopup = showPopup;
         this.basketDeleter= basketDeleter;
     }
 
@@ -64,20 +61,6 @@ public class FoodListViewAdapter extends ArrayAdapter<FoodListViewItem> implemen
 
         switch (v.getId())
         {
-            // If user presses the info button
-            case R.id.info_image:
-                //Snackbar.make(v, "Food Name: " +fooditem.getName(), Snackbar.LENGTH_LONG)
-                //        .setAction("No action", null).show();
-
-                showPopup.setItemName(fooditem.getName());
-                try {
-                    showPopup.call();
-                } catch(Exception e) {
-                    Log.d("TEST", "ISSUE WITH POPUP FROM FOODLISTVIEWADAPTER");
-                }
-
-                break;
-
             // If user presses the delete button
             case R.id.delete_image:
                 Snackbar.make(v, fooditem.getName() + " deleted", Snackbar.LENGTH_SHORT)
