@@ -68,6 +68,13 @@ public class ViewRecipeInstructions extends AppCompatActivity {
         TextView ingredientsTitle = (TextView) findViewById(R.id.ingredientsTitle);
         ingredientsTitle.setTextColor(Color.BLACK);
 
+        //add to shopping list button
+        Intent toRecipe = new Intent(this, GroceryList.class);
+
+
+        ImageButton addToShoppingList = (ImageButton) findViewById(R.id.ingredient_to_shopping);
+
+
         // ingredients
         Intent intent = getIntent();
         String ingredientString = intent.getStringExtra("ingredients");

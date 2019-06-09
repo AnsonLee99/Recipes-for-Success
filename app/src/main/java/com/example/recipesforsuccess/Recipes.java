@@ -2,24 +2,18 @@ package com.example.recipesforsuccess;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.view.MenuInflater;
 import android.view.Menu;
 import android.app.SearchManager;
-import android.widget.ListView;
 import android.widget.SearchView;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -32,19 +26,12 @@ import java.net.HttpURLConnection;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-import com.fasterxml.jackson.core.util.BufferRecycler;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -112,6 +99,7 @@ public class Recipes extends MainPage {
         View groceryView = getLayoutInflater().inflate(R.layout.activity_recipes, null);
         mainDisplay.addView(groceryView);
         context = this;
+
         createRecipeButton = (FloatingActionButton) findViewById(R.id.createRecipeButton);
         createRecipeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,6 +147,7 @@ public class Recipes extends MainPage {
 
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -177,7 +166,7 @@ public class Recipes extends MainPage {
         filtersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openActivity2();
+                openFiltersPage();
                 Intent intent = getIntent();
             }
         });
@@ -199,7 +188,7 @@ public class Recipes extends MainPage {
         }
     }
 
-    public void openActivity2(){
+    public void openFiltersPage(){
         Intent intent = new Intent(this, Filters.class);
         startActivityForResult(intent,SECOND_ACTIVITY_REQUEST_CODE);
     }
@@ -266,6 +255,8 @@ public class Recipes extends MainPage {
             String maxUsed = "&ranking=1&ignorePantry=false"; // Maximize used ingredients
             String minMissing = "&ranking=2&ignorePantry=false"; // Minimize missing ingredient
             String ingredients = "&ingredients=";
+
+
             for(int ingInd = 0; ingInd < userBasket.size(); ingInd++){
                 String finalIng = "";
                 String[] ingArray = userBasket.get(ingInd).split(" ");
