@@ -166,6 +166,7 @@ public class GroceryList extends MainPage {
                 DocumentSnapshot document = task.getResult();
                 ArrayList<String> items = (ArrayList<String>) document.get("shoppingList");
                 ArrayList<GroceryListViewItem> shoppingList = new ArrayList<GroceryListViewItem>();
+                if (items == null) return;
                 for (String item : items) {
                     // Remove the user ID from the string
                     item = item.substring(0, item.indexOf("_"));
