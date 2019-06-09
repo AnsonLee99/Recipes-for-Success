@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#34FFC107"
+    android:background="#dedede"
     tools:context=".CreateAccount">
 
     <EditText
@@ -42,7 +42,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="332dp"
         android:layout_marginEnd="8dp"
-        android:background="@android:color/holo_orange_dark"
+        android:background="@color/colorPrimary"
         android:text="Create"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
