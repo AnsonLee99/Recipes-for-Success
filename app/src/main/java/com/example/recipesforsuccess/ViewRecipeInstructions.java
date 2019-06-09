@@ -90,8 +90,16 @@ public class ViewRecipeInstructions extends AppCompatActivity {
         recipeName.setBackgroundColor(Color.WHITE);
         recipeName.setPadding(50,30,0,30);
 
+        // Prep Time
         TextView prepTime = findViewById(R.id.prepTime);
         prepTime.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+        prepTime.setText("Prep Time: " + getIntent().getIntExtra("prepTime",0) +
+                " minutes");
+        prepTime.setTextSize(15);
+        prepTime.setTextColor(Color.BLACK);
+        prepTime.setGravity(Gravity.START);
+        prepTime.setBackgroundColor(Color.WHITE);
+        prepTime.setPadding(50,30,0,30);
 
         // Recipe Image
         ImageView imgView = (ImageView)findViewById(R.id.recipe_image);
