@@ -68,7 +68,7 @@ public class GroceryList extends MainPage {
         bar = (AutoCompleteTextView) findViewById(R.id.grocery_searchBar);
         options = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
         bar.setAdapter(options);
-        //bar.setDropDownHeight(6);
+
         options.notifyDataSetChanged();
 
         bar.addTextChangedListener(new TextWatcher() {

@@ -41,8 +41,6 @@ public class Recipe {
         return this.prepTime;
     }
 
-    //public void setPrepTime(String prep_time){ this.prep_time = prep_time; }
-
     public List<String> getSteps()
     {
         return this.steps;
