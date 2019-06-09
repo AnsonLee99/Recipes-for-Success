@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#34FFC107">
+    android:background="#dedede">
 
     <EditText
         android:id="@+id/Email"
@@ -42,7 +42,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@android:color/holo_orange_dark"
+        android:background="@color/colorPrimary"
         android:text="@string/common_signin_button_text"
         android:textColor="@android:color/white"
         android:textColorLink="@color/colorPrimaryDark"
