@@ -59,6 +59,8 @@ public class Basket extends MainPage {
     private String ID =  auth.getUid();
     private Context context;
 
+    private Button clear;
+
     private long delay = 300; // Wait .5 sec after user stops typing to update
     long lastTextUpdate = 0;
     Handler handler = new Handler();
@@ -92,6 +94,17 @@ public class Basket extends MainPage {
         mainDisplay = (LinearLayout) findViewById(R.id.main_display);
         View basketView = getLayoutInflater().inflate(R.layout.activity_basket, null);
         mainDisplay.addView(basketView);
+
+        clear = (Button) findViewById(R.id.basket_search_clear);
+
+        Log.d("test", "clear button: " + clear) ;
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bar.setText("");
+                clear.setVisibility(View.GONE);
+            }
+        });
 
         // Auto-complete searchbar
         bar = (AutoCompleteTextView) findViewById(R.id.basket_searchBar);
@@ -135,7 +148,9 @@ public class Basket extends MainPage {
         bar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                if (s.length() == 0) {
+                    clear.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -149,6 +164,10 @@ public class Basket extends MainPage {
                 if(s.length() >0) {
                     handler.postDelayed(input_finish_checker, delay);
                     str = s;
+                    clear.setVisibility(View.VISIBLE);
+                }
+                else {
+                    clear.setVisibility(View.GONE);
                 }
             }
         });
