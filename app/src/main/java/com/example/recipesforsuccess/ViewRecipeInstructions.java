@@ -33,6 +33,44 @@ public class ViewRecipeInstructions extends AppCompatActivity {
         pushToShopping = (Button) findViewById(R.id.ingredient_to_shopping);
         pullFromBasket = (Button) findViewById(R.id.ingredient_from_basket);
 
+        if ( getIntent().getStringExtra("missingIngredients") == null ) {
+            pushToShopping.setVisibility(View.GONE);
+        }
+        else {
+            pushToShopping.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String[] names = getIntent().getStringExtra("missingIngredients").split(";");
+
+                    for (String name : names ) {
+                        name += "_" + getIntent().getStringExtra("ID");
+
+                        db.collection("USERS").document(getIntent().getStringExtra("ID")).update("shoppingList",
+                                FieldValue.arrayUnion(name));
+                    }
+                }
+            });
+        }
+
+        if ( getIntent().getStringExtra("usedIngredients") == null) {
+            pullFromBasket.setVisibility(View.GONE);
+        }
+        else {
+            pullFromBasket.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    String[] names = getIntent().getStringExtra("usedIngredients").split(";");
+
+                    for (String name: names) {
+                        name += "_" + getIntent().getStringExtra("ID");
+
+                        db.collection("USERS").document(getIntent().getStringExtra("ID")).update("basket",
+                                FieldValue.arrayRemove(name));
+                    }
+                }
+            });
+        }
+
         // Hide action bar
         getSupportActionBar().hide();
 
@@ -70,10 +108,6 @@ public class ViewRecipeInstructions extends AppCompatActivity {
 
         //add to shopping list button
         Intent toRecipe = new Intent(this, GroceryList.class);
-
-
-        ImageButton addToShoppingList = (ImageButton) findViewById(R.id.ingredient_to_shopping);
-
 
         // ingredients
         Intent intent = getIntent();
@@ -120,32 +154,5 @@ public class ViewRecipeInstructions extends AppCompatActivity {
 
         // adding everything to the layout
         Picasso.with(getApplicationContext()).load(intent.getStringExtra("imgURL")).into(imgView);
-        pushToShopping.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String[] names = getIntent().getStringExtra("missingIngredients").split(";");
-
-                for (String name : names ) {
-                    name += "_" + getIntent().getStringExtra("ID");
-
-                    db.collection("USERS").document(getIntent().getStringExtra("ID")).update("shoppingList",
-                            FieldValue.arrayUnion(name));
-                }
-            }
-        });
-
-        pullFromBasket.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                String[] names = getIntent().getStringExtra("usedIngredients").split(";");
-
-                for (String name: names) {
-                    name += "_" + getIntent().getStringExtra("ID");
-
-                    db.collection("USERS").document(getIntent().getStringExtra("ID")).update("basket",
-                            FieldValue.arrayRemove(name));
-                }
-            }
-        });
     }
 }
