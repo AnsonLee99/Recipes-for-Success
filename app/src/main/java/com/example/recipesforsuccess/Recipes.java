@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -21,6 +22,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Space;
 import android.widget.TextView;
 
 import java.io.InputStream;
@@ -68,14 +70,14 @@ public class Recipes extends MainPage {
     final int SEARCH_LAYOUT_WIDTH = 1000;
     final int SEARCH_LAYOUT_HEIGHT = 500;
     final int SEARCH_IMG_SIZE = 300;
-    final int SEARCH_TEXT_WIDTH = 700;
+    final int SEARCH_TEXT_WIDTH = 800;
     final int SEARCH_TEXT_HEIGHT = 300;
 
-    final int RECIPE_LAYOUT_WIDTH = 1000;
+    final int RECIPE_LAYOUT_WIDTH = 1200;
     final int RECIPE_LAYOUT_HEIGHT = 500;
-    final int RECIPE_IMG_SIZE = 500;
+    final int RECIPE_IMG_SIZE = 800;
     final int REcIPE_TEXT_WIDTH = 500;
-    final int RECIPE_TEXT_HEIGHT = 300;
+    final int RECIPE_TEXT_HEIGHT = 400;
 
     int SECOND_ACTIVITY_REQUEST_CODE = 0;
 
@@ -111,12 +113,6 @@ public class Recipes extends MainPage {
         View groceryView = getLayoutInflater().inflate(R.layout.activity_recipes, null);
         mainDisplay.addView(groceryView);
         context = this;
-        // For displaying the currently selected tab
-        // I can't fuckin figure it out
-        //RadioGroup rg = (RadioGroup) findViewById(R.id.NavBar_Group);
-        //RadioButton curr = (RadioButton)findViewById(R.id.recipes_tab_button);
-        //curr.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.<CLICKED VERSION OF ICON>);
-        //curr.setTextColor(Color.parseColor("3F51B5"));
         createRecipeButton = (FloatingActionButton) findViewById(R.id.createRecipeButton);
         createRecipeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -579,10 +575,18 @@ public class Recipes extends MainPage {
         LinearLayout layout = new LinearLayout(getApplicationContext());
         layout.setLayoutParams(new LinearLayout.LayoutParams(layoutWidth, layoutHeight));
         ImageButton recipeIMG = new ImageButton(getApplicationContext());
-        recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(imageSize, imageSize));
+        if(task == 0) {
+            recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(imageSize, imageSize));
+        } else {
+            recipeIMG.setLayoutParams(new LinearLayout.LayoutParams(imageSize-200, imageSize+100));
+        }
         TextView recipeName = new TextView(getApplicationContext());
         recipeName.setLayoutParams(new LinearLayout.LayoutParams(textWidth, textHeight));
-        recipeName.setPadding(75,50,0,0);
+        if(task == 0 ) {
+            recipeName.setPadding(75, 50, 0, 0);
+        } else {
+            recipeName.setPadding(50,0,0,0);
+        }
 
         recipeIMG.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -792,11 +796,21 @@ public class Recipes extends MainPage {
         recipeIMG.setPadding(0,0,0,0);
         String boldedFoodName = "<b>" + foodName + "</b>";
         recipeName.setText(Html.fromHtml(boldedFoodName));
+        if( task == 1 ) {
+
+            recipeName.setTextSize(20);
+
+        }
         if(task == 0) {
             recipeName.append("\nPrep Time: " + prepTime + " min");
         }
         recipeName.setTextColor(Color.BLACK);
-        layout.setPadding(0,100,0,0);
+        if( task == 1) {
+            recipeName.setGravity(Gravity.CENTER);
+        }
+        if(task==0) {
+            layout.setPadding(0, 100, 0, 0);
+        }
         layout.addView(recipeIMG);
         layout.addView(recipeName);
         return layout;
