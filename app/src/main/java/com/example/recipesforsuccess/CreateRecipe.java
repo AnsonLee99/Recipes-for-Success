@@ -1,8 +1,10 @@
 package com.example.recipesforsuccess;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.util.Log;
@@ -73,6 +75,7 @@ public class CreateRecipe extends MainPage{
     private ArrayAdapter<String> stepAdapter;
     private ArrayAdapter<String> equipmentAdapter;
     private String recipeID;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +100,7 @@ public class CreateRecipe extends MainPage{
         createEquipment = (EditText)findViewById(R.id.createEquipment);
         submitEquipment = (Button)findViewById(R.id.submitEquipment);
 
-
+        context = this;
 
         storageRef = FirebaseStorage.getInstance().getReference("uploads");
         dataRef = FirebaseDatabase.getInstance().getReference("uploads");
@@ -152,7 +155,8 @@ public class CreateRecipe extends MainPage{
             @Override
             public void onClick(View v) {
                 System.out.println("CALLING UPLOAD FILE");
-                uploadFile();
+                //uploadFile();
+                new uploadFile().execute();
                 startActivity(new Intent(CreateRecipe.this, Recipes.class));
             }
 
@@ -187,6 +191,83 @@ public class CreateRecipe extends MainPage{
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
 
+    class uploadFile extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            final String recipe_name = createName.getText().toString();
+            final String prep_time = createTime.getText().toString();
+            if(imageUri != null)
+            {
+                System.out.println("STUCK IN UPLOAD FILE");
+                StorageReference fileReference = storageRef.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
+
+                fileReference.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(CreateRecipe.this, "Upload Successful", Toast.LENGTH_LONG).show();
+                        //Upload upload = new Upload(taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
+                        taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                String url = uri.toString();
+                                System.out.println("URL IS: " + url);
+                                Recipe created = new Recipe(ingredients, recipe_name, prep_time, steps, url, equipment);
+                                System.out.println("CREATIED NEW RECIPE");
+                                db.collection("RECIPES").add(created).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        recipeID = documentReference.getId();
+                                        db.collection("USERS").document(userID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                            int count = 0;
+                                            @Override
+                                            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                                                if(documentSnapshot.exists() && count == 0)
+                                                {
+                                                    ArrayList<String> IDs = (ArrayList<String>) documentSnapshot.get("personalRecipes");
+                                                    IDs.add(recipeID);
+                                                    db.collection("USERS").document(userID).update("personalRecipes", IDs);
+                                                    count++;
+                                                }else{
+                                                    System.out.println("count not 0");
+                                                }
+                                            }
+                                        });
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w("CreateRecipe.class", "Error adding document", e);
+                                    }
+                                });
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d("CreateRecipe.class", "It didn't work!");
+                            }
+                        });
+
+
+                        //  String uploadID = dataRef.push().getKey();
+                        // dataRef.child(uploadID).setValue(taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d("CreateRecipe.class", "Upload Failed");
+                            }
+                        });
+            }
+            else {
+                Toast.makeText(context, "No file selected", Toast.LENGTH_SHORT).show();
+            }
+            return null;
+        }
+    }
+    /*
     private void uploadFile() {
         final String recipe_name = createName.getText().toString();
         final String prep_time = createTime.getText().toString();
@@ -227,10 +308,6 @@ public class CreateRecipe extends MainPage{
                                         }
                                     });
 
-                                    /*
-                                    db.collection("USERS").document(userID).update("personalRecipes",
-                                            recipeID);
-                                    */
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -262,5 +339,5 @@ public class CreateRecipe extends MainPage{
             Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
         }
     }
-
+    */
 }

@@ -163,7 +163,7 @@ public class GroceryList extends MainPage {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot document = task.getResult();
-                ArrayList<String> items = (ArrayList<String>) document.get("Shopping List");
+                ArrayList<String> items = (ArrayList<String>) document.get("shoppingList");
                 ArrayList<GroceryListViewItem> shoppingList = new ArrayList<GroceryListViewItem>();
                 for (String item : items) {
                     // Remove the user ID from the string
@@ -194,7 +194,7 @@ public class GroceryList extends MainPage {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        db.collection("USERS").document(ID).update("Shopping List",
+                        db.collection("USERS").document(ID).update("shoppingList",
                                 FieldValue.arrayUnion(docName));
                     }
                 })
@@ -214,7 +214,7 @@ public class GroceryList extends MainPage {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        db.collection("USERS").document(ID).update("Shopping List",
+                        db.collection("USERS").document(ID).update("shoppingList",
                                 FieldValue.arrayRemove(docName));
                     }
                 })
