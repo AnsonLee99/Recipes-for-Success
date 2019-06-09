@@ -216,16 +216,6 @@ public class Basket extends MainPage {
         });
     }
 
-    public void removeFromBasket(int index, View v) {
-        if(basketContents.size() > index) {
-            Snackbar.make(v, "Removed: " + basketContents.get(index).getName(), Snackbar.LENGTH_LONG).setAction("No action", null).show();
-            basketContents.remove(index);
-            basketAdapter.notifyDataSetChanged();
-        } else {
-            Snackbar.make(v, "Basket is empty!", Snackbar.LENGTH_LONG).setAction("No action", null).show();
-        }
-    }
-
     public void removeFromBasket(FoodListViewItem item) {
         basketContents.remove(item);
         basketAdapter.notifyDataSetChanged();

@@ -593,15 +593,25 @@ public class Recipes extends MainPage {
                     // Get missing ingredient list
                     JSONArray missedIngredients = (JSONArray) hit.get("missedIngredients");
                     StringBuilder missingIngredients = new StringBuilder();
-                    for ( int j = 0; j < missedIngredients.length(); j ++ ) {
-                        missingIngredients.append(missedIngredients.getJSONObject(j).get("name") + ";");
+                    if (missedIngredients != null) {
+                        for ( int j = 0; j < missedIngredients.length(); j ++ ) {
+                            missingIngredients.append(missedIngredients.getJSONObject(j).get("name") + ";");
+                        }
+                    }
+                    else {
+                        missingIngredients.append("");
                     }
 
                     // Get used ingredients list
                     JSONArray JObjectUsed = (JSONArray) hit.get("usedIngredients");
                     StringBuilder usedIngredients = new StringBuilder();
-                    for ( int j = 0; j < JObjectUsed.length(); j++) {
-                        usedIngredients.append(JObjectUsed.getJSONObject(j).get("name") + ";");
+                    if (usedIngredients != null) {
+                        for ( int j = 0; j < JObjectUsed.length(); j++) {
+                            usedIngredients.append(JObjectUsed.getJSONObject(j).get("name") + ";");
+                        }
+                    }
+                    else {
+                        usedIngredients.append("");
                     }
 
                     dataParsed = "";
