@@ -503,7 +503,6 @@ public class Recipes extends MainPage {
     View insertIMG(final String imgURL, final String foodName, final String prepTime, final JSONObject hit, final int task,
                     final int layoutWidth, final int layoutHeight, final int imageSize, final int textWidth, final int textHeight){
 
-        System.out.println("imgURL is: " + imgURL);
         LinearLayout layout = new LinearLayout(getApplicationContext());
         ImageButton recipeIMG = new ImageButton(getApplicationContext());
 
@@ -537,7 +536,6 @@ public class Recipes extends MainPage {
                 String ingredientList = "";
                 String equipmentList = "";
 
-                System.out.println("inside recipeIMG");
                 try {
                     //JSONObject recipe = hit1.getJSONObject("results");
                     recipeName = hit.getString("title");
@@ -552,7 +550,6 @@ public class Recipes extends MainPage {
                     recipeInfo = new RecipeInstructions().execute().get();
                     equipmentInfo = new GetRecipeEquipment().execute().get();
 
-                    System.out.println("parsing recipeInfo");
                     //For instructions
                     JSONObject recipeSearch = new JSONObject(recipeInfo);
 
@@ -571,7 +568,6 @@ public class Recipes extends MainPage {
                         stepsArray = null;
                     }
 
-                    System.out.println("getting equipement");
                     //For equipment
                     JSONObject equipmentSearch = new JSONObject(equipmentInfo);
                     JSONArray equipmentArray = equipmentSearch.getJSONArray("equipment");
@@ -579,7 +575,6 @@ public class Recipes extends MainPage {
 
                     //getting ingredients list
                     JSONArray extendedIngredients = recipeSearch.getJSONArray("extendedIngredients");
-                    System.out.println("getting ingredeints");
                     for (int ii = 0; ii < extendedIngredients.length(); ii++){
                         JSONObject ingredient = extendedIngredients.getJSONObject(ii);
                         String original = ingredient.getString("original");
@@ -593,7 +588,6 @@ public class Recipes extends MainPage {
                         equipmentList = equipmentList + (ii + 1) + ".   " + "" + name + "\n" + "" + "\n";
                     }
 
-                    System.out.println("getting missing ingredients");
                     // Get missing ingredient list
                     StringBuilder missingIngredients = new StringBuilder("");
                     if(task == 1) {
@@ -607,7 +601,6 @@ public class Recipes extends MainPage {
                         }
                     }
 
-                    System.out.println("getting used ingredients");
                     // Get used ingredients list
                     StringBuilder usedIngredients = new StringBuilder("");
                     if(task == 1) {
@@ -621,7 +614,6 @@ public class Recipes extends MainPage {
                         }
                     }
 
-                    System.out.println("getting dataparsed now");
                     dataParsed = "";
                     if( stepsArray != null ) {
                         for (int ii = 0; ii < stepsArray.length(); ii++) {
@@ -632,7 +624,6 @@ public class Recipes extends MainPage {
                                     "\n";
                         }
                     }
-                    System.out.println("dataparsed is: " + dataParsed);
 
                     intent.putExtra("ingredients", ingredientList);
                     intent.putExtra("equipment", equipmentList);
@@ -644,7 +635,6 @@ public class Recipes extends MainPage {
                     intent.putExtra("ID", userID);
                     intent.putExtra("prepTime", prepTime);
 
-                    System.out.println("starting new activity");
                     startActivity(intent);
 
                 } catch (Exception e) {
